@@ -1,12 +1,10 @@
-package ac.nsbm.bookshop_delivery_system.controller;
+package ac.nsbm.bookshop_delivery_system.service;
 
 import ac.nsbm.bookshop_delivery_system.entity.Book;
 import ac.nsbm.bookshop_delivery_system.entity.User;
 import ac.nsbm.bookshop_delivery_system.repository.BookRepository;
 import ac.nsbm.bookshop_delivery_system.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -16,41 +14,30 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
-@RestController
-@RequestMapping("/api/books")
-public class BookController {
+@Service
+public class BookService {
 
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private static final String UPLOAD_DIR = "src/main/resources/static/images/";
 
-    public BookController(BookRepository bookRepository, UserRepository userRepository) {
+    public BookService(BookRepository bookRepository, UserRepository userRepository) {
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
     }
 
-    @GetMapping
-    public List<Book> getAllBooks(@RequestParam(required = false) String search) {
+    public List<Book> findAll(String search) {
         if (search != null && !search.isEmpty()) {
             return bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(search, search);
         }
         return bookRepository.findAll();
     }
 
-    @PostMapping
-    public ResponseEntity<Book> addBook(
-            @RequestParam("bookTitle") String title,
-            @RequestParam("author") String author,
-            @RequestParam("price") Double price,
-            @RequestParam("stock") Integer stock,
-            @RequestParam("category") String category,
-            @RequestParam(value = "bookImage", required = false) MultipartFile image,
-            @RequestParam(value = "featured", defaultValue = "false") boolean featured,
-            @RequestParam(value = "active", defaultValue = "true") boolean active,
-            Authentication authentication
-    ) throws IOException {
+    public Book addBook(String title, String author, Double price, Integer stock,
+                        String category, boolean featured, boolean active,
+                        MultipartFile image, String sellerEmail) throws IOException {
 
-        User seller = userRepository.findByEmail(authentication.getName())
+        User seller = userRepository.findByEmail(sellerEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Book book = new Book();
@@ -71,15 +58,14 @@ public class BookController {
             book.setImageUrl("/images/" + fileName);
         }
 
-        return ResponseEntity.ok(bookRepository.save(book));
+        return bookRepository.save(book);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBook(@PathVariable Long id) {
-        if (bookRepository.existsById(id)) {
-            bookRepository.deleteById(id);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
+    public void deleteBook(Long id) {
+        bookRepository.deleteById(id);
+    }
+
+    public boolean exists(Long id) {
+        return bookRepository.existsById(id);
     }
 }

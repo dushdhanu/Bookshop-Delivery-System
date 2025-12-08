@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -20,10 +19,7 @@ public class AuthService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
-    public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       JwtUtils jwtUtils,
-                       AuthenticationManager authenticationManager) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtils jwtUtils, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
@@ -40,7 +36,6 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        // Handle role safely - default to CUSTOMER if invalid or missing
         try {
             user.setRole(Role.valueOf(request.getRole().toUpperCase()));
         } catch (Exception e) {
@@ -48,10 +43,7 @@ public class AuthService {
         }
 
         userRepository.save(user);
-
-        // CORRECTED: Use CustomUserDetails (the wrapper), not the Service
-        CustomUserDetails userDetails = new CustomUserDetails(user);
-        return jwtUtils.generateToken(userDetails);
+        return jwtUtils.generateToken(new CustomUserDetails(user));
     }
 
     public String login(AuthRequest request) {
@@ -59,8 +51,6 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-
-        // CORRECTED: Use CustomUserDetails (the wrapper), not the Service
         return jwtUtils.generateToken(new CustomUserDetails(user));
     }
 }
