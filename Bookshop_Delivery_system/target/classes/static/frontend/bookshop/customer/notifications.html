@@ -3,31 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notifications & Updates - BookShop</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="components.css">
-    <link rel="stylesheet" href="blue-theme.css">
+    <title>Customer Notifications - BookShop</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/blue-theme.css">
     <style>
         .notification-list {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
-        
+
         .notification-card {
             background-color: #1a1a2e;
             border-radius: 5px;
             padding: 1.5rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            border: 1px solid #1e3a8a;
+            border: 1px solid #2e5a8a;
             transition: all 0.3s ease;
         }
-        
+
         .notification-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
-        
+
         .notification-header {
             display: flex;
             justify-content: space-between;
@@ -36,29 +36,29 @@
             padding-bottom: 0.75rem;
             border-bottom: 1px solid #334155;
         }
-        
+
         .notification-title {
-            color: #3b82f6;
+            color: #5aa3ff;
             font-weight: bold;
             margin: 0;
         }
-        
+
         .notification-date {
             color: #94a3b8;
             font-size: 0.9rem;
         }
-        
+
         .notification-content {
             color: #e0e0e0;
             line-height: 1.6;
             margin-bottom: 1rem;
         }
-        
+
         .notification-actions {
             display: flex;
             gap: 0.75rem;
         }
-        
+
         .notification-badge {
             background-color: #3b82f6;
             color: white;
@@ -67,233 +67,233 @@
             font-size: 0.8rem;
             font-weight: bold;
         }
-        
+
         .badge-info {
             background-color: #3b82f6;
         }
-        
+
         .badge-warning {
             background-color: #f59e0b;
         }
-        
+
         .badge-success {
             background-color: #10b981;
         }
-        
+
         .badge-danger {
             background-color: #ef4444;
         }
-        
+
         .mark-as-read {
             margin-left: auto;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <h1 class="nav-logo">BookShop</h1>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="books.html" class="nav-link">Books</a>
-                </li>
-                <li class="nav-item">
-                    <a href="orders.html" class="nav-link">Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a href="profile.html" class="nav-link">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a href="notifications.html" class="nav-link active">Notifications</a>
-                </li>
-            </ul>
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="nav-container">
+        <h1 class="nav-logo">BookShop Customer</h1>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="index.html" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="books.html" class="nav-link">Books</a>
+            </li>
+            <li class="nav-item">
+                <a href="orders.html" class="nav-link">Orders</a>
+            </li>
+            <li class="nav-item">
+                <a href="profile.html" class="nav-link">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a href="notifications.html" class="nav-link active">Notifications</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Notifications Content -->
+<section class="notifications-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>My Notifications & Updates</h1>
+            <p>Stay updated with your orders, new arrivals, and special offers</p>
         </div>
-    </nav>
 
-    <!-- Notifications Content -->
-    <section class="notifications-page">
-        <div class="container">
-            <div class="page-header">
-                <h1>Notifications & Updates</h1>
-                <p>Stay informed with the latest updates and announcements</p>
-            </div>
-
-            <div class="content-wrapper">
-                <!-- Main Content -->
-                <div class="main-content">
-                    <!-- Notification Filters -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Filter Notifications</h2>
+        <div class="content-wrapper">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Notification Filters -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Filter Notifications</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="category-tags">
+                            <div class="tag active">All Notifications</div>
+                            <div class="tag">My Orders</div>
+                            <div class="tag">New Books</div>
+                            <div class="tag">Promotions</div>
+                            <div class="tag">Account</div>
                         </div>
-                        <div class="card-body">
-                            <div class="category-tags">
-                                <div class="tag active">All Notifications</div>
-                                <div class="tag">Orders</div>
-                                <div class="tag">Books</div>
-                                <div class="tag">Account</div>
-                                <div class="tag">Promotions</div>
+                    </div>
+                </div>
+
+                <!-- Notification List -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Notifications</h2>
+                        <button class="btn btn-secondary mark-as-read">Mark All as Read</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="notification-list">
+                            <!-- Notification 1 -->
+                            <div class="notification-card">
+                                <div class="notification-header">
+                                    <h3 class="notification-title">Order Delivered Successfully</h3>
+                                    <span class="notification-date">2 hours ago</span>
+                                </div>
+                                <p class="notification-content">
+                                    Your order #ORD-7842 has been delivered. We hope you enjoy your books!
+                                    Please leave feedback about your experience.
+                                </p>
+                                <div class="notification-actions">
+                                    <span class="notification-badge badge-success">Order Update</span>
+                                    <button class="btn btn-sm btn-secondary">View Order</button>
+                                    <button class="btn btn-sm btn-primary">Leave Feedback</button>
+                                </div>
+                            </div>
+
+                            <!-- Notification 2 -->
+                            <div class="notification-card">
+                                <div class="notification-header">
+                                    <h3 class="notification-title">New Book Arrivals</h3>
+                                    <span class="notification-date">1 day ago</span>
+                                </div>
+                                <p class="notification-content">
+                                    Check out our latest arrivals in the Fiction category.
+                                    New releases from popular authors are now available!
+                                </p>
+                                <div class="notification-actions">
+                                    <span class="notification-badge badge-info">New Arrivals</span>
+                                    <button class="btn btn-sm btn-secondary">View Books</button>
+                                </div>
+                            </div>
+
+                            <!-- Notification 3 -->
+                            <div class="notification-card">
+                                <div class="notification-header">
+                                    <h3 class="notification-title">Special Holiday Discount</h3>
+                                    <span class="notification-date">2 days ago</span>
+                                </div>
+                                <p class="notification-content">
+                                    Enjoy 25% off on all books until the end of the month.
+                                    Use code HOLIDAY25 at checkout. Limited time offer!
+                                </p>
+                                <div class="notification-actions">
+                                    <span class="notification-badge badge-warning">Promotion</span>
+                                    <button class="btn btn-sm btn-secondary">Shop Now</button>
+                                </div>
+                            </div>
+
+                            <!-- Notification 4 -->
+                            <div class="notification-card">
+                                <div class="notification-header">
+                                    <h3 class="notification-title">Account Security Update</h3>
+                                    <span class="notification-date">3 days ago</span>
+                                </div>
+                                <p class="notification-content">
+                                    We've updated our security protocols to better protect your account.
+                                    Please review our new privacy policy for details.
+                                </p>
+                                <div class="notification-actions">
+                                    <span class="notification-badge badge-danger">Security</span>
+                                    <button class="btn btn-sm btn-secondary">Learn More</button>
+                                </div>
+                            </div>
+
+                            <!-- Notification 5 -->
+                            <div class="notification-card">
+                                <div class="notification-header">
+                                    <h3 class="notification-title">Order Shipped</h3>
+                                    <span class="notification-date">4 days ago</span>
+                                </div>
+                                <p class="notification-content">
+                                    Your order #ORD-7521 has been shipped and is on its way.
+                                    Track your shipment using the link below.
+                                </p>
+                                <div class="notification-actions">
+                                    <span class="notification-badge badge-info">Order Update</span>
+                                    <button class="btn btn-sm btn-secondary">Track Order</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Notification List -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Recent Notifications</h2>
-                            <button class="btn btn-secondary mark-as-read">Mark All as Read</button>
-                        </div>
-                        <div class="card-body">
-                            <div class="notification-list">
-                                <!-- Notification 1 -->
-                                <div class="notification-card">
-                                    <div class="notification-header">
-                                        <h3 class="notification-title">Order Delivered Successfully</h3>
-                                        <span class="notification-date">2 hours ago</span>
-                                    </div>
-                                    <p class="notification-content">
-                                        Your order #ORD-7842 has been delivered. We hope you enjoy your books! 
-                                        Please leave feedback about your experience.
-                                    </p>
-                                    <div class="notification-actions">
-                                        <span class="notification-badge badge-success">Order Update</span>
-                                        <button class="btn btn-sm btn-secondary">View Order</button>
-                                        <button class="btn btn-sm btn-primary">Leave Feedback</button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Notification 2 -->
-                                <div class="notification-card">
-                                    <div class="notification-header">
-                                        <h3 class="notification-title">New Book Arrivals</h3>
-                                        <span class="notification-date">1 day ago</span>
-                                    </div>
-                                    <p class="notification-content">
-                                        Check out our latest arrivals in the Fiction category. 
-                                        New releases from popular authors are now available!
-                                    </p>
-                                    <div class="notification-actions">
-                                        <span class="notification-badge badge-info">New Arrivals</span>
-                                        <button class="btn btn-sm btn-secondary">View Books</button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Notification 3 -->
-                                <div class="notification-card">
-                                    <div class="notification-header">
-                                        <h3 class="notification-title">Special Holiday Discount</h3>
-                                        <span class="notification-date">2 days ago</span>
-                                    </div>
-                                    <p class="notification-content">
-                                        Enjoy 25% off on all books until the end of the month. 
-                                        Use code HOLIDAY25 at checkout. Limited time offer!
-                                    </p>
-                                    <div class="notification-actions">
-                                        <span class="notification-badge badge-warning">Promotion</span>
-                                        <button class="btn btn-sm btn-secondary">Shop Now</button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Notification 4 -->
-                                <div class="notification-card">
-                                    <div class="notification-header">
-                                        <h3 class="notification-title">Account Security Update</h3>
-                                        <span class="notification-date">3 days ago</span>
-                                    </div>
-                                    <p class="notification-content">
-                                        We've updated our security protocols to better protect your account. 
-                                        Please review our new privacy policy for details.
-                                    </p>
-                                    <div class="notification-actions">
-                                        <span class="notification-badge badge-danger">Security</span>
-                                        <button class="btn btn-sm btn-secondary">Learn More</button>
-                                    </div>
-                                </div>
-                                
-                                <!-- Notification 5 -->
-                                <div class="notification-card">
-                                    <div class="notification-header">
-                                        <h3 class="notification-title">Order Shipped</h3>
-                                        <span class="notification-date">4 days ago</span>
-                                    </div>
-                                    <p class="notification-content">
-                                        Your order #ORD-7521 has been shipped and is on its way. 
-                                        Track your shipment using the link below.
-                                    </p>
-                                    <div class="notification-actions">
-                                        <span class="notification-badge badge-info">Order Update</span>
-                                        <button class="btn btn-sm btn-secondary">Track Order</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>BookShop</h3>
-                    <p>Your one-stop destination for all kinds of books. Discover, explore, and enjoy reading with us.</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link">Facebook</a>
-                        <a href="#" class="social-link">Twitter</a>
-                        <a href="#" class="social-link">Instagram</a>
-                        <a href="#" class="social-link">Pinterest</a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="books.html">Books</a></li>
-                        <li><a href="orders.html">Orders</a></li>
-                        <li><a href="profile.html">Profile</a></li>
-                        <li><a href="notifications.html">Notifications</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Categories</h4>
-                    <ul class="footer-links">
-                        <li><a href="#">Fiction</a></li>
-                        <li><a href="#">Non-Fiction</a></li>
-                        <li><a href="#">Science Fiction</a></li>
-                        <li><a href="#">Mystery & Thriller</a></li>
-                        <li><a href="#">Romance</a></li>
-                        <li><a href="#">Biography</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Contact Us</h4>
-                    <ul class="contact-info">
-                        <li>Email: info@bookshop.com</li>
-                        <li>Phone: (123) 456-7890</li>
-                        <li>Address: 123 Book Street, Library City, LC 12345</li>
-                    </ul>
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>BookShop</h3>
+                <p>Your one-stop destination for all kinds of books. Discover, explore, and enjoy reading with us.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">Facebook</a>
+                    <a href="#" class="social-link">Twitter</a>
+                    <a href="#" class="social-link">Instagram</a>
+                    <a href="#" class="social-link">Pinterest</a>
                 </div>
             </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 BookShop. All rights reserved.</p>
-                <div class="footer-legal">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
-                </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="books.html">Books</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="notifications.html">Notifications</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Fiction</a></li>
+                    <li><a href="#">Non-Fiction</a></li>
+                    <li><a href="#">Science Fiction</a></li>
+                    <li><a href="#">Mystery & Thriller</a></li>
+                    <li><a href="#">Romance</a></li>
+                    <li><a href="#">Biography</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <ul class="contact-info">
+                    <li>Email: info@bookshop.com</li>
+                    <li>Phone: (123) 456-7890</li>
+                    <li>Address: 123 Book Street, Library City, LC 12345</li>
+                </ul>
             </div>
         </div>
-    </footer>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 BookShop. All rights reserved.</p>
+            <div class="footer-legal">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

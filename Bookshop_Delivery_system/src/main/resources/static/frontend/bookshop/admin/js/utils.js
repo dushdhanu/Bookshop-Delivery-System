@@ -7,7 +7,7 @@ function showAlert(message, type = 'success') {
     if (existingAlert) {
         existingAlert.remove();
     }
-    
+
     // Create alert element
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type === 'info' ? 'warning' : type} alert-dismissible fade show`;
@@ -15,13 +15,13 @@ function showAlert(message, type = 'success') {
         ${message}
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     `;
-    
+
     // Insert at the top of the main content
     const mainContent = document.querySelector('.main-content') || document.querySelector('.container');
     if (mainContent) {
         mainContent.insertBefore(alertDiv, mainContent.firstChild);
     }
-    
+
     // Auto dismiss after 5 seconds
     setTimeout(() => {
         if (alertDiv.parentNode) {
@@ -111,3 +111,35 @@ function debounce(func, wait, immediate) {
         if (callNow) func.apply(context, args);
     };
 }
+
+// --- LOGOUT FUNCTIONALITY ---
+
+/**
+ * Handles the logout process
+ * 1. Confirms action
+ * 2. Clears local storage (tokens/user data)
+ * 3. Redirects to the main Customer Dashboard (index.html)
+ */
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        // 1. Clear Security Tokens (Backend is stateless, so we just remove the key)
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        sessionStorage.clear();
+
+        // 2. Redirect to the Public Dashboard (Customer Index)
+        // Adjust path based on your folder structure: currently inside /admin/
+        window.location.href = '../customer/index.html';
+    }
+}
+
+// Attach event listener to logout button when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogout();
+        });
+    }
+});

@@ -15,7 +15,7 @@
             flex-direction: column;
             gap: 0.5rem;
         }
-        
+
         .sidebar-item-vertical {
             display: flex;
             align-items: center;
@@ -27,9 +27,9 @@
             transition: all 0.3s ease;
             border: 1px solid transparent;
         }
-        
+
         .sidebar-item-vertical:hover{
-             background-color: #1a3a8a;
+            background-color: #1a3a8a;
             transform: translateX(5px);
         }
         .sidebar-item-vertical.active {
@@ -37,7 +37,7 @@
             color: #3b82f6;
             border-color: #334155;
         }
-        
+
         .sidebar-icon-medium {
             font-size: 1.2rem;
             margin-right: 0.75rem;
@@ -47,7 +47,7 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         /* Stats cards in vertical axis with medium logos */
         .stats-vertical {
             display: flex;
@@ -55,7 +55,7 @@
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
-        
+
         .stat-card-vertical {
             display: flex;
             align-items: center;
@@ -66,12 +66,12 @@
             border: 1px solid #1e3a8a;
             transition: transform 0.3s ease;
         }
-        
+
         .stat-card-vertical:hover {
             background-color: #1a3a8a;
             transform: translateY(-5px);
         }
-        
+
         .stat-icon-medium {
             font-size: 2rem;
             margin-right: 1.5rem;
@@ -84,11 +84,11 @@
             border-radius: 50%;
             border: 2px solid #3b82f6;
         }
-        
+
         .stat-content {
             flex: 1;
         }
-        
+
         .stat-content h3 {
             color: #94a3b8;
             margin: 0 0 0.5rem 0;
@@ -96,21 +96,21 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .stat-content p {
             color: #ffffff;
             margin: 0;
             font-size: 2rem;
             font-weight: bold;
         }
-        
+
         /* Recent activity in vertical axis with medium logos */
         .activity-vertical {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
-        
+
         .activity-item-vertical {
             display: flex;
             align-items: center;
@@ -120,7 +120,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             border: 1px solid #1e3a8a;
         }
-        
+
         .activity-icon-medium {
             font-size: 1.5rem;
             margin-right: 1rem;
@@ -133,223 +133,231 @@
             border-radius: 50%;
             border: 2px solid #3b82f6;
         }
-        
+
         .activity-content-vertical {
             flex: 1;
         }
-        
+
         .activity-content-vertical h4 {
             margin: 0 0 0.25rem 0;
             color: #ffffff;
             font-size: 1.1rem;
         }
-        
+
         .activity-content-vertical p {
             margin: 0 0 0.25rem 0;
             color: #a0c0ff;
             font-size: 0.9rem;
         }
-        
+
         .activity-time {
             color: #94a3b8;
             font-size: 0.8rem;
             text-align: right;
         }
+
+        /* Logout Link Style */
+        .nav-link.logout-link {
+            color: #a0c0ff;
+            font-weight: 500;
+        }
+        .nav-link.logout-link:hover {
+            color: #3b82f6;
+            background-color: rgba(239, 68, 68, 0.1);
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
-    
-    <!-- Navbar Component -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <h1 class="nav-logo">BookShop Admin</h1>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link active">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a href="books.html" class="nav-link">Books</a>
-                </li>
-                <li class="nav-item">
-                    <a href="add-book.html" class="nav-link">Add Book</a>
-                </li>
-                <li class="nav-item">
-                    <a href="orders.html" class="nav-link">Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a href="profile.html" class="nav-link">Profile</a>
-                </li>
-               
-            </ul>
-            <div class="nav-toggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <h1 class="nav-logo">BookShop Admin</h1>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="index.html" class="nav-link active">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a href="books.html" class="nav-link">Books</a>
+            </li>
+            <li class="nav-item">
+                <a href="add-book.html" class="nav-link">Add Book</a>
+            </li>
+            <li class="nav-item">
+                <a href="orders.html" class="nav-link">Orders</a>
+            </li>
+            <li class="nav-item">
+                <a href="profile.html" class="nav-link">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" id="logoutBtn" class="nav-link logout-link">Logout</a>
+            </li>
+        </ul>
+        <div class="nav-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Admin Dashboard Content -->
-    <section class="admin-dashboard">
-        <div class="container">
-            <div class="page-header">
-                <h1>Admin Dashboard</h1>
-                <p>Welcome back, Administrator</p>
+<section class="admin-dashboard">
+    <div class="container">
+        <div class="page-header">
+            <h1>Admin Dashboard</h1>
+            <p>Welcome back, Administrator</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="sidebar-wrapper">
+                <div class="sidebar">
+                    <h3 class="sidebar-title">Admin Panel</h3>
+                    <div class="sidebar-panel-vertical">
+                        <a href="index.html" class="sidebar-item-vertical active">
+                            <div class="sidebar-icon-medium">📊</div>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="books.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">📚</div>
+                            <span>Book Management</span>
+                        </a>
+                        <a href="add-book.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">➕</div>
+                            <span>Add New Book</span>
+                        </a>
+                        <a href="orders.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">📦</div>
+                            <span>Order Management</span>
+                        </a>
+                        <a href="profile.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">👤</div>
+                            <span>Admin Profile</span>
+                        </a>
+                        <a href="notifications.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">🔔</div>
+                            <span>Notifications & Updates</span>
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="content-wrapper">
-                <!-- Sidebar Panel - Changed to vertical axis -->
-                <div class="sidebar-wrapper">
-                    <div class="sidebar">
-                        <h3 class="sidebar-title">Admin Panel</h3>
-                        <div class="sidebar-panel-vertical">
-                            <a href="index.html" class="sidebar-item-vertical active">
-                                <div class="sidebar-icon-medium">📊</div>
-                                <span>Dashboard</span>
-                            </a>
-                            <a href="books.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">📚</div>
-                                <span>Book Management</span>
-                            </a>
-                            <a href="add-book.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">➕</div>
-                                <span>Add New Book</span>
-                            </a>
-                            <a href="orders.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">📦</div>
-                                <span>Order Management</span>
-                            </a>
-                            <a href="profile.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">👤</div>
-                                <span>Admin Profile</span>
-                            </a>
-                            <a href="notifications.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">🔔</div>
-                                <span>Notifications & Updates</span>
-                            </a>
+            <div class="main-content">
+                <div class="stats-vertical">
+                    <div class="stat-card-vertical">
+                        <div class="stat-icon-medium">📚</div>
+                        <div class="stat-content">
+                            <h3>Total Books</h3>
+                            <p>1,248</p>
+                        </div>
+                    </div>
+                    <div class="stat-card-vertical">
+                        <div class="stat-icon-medium">📦</div>
+                        <div class="stat-content">
+                            <h3>Orders Today</h3>
+                            <p>42</p>
+                        </div>
+                    </div>
+                    <div class="stat-card-vertical">
+                        <div class="stat-icon-medium">👥</div>
+                        <div class="stat-content">
+                            <h3>New Customers</h3>
+                            <p>18</p>
+                        </div>
+                    </div>
+                    <div class="stat-card-vertical">
+                        <div class="stat-icon-medium">💰</div>
+                        <div class="stat-content">
+                            <h3>Revenue</h3>
+                            <p>$2,450</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Main Content -->
-                <div class="main-content">
-                    <!-- Stats Cards - Changed to vertical axis -->
-                    <div class="stats-vertical">
-                        <div class="stat-card-vertical">
-                            <div class="stat-icon-medium">📚</div>
-                            <div class="stat-content">
-                                <h3>Total Books</h3>
-                                <p>1,248</p>
-                            </div>
-                        </div>
-                        <div class="stat-card-vertical">
-                            <div class="stat-icon-medium">📦</div>
-                            <div class="stat-content">
-                                <h3>Orders Today</h3>
-                                <p>42</p>
-                            </div>
-                        </div>
-                        <div class="stat-card-vertical">
-                            <div class="stat-icon-medium">👥</div>
-                            <div class="stat-content">
-                                <h3>New Customers</h3>
-                                <p>18</p>
-                            </div>
-                        </div>
-                        <div class="stat-card-vertical">
-                            <div class="stat-icon-medium">💰</div>
-                            <div class="stat-content">
-                                <h3>Revenue</h3>
-                                <p>$2,450</p>
-                            </div>
-                        </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Recent Activity</h2>
                     </div>
-
-                    <!-- Recent Activity - Changed to vertical axis -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Recent Activity</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="activity-vertical">
-                                <div class="activity-item-vertical">
-                                    <div class="activity-icon-medium">➕</div>
-                                    <div class="activity-content-vertical">
-                                        <h4>New Book Added</h4>
-                                        <p>"The Midnight Library" by Matt Haig was added to inventory</p>
-                                    </div>
-                                    <div class="activity-time">2 hours ago</div>
+                    <div class="card-body">
+                        <div class="activity-vertical">
+                            <div class="activity-item-vertical">
+                                <div class="activity-icon-medium">➕</div>
+                                <div class="activity-content-vertical">
+                                    <h4>New Book Added</h4>
+                                    <p>"The Midnight Library" by Matt Haig was added to inventory</p>
                                 </div>
-                                <div class="activity-item-vertical">
-                                    <div class="activity-icon-medium">📦</div>
-                                    <div class="activity-content-vertical">
-                                        <h4>Order Placed</h4>
-                                        <p>Order #ORD-7842 placed by John Smith</p>
-                                    </div>
-                                    <div class="activity-time">4 hours ago</div>
+                                <div class="activity-time">2 hours ago</div>
+                            </div>
+                            <div class="activity-item-vertical">
+                                <div class="activity-icon-medium">📦</div>
+                                <div class="activity-content-vertical">
+                                    <h4>Order Placed</h4>
+                                    <p>Order #ORD-7842 placed by John Smith</p>
                                 </div>
-                                <div class="activity-item-vertical">
-                                    <div class="activity-icon-medium">🔄</div>
-                                    <div class="activity-content-vertical">
-                                        <h4>Inventory Update</h4>
-                                        <p>Stock level for "1984" updated to 25 units</p>
-                                    </div>
-                                    <div class="activity-time">1 day ago</div>
+                                <div class="activity-time">4 hours ago</div>
+                            </div>
+                            <div class="activity-item-vertical">
+                                <div class="activity-icon-medium">🔄</div>
+                                <div class="activity-content-vertical">
+                                    <h4>Inventory Update</h4>
+                                    <p>Stock level for "1984" updated to 25 units</p>
                                 </div>
-                                <div class="activity-item-vertical">
-                                    <div class="activity-icon-medium">👤</div>
-                                    <div class="activity-content-vertical">
-                                        <h4>New Customer</h4>
-                                        <p>Jane Doe registered as a new customer</p>
-                                    </div>
-                                    <div class="activity-time">1 day ago</div>
+                                <div class="activity-time">1 day ago</div>
+                            </div>
+                            <div class="activity-item-vertical">
+                                <div class="activity-icon-medium">👤</div>
+                                <div class="activity-content-vertical">
+                                    <h4>New Customer</h4>
+                                    <p>Jane Doe registered as a new customer</p>
                                 </div>
+                                <div class="activity-time">1 day ago</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer Component -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>BookShop Admin</h3>
-                    <p>Administration panel for BookShop online bookstore</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="index.html">Dashboard</a></li>
-                        <li><a href="books.html">Books</a></li>
-                        <li><a href="orders.html">Orders</a></li>
-                        <li><a href="profile.html">Profile</a></li>
-                        <li><a href="../index.html">Customer View</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <ul class="footer-links">
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">System Status</a></li>
-                    </ul>
-                </div>
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>BookShop Admin</h3>
+                <p>Administration panel for BookShop online bookstore</p>
             </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 BookShop. All rights reserved.</p>
-                <div class="footer-legal">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="books.html">Books</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="../index.html">Customer View</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">System Status</a></li>
+                </ul>
             </div>
         </div>
-    </footer>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 BookShop. All rights reserved.</p>
+            <div class="footer-legal">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="js/utils.js"></script>
 </body>
 </html>
