@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Dashboard - BookShop</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../components.css">
+    <link rel="stylesheet" href="../books.css">
+    <link rel="stylesheet" href="../blue-theme.css">
+    <style>
+        /* Vertical dashboard stats with medium logos */
+        .dashboard-stats-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card-vertical {
+            display: flex;
+            align-items: center;
+            background-color: #10235d;
+            border-radius: 5px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #1e3a8a;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card-vertical:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon-medium {
+            font-size: 2rem;
+            margin-right: 1.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0f172a;
+            border-radius: 50%;
+            border: 2px solid #3b82f6;
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-content h3 {
+            color: #94a3b8;
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-content p {
+            color: #ffffff;
+            margin: 0;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        /* Pending deliveries with blue background */
+        .pending-deliveries-blue {
+            background-color: #0f172a;
+            border-radius: 5px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #3b82f6;
+            margin-bottom: 2rem;
+        }
+        
+        .pending-deliveries-blue h2 {
+            color: #ffffff;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .delivery-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: #10235d;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            border: 1px solid #334155;
+        }
+        
+        .delivery-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .delivery-info {
+            flex: 1;
+        }
+        
+        .delivery-info h4 {
+            color: #ffffff;
+            margin: 0 0 0.25rem 0;
+        }
+        
+        .delivery-info p {
+            color: #94a3b8;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        .delivery-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar Component -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">Delivery Portal</h1>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="orders.html" class="nav-link">My Deliveries</a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a href="notifications.html" class="nav-link">Notifications</a>
+                </li>
+                
+            </ul>
+            <div class="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Delivery Dashboard Content -->
+    <section class="delivery-dashboard">
+        <div class="container">
+            <div class="page-header">
+                <h1>Delivery Dashboard</h1>
+                <p>Welcome back, Delivery Person</p>
+            </div>
+
+            <!-- Dashboard Stats - Changed to vertical axis -->
+            <div class="dashboard-stats-vertical">
+                <div class="stat-card-vertical">
+                    <div class="stat-icon-medium">📦</div>
+                    <div class="stat-content">
+                        <h3>Pending Deliveries</h3>
+                        <p>12</p>
+                    </div>
+                </div>
+                <div class="stat-card-vertical">
+                    <div class="stat-icon-medium">✅</div>
+                    <div class="stat-content">
+                        <h3>Completed Today</h3>
+                        <p>8</p>
+                    </div>
+                </div>
+                <div class="stat-card-vertical">
+                    <div class="stat-icon-medium">💰</div>
+                    <div class="stat-content">
+                        <h3>Earnings This Week</h3>
+                        <p>$180</p>
+                    </div>
+                </div>
+                <div class="stat-card-vertical">
+                    <div class="stat-icon-medium">⭐</div>
+                    <div class="stat-content">
+                        <h3>Average Rating</h3>
+                        <p>4.9</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Deliveries - Changed background to blue -->
+            <div class="pending-deliveries-blue">
+                <h2>Pending Deliveries</h2>
+                <div class="delivery-item">
+                    <div class="delivery-info">
+                        <h4>Order #ORD-7842</h4>
+                        <p>John Smith - 123 Main St, Apt 4B, Cityville</p>
+                        <p>3 books - $42.97</p>
+                    </div>
+                    <div class="delivery-actions">
+                        <button class="btn btn-primary btn-sm">Mark Delivered</button>
+                        <button class="btn btn-secondary btn-sm">Details</button>
+                    </div>
+                </div>
+                <div class="delivery-item">
+                    <div class="delivery-info">
+                        <h4>Order #ORD-7521</h4>
+                        <p>Sarah Johnson - 456 Oak Ave, Springfield</p>
+                        <p>2 books - $27.98</p>
+                    </div>
+                    <div class="delivery-actions">
+                        <button class="btn btn-primary btn-sm">Mark Delivered</button>
+                        <button class="btn btn-secondary btn-sm">Details</button>
+                    </div>
+                </div>
+                <div class="delivery-item">
+                    <div class="delivery-info">
+                        <h4>Order #ORD-7294</h4>
+                        <p>Michael Brown - 789 Pine Rd, Lakewood</p>
+                        <p>1 book - $19.99</p>
+                    </div>
+                    <div class="delivery-actions">
+                        <button class="btn btn-primary btn-sm">Mark Delivered</button>
+                        <button class="btn btn-secondary btn-sm">Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Component -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Delivery Portal</h3>
+                    <p>Manage your deliveries for BookShop</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Dashboard</a></li>
+                        <li><a href="orders.html">My Deliveries</a></li>
+                        <li><a href="profile.html">Profile</a></li>
+                        <li><a href="../index.html">Customer View</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Delivery Guidelines</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 BookShop. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

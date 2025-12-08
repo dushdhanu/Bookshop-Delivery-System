@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile - BookShop</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../components.css">
+    <link rel="stylesheet" href="../auth.css">
+    <link rel="stylesheet" href="../blue-theme.css">
+    <style>
+        /* Vertical sidebar panel with medium logos */
+        .sidebar-panel-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .sidebar-item-vertical {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 5px;
+            background-color: #10235d;
+            text-decoration: none;
+            color: #a0c0ff;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .sidebar-item-vertical:hover{
+            background-color: #1a3a8a;
+            transform: translateY(-5px);
+        }
+        .sidebar-item-vertical.active {
+            background-color: #10235d;
+            color: #3b82f6;
+            border-color: #334155;
+        }
+        
+        .sidebar-icon-medium {
+            font-size: 1.2rem;
+            margin-right: 0.75rem;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Profile header */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #1a1a2e;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #1e3a8a;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            border: 3px solid #3b82f6;
+        }
+        
+        .profile-info h2 {
+            color: #ffffff;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .profile-info p {
+            color: #94a3b8;
+            margin: 0 0 0.5rem 0;
+        }
+        
+        .profile-role {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background-color: #3b82f6;
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar Component -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">BookShop Admin</h1>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="books.html" class="nav-link">Books</a>
+                </li>
+                <li class="nav-item">
+                    <a href="add-book.html" class="nav-link">Add Book</a>
+                </li>
+                <li class="nav-item">
+                    <a href="orders.html" class="nav-link">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link active">Profile</a>
+                </li>
+               
+            </ul>
+            <div class="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Profile Content -->
+    <section class="admin-profile">
+        <div class="container">
+            <div class="page-header">
+                <h1>Admin Profile</h1>
+                <p>Manage your profile settings</p>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Sidebar Panel - Changed to vertical axis -->
+                <div class="sidebar-wrapper">
+                    <div class="sidebar">
+                        <h3 class="sidebar-title">Admin Panel</h3>
+                        <div class="sidebar-panel-vertical">
+                            <a href="index.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">📊</div>
+                                <span>Dashboard</span>
+                            </a>
+                            <a href="books.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">📚</div>
+                                <span>Book Management</span>
+                            </a>
+                            <a href="add-book.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">➕</div>
+                                <span>Add New Book</span>
+                            </a>
+                            <a href="orders.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">📦</div>
+                                <span>Order Management</span>
+                            </a>
+                            <a href="profile.html" class="sidebar-item-vertical active">
+                                <div class="sidebar-icon-medium">👤</div>
+                                <span>Admin Profile</span>
+                            </a>
+                            <a href="notifications.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">🔔</div>
+                                <span>Notifications & Updates</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Profile Header -->
+                    <div class="profile-header">
+                        <div class="profile-avatar">👤</div>
+                        <div class="profile-info">
+                            <h2>Admin User</h2>
+                            <p>admin@bookshop.com</p>
+                            <span class="profile-role">Administrator</span>
+                        </div>
+                    </div>
+
+                    <!-- Profile Form -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Profile Information</h2>
+                        </div>
+                        <div class="card-body">
+                            <form class="form-container">
+                                <div class="form-group">
+                                    <label class="form-label" for="fullName">Full Name</label>
+                                    <input type="text" id="fullName" class="form-input" value="Admin User">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="email">Email Address</label>
+                                    <input type="email" id="email" class="form-input" value="admin@bookshop.com">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" class="form-input" value="(123) 456-7890">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="password">Password</label>
+                                    <input type="password" id="password" class="form-input" placeholder="Enter new password">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="confirmPassword">Confirm Password</label>
+                                    <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                                    <button type="button" class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Component -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BookShop Admin</h3>
+                    <p>Administration panel for BookShop online bookstore</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Dashboard</a></li>
+                        <li><a href="books.html">Books</a></li>
+                        <li><a href="orders.html">Orders</a></li>
+                        <li><a href="profile.html">Profile</a></li>
+                        <li><a href="../index.html">Customer View</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">System Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 BookShop. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Profile - BookShop</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../components.css">
+    <link rel="stylesheet" href="../blue-theme.css">
+</head>
+<body>
+    <!-- Delivery Person Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">BookShop Delivery</h1>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="orders.html" class="nav-link">My Deliveries</a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link active">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a href="notifications.html" class="nav-link">Notifications</a>
+                </li>
+                <li class="nav-item">
+                    <a href="login.html" class="nav-link">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Profile Page Content -->
+    <section class="delivery-profile-page">
+        <div class="container">
+            <div class="page-header">
+                <h1>Delivery Person Profile</h1>
+                <p>Manage your delivery account information</p>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Personal Information -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Personal Information</h2>
+                        </div>
+                        <div class="card-body">
+                            <form id="profileForm">
+                                <div class="profile-header">
+                                    <div class="profile-image">
+                                        <div class="profile-image-placeholder">DP</div>
+                                        <button type="button" class="btn btn-secondary btn-sm">Change Photo</button>
+                                    </div>
+                                    <div class="profile-details">
+                                        <h3>Delivery Person</h3>
+                                        <p class="profile-email">delivery@example.com</p>
+                                        <p class="profile-member-since">Employee since: March 15, 2024</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="firstName" class="form-label">First Name</label>
+                                        <input type="text" id="firstName" name="firstName" class="form-input" value="John">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="lastName" class="form-label">Last Name</label>
+                                        <input type="text" id="lastName" name="lastName" class="form-input" value="Doe">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="employeeId" class="form-label">Employee ID</label>
+                                    <input type="text" id="employeeId" name="employeeId" class="form-input" value="EMP-2024-001" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" id="email" name="email" class="form-input" value="delivery@example.com">
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="phone" class="form-label">Phone Number</label>
+                                        <input type="tel" id="phone" name="phone" class="form-input" value="(123) 456-7890">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="vehicleType" class="form-label">Vehicle Type</label>
+                                        <select id="vehicleType" name="vehicleType" class="form-input">
+                                            <option value="car">Car</option>
+                                            <option value="motorcycle" selected>Motorcycle</option>
+                                            <option value="bicycle">Bicycle</option>
+                                            <option value="van">Van</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="licensePlate" class="form-label">License Plate Number</label>
+                                    <input type="text" id="licensePlate" name="licensePlate" class="form-input" value="ABC-1234">
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Password Change -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Change Password</h2>
+                        </div>
+                        <div class="card-body">
+                            <form id="passwordForm">
+                                <div class="form-group">
+                                    <label for="currentPassword" class="form-label">Current Password</label>
+                                    <input type="password" id="currentPassword" name="currentPassword" class="form-input" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="newPassword" class="form-label">New Password</label>
+                                    <input type="password" id="newPassword" name="newPassword" class="form-input" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Update Password</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Preferences -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Delivery Preferences</h2>
+                        </div>
+                        <div class="card-body">
+                            <form id="preferencesForm">
+                                <div class="form-group">
+                                    <div class="form-checkbox">
+                                        <input type="checkbox" id="notifications" name="notifications" checked>
+                                        <label for="notifications">Enable delivery notifications</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="form-checkbox">
+                                        <input type="checkbox" id="availability" name="availability" checked>
+                                        <label for="availability">Available for deliveries</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="workingHours" class="form-label">Preferred Working Hours</label>
+                                    <select id="workingHours" name="workingHours" class="form-input">
+                                        <option value="morning">Morning (8AM - 12PM)</option>
+                                        <option value="afternoon" selected>Afternoon (12PM - 6PM)</option>
+                                        <option value="evening">Evening (6PM - 10PM)</option>
+                                        <option value="night">Night (10PM - 6AM)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="deliveryArea" class="form-label">Primary Delivery Area</label>
+                                    <input type="text" id="deliveryArea" name="deliveryArea" class="form-input" value="Downtown District">
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">Save Preferences</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 BookShop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../session.js"></script>
+</body>
+</html>
