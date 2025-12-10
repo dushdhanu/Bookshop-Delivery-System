@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // Allow frontend to access
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final AuthService authService;
 
-    // --- MANUAL CONSTRUCTOR TO FIX "not initialized" ERROR ---
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
@@ -29,5 +28,14 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         String token = authService.login(request);
         return ResponseEntity.ok(new AuthResponse(token));
+    }
+
+    // --- NEW LOGOUT ENDPOINT ---
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        // Since we are using stateless JWT, the server doesn't hold a session.
+        // The client is responsible for deleting the token.
+        // We return OK to acknowledge the request.
+        return ResponseEntity.ok().body("Logged out successfully");
     }
 }

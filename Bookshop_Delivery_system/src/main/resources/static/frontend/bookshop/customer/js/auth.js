@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             handleLogin();
         });
     }
-    
+
     // Handle registration form submission
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
             handleRegister();
         });
     }
-    
-    // Password visibility toggle
+
+    // Password visibility toggle logic (Keep existing)
     const passwordToggles = document.querySelectorAll('.password-toggle-btn');
     passwordToggles.forEach(toggle => {
         toggle.addEventListener('click', function() {
@@ -35,241 +35,150 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Helper Functions
+function saveAuthToken(token) {
+    localStorage.setItem('jwt_token', token);
+}
+
 // Handle login functionality
-function handleLogin() {
+async function handleLogin() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    
-    // Basic validation
+    const submitButton = document.querySelector('#loginForm .btn');
+
     if (!email || !password) {
         showAlert('Please fill in all fields', 'danger');
         return;
     }
-    
-    // Email validation
-    if (!isValidEmail(email)) {
-        showAlert('Please enter a valid email address', 'danger');
-        return;
-    }
-    
-    // In a real application, you would send this data to your server
-    // For demo purposes, we'll simulate a successful login
-    console.log('Login attempt with:', { email, password });
-    
-    // Show loading state
-    const submitButton = document.querySelector('#loginForm .btn');
+
+    // UI Loading State
     const originalText = submitButton.textContent;
     submitButton.textContent = 'Logging in...';
     submitButton.disabled = true;
-    
-    // Simulate API call delay
-    setTimeout(() => {
-        // Reset button
+
+    try {
+        const response = await fetch('http://localhost:8080/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            saveAuthToken(data.token);
+            showAlert('Login successful!', 'success');
+
+            // Redirect based on role logic could be added here if the backend returns role
+            // For now, default to index.html
+            setTimeout(() => window.location.href = 'index.html', 1000);
+        } else {
+            showAlert('Invalid email or password', 'danger');
+        }
+    } catch (error) {
+        console.error('Login Error:', error);
+        showAlert('Server connection failed', 'danger');
+    } finally {
         submitButton.textContent = originalText;
         submitButton.disabled = false;
-        
-        // Show success message
-        showAlert('Login successful! Redirecting...', 'success');
-        
-        // In a real app, you would redirect to another page
-        // window.location.href = 'profile.html';
-    }, 1500);
+    }
 }
 
 // Handle registration functionality
-function handleRegister() {
+async function handleRegister() {
     const name = document.getElementById('name').value;
+    // Split name into first and last
+    const nameParts = name.split(' ');
+    const firstName = nameParts[0];
+    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    
-    // Basic validation
+
+    // Capture the selected role from the dropdown
+    const roleSelect = document.getElementById('role');
+    const role = roleSelect ? roleSelect.value : 'CUSTOMER';
+
+    const submitButton = document.querySelector('#registerForm .btn');
+
+    // Validation
     if (!name || !email || !password || !confirmPassword) {
         showAlert('Please fill in all fields', 'danger');
         return;
     }
-    
-    // Email validation
-    if (!isValidEmail(email)) {
-        showAlert('Please enter a valid email address', 'danger');
-        return;
-    }
-    
-    // Password validation
-    if (password.length < 6) {
-        showAlert('Password must be at least 6 characters long', 'danger');
-        return;
-    }
-    
-    // Confirm password match
+
     if (password !== confirmPassword) {
         showAlert('Passwords do not match', 'danger');
         return;
     }
-    
-    // Show loading state
-    const submitButton = document.querySelector('#registerForm .btn');
-    const originalText = submitButton.textContent;
+
     submitButton.textContent = 'Creating Account...';
     submitButton.disabled = true;
-    
-    // Simulate API call delay
-    setTimeout(() => {
-        // Reset button
-        submitButton.textContent = originalText;
+
+    try {
+        const response = await fetch('http://localhost:8080/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                firstName,
+                lastName,
+                email,
+                password,
+                role: role // Send the selected role (CUSTOMER, BOOKSELLER, or DELIVERY_PERSON)
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            saveAuthToken(data.token); // Auto-login on register
+            showAlert('Account created successfully!', 'success');
+
+            // Redirect based on role
+            setTimeout(() => {
+                if (role === 'BOOKSELLER') {
+                    window.location.href = '../bookseller/index.html';
+                } else if (role === 'DELIVERY_PERSON') {
+                    window.location.href = '../delivery person/index.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }, 1000);
+        } else {
+            const err = await response.text();
+            // Attempt to parse error as JSON if possible, otherwise use text
+            try {
+                const errObj = JSON.parse(err);
+                showAlert('Registration failed: ' + (errObj.message || err), 'danger');
+            } catch(e) {
+                showAlert('Registration failed: ' + err, 'danger');
+            }
+        }
+    } catch (error) {
+        console.error('Register Error:', error);
+        showAlert('Network error occurred', 'danger');
+    } finally {
+        submitButton.textContent = 'Create Account';
         submitButton.disabled = false;
-        
-        // Show success message
-        showAlert('Account created successfully! Redirecting to login...', 'success');
-        
-        // In a real app, you would redirect to login page
-        // window.location.href = 'login.html';
-    }, 1500);
-}
-
-// Email validation helper
-function isValidEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-}
-
-// Show alert messages
-function showAlert(message, type = 'success') {
-    // Remove existing alerts
-    const existingAlert = document.querySelector('.alert');
-    if (existingAlert) {
-        existingAlert.remove();
     }
-    
-    // Create alert element
+}
+
+// Show alert messages (Keep existing)
+function showAlert(message, type = 'success') {
+    const existingAlert = document.querySelector('.alert');
+    if (existingAlert) existingAlert.remove();
+
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type}`;
     alertDiv.textContent = message;
-    
-    // Insert at the top of the form container
+
     const formContainer = document.querySelector('.form-container');
     if (formContainer) {
         formContainer.insertBefore(alertDiv, formContainer.firstChild);
     }
-    
-    // Remove after 5 seconds
+
     setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
-        }
+        if (alertDiv.parentNode) alertDiv.remove();
     }, 5000);
-    // Customer Authentication JavaScript
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Handle login form submission
-        const loginForm = document.getElementById('loginForm');
-        if (loginForm) {
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                handleLogin();
-            });
-        }
-
-        // Handle registration form submission
-        const registerForm = document.getElementById('registerForm');
-        if (registerForm) {
-            registerForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                handleRegister();
-            });
-        }
-
-        // Keep Password visibility toggle logic...
-    });
-
-    async function handleLogin() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const submitButton = document.querySelector('#loginForm .btn');
-
-        if (!email || !password) {
-            showAlert('Please fill in all fields', 'danger');
-            return;
-        }
-
-        // UI Loading State
-        const originalText = submitButton.textContent;
-        submitButton.textContent = 'Logging in...';
-        submitButton.disabled = true;
-
-        try {
-            const response = await fetch('http://localhost:8080/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                saveAuthToken(data.token); // From session.js
-                showAlert('Login successful!', 'success');
-                setTimeout(() => window.location.href = 'index.html', 1000);
-            } else {
-                showAlert('Invalid email or password', 'danger');
-            }
-        } catch (error) {
-            console.error('Login Error:', error);
-            showAlert('Server connection failed', 'danger');
-        } finally {
-            submitButton.textContent = originalText;
-            submitButton.disabled = false;
-        }
-    }
-
-    async function handleRegister() {
-        const name = document.getElementById('name').value;
-        // Note: Backend expects firstName/lastName. We'll split the name for now.
-        const nameParts = name.split(' ');
-        const firstName = nameParts[0];
-        const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-        const submitButton = document.querySelector('#registerForm .btn');
-
-        if (password !== confirmPassword) {
-            showAlert('Passwords do not match', 'danger');
-            return;
-        }
-
-        submitButton.textContent = 'Creating Account...';
-        submitButton.disabled = true;
-
-        try {
-            const response = await fetch('http://localhost:8080/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    firstName,
-                    lastName,
-                    email,
-                    password,
-                    role: 'CUSTOMER'
-                })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                saveAuthToken(data.token); // Auto-login
-                showAlert('Account created! Redirecting...', 'success');
-                setTimeout(() => window.location.href = 'index.html', 1000);
-            } else {
-                const err = await response.text(); // or json() depending on error handling
-                showAlert('Registration failed: ' + err, 'danger');
-            }
-        } catch (error) {
-            showAlert('Network error occurred', 'danger');
-        } finally {
-            submitButton.textContent = 'Create Account';
-            submitButton.disabled = false;
-        }
-    }
 }

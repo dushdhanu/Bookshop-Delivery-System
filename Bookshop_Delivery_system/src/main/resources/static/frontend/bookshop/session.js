@@ -390,4 +390,86 @@ function deleteAccount() {
             if(alertDiv.parentNode) alertDiv.parentNode.removeChild(alertDiv);
         }, 5000);
     }
+    // Session and Navigation JavaScript
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile navigation toggle
+        const navToggle = document.querySelector('.nav-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+
+        if (navToggle && navMenu) {
+            navToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                const bars = document.querySelectorAll('.bar');
+                bars.forEach(bar => {
+                    bar.classList.toggle('change');
+                });
+            });
+        }
+
+        // Initialize Navigation State (Show/Hide Links)
+        updateNavigation();
+
+        // Attach Logout Event Listener to any element with id="logoutBtn"
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleLogout();
+            });
+        }
+    });
+
+// Check if user is logged in
+    function isLoggedIn() {
+        return localStorage.getItem('jwt_token') !== null;
+    }
+
+// Update Navigation Bar based on Login Status
+    function updateNavigation() {
+        const loggedIn = isLoggedIn();
+
+        // Elements
+        const loginLink = document.getElementById('nav-login');
+        const registerLink = document.getElementById('nav-register');
+        const logoutLink = document.getElementById('nav-logout');
+        const profileLink = document.querySelector('a[href="profile.html"]'); // Select profile link if exists
+
+        if (loggedIn) {
+            // User is Logged In
+            if (loginLink) loginLink.style.display = 'none';
+            if (registerLink) registerLink.style.display = 'none';
+            if (logoutLink) logoutLink.style.display = 'block';
+        } else {
+            // User is Logged Out
+            if (loginLink) loginLink.style.display = 'block';
+            if (registerLink) registerLink.style.display = 'block';
+            if (logoutLink) logoutLink.style.display = 'none';
+
+            // Hide profile if not logged in (optional security UI)
+            // if (profileLink) profileLink.style.display = 'none';
+        }
+    }
+
+// Handle Logout Logic
+    function handleLogout() {
+        if (confirm('Are you sure you want to logout?')) {
+            // 1. Clear Security Tokens
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('user_role'); // If you store roles
+
+            // 2. Determine path to main customer dashboard
+            // If we are in a subfolder like /bookseller/ or /delivery/, go up one level
+            // If we are in /customer/, just reload or go to index.html
+            let redirectPath = 'index.html';
+
+            const path = window.location.pathname;
+            if (path.includes('/bookseller/') || path.includes('/delivery person/') || path.includes('/admin/')) {
+                redirectPath = '../customer/index.html';
+            }
+
+            // 3. Redirect
+            window.location.href = redirectPath;
+        }
+    }
 }
