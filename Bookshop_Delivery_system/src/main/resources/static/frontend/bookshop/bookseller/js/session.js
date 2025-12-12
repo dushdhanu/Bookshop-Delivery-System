@@ -8,25 +8,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function checkSession() {
     const token = localStorage.getItem('jwt_token');
-    // If no token exists, redirect to login page (assuming main login is shared or specific)
-    // Adjust '../customer/login.html' if you have a specific bookseller login page
+
+    // Check if token exists
     if (!token) {
         alert("You must be logged in to view this page.");
-        window.location.href = '../customer/login.html';
+        window.location.href = '../customer/login.html'; // Redirect to shared login
     }
+
+    // Optional: Add Role validation here if needed
 }
 
 function setupLogout() {
+    // Select the logout button by ID or class
     const logoutBtn = document.getElementById('logoutBtn');
+
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            if (confirm('Are you sure you want to logout?')) {
-                // Clear all auth data
-                localStorage.removeItem('jwt_token');
-                localStorage.removeItem('user');
 
-                // Redirect to main customer home page
+            if (confirm('Are you sure you want to logout from the Bookseller Portal?')) {
+                // 1. Clear all auth data
+                localStorage.removeItem('jwt_token');
+                localStorage.removeItem('user_role');
+                localStorage.removeItem('user_email');
+
+                // 2. Redirect to main customer home page
+                // Correct relative path: from /bookseller/ to /customer/index.html
                 window.location.href = '../customer/index.html';
             }
         });
@@ -42,29 +49,6 @@ function setupMobileMenu() {
             navMenu.classList.toggle('active');
             const bars = document.querySelectorAll('.bar');
             bars.forEach(bar => bar.classList.toggle('change'));
-        });
-    }
-    function setupLogout() {
-        // Select ALL elements with the class 'logout-link'
-        const logoutLinks = document.querySelectorAll('.logout-link');
-
-        // Loop through each button and add the click listener
-        logoutLinks.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                const role = window.location.pathname.includes('delivery') ? 'End shift and logout?' : 'Are you sure you want to logout?';
-
-                if (confirm(role)) {
-                    // Clear all auth data
-                    localStorage.removeItem('jwt_token');
-                    localStorage.removeItem('user');
-
-                    // Redirect to the main customer home page (or login page)
-                    // Adjust this path if your folder structure is different
-                    window.location.href = '../customer/index.html';
-                }
-            });
         });
     }
 }

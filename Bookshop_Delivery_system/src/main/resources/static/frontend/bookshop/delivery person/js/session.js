@@ -22,13 +22,14 @@ function setupLogout() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            if (confirm('End shift and logout?')) {
-                // Clear all auth data
+            if (confirm('Are you sure you want to end your shift and logout?')) {
+                // 1. Clear all auth data
                 localStorage.removeItem('jwt_token');
-                localStorage.removeItem('user');
+                localStorage.removeItem('user_role');
+                localStorage.removeItem('user_email');
 
-                // Redirect to delivery login page
-                window.location.href = 'login.html';
+                // 2. Redirect to Customer Home Page
+                window.location.href = '../customer/index.html';
             }
         });
     }

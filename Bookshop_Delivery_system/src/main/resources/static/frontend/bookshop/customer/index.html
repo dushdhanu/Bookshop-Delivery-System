@@ -18,18 +18,18 @@
             text-align: center;
             padding: 4rem 1rem;
         }
-        
+
         .hero-centered h1 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
         }
-        
+
         .hero-centered p {
             font-size: 1.2rem;
             margin-bottom: 2rem;
             max-width: 600px;
         }
-        
+
         /* Vertical category layout with medium logos */
         .category-vertical-container {
             display: flex;
@@ -39,7 +39,7 @@
             max-width: 400px;
             margin: 0 auto;
         }
-        
+
         .category-vertical-item {
             display: flex;
             align-items: center;
@@ -52,13 +52,12 @@
             transition: transform 0.3s ease, background-color 0.3s ease;
             border: 1px solid #334155;
         }
-        
+
         .category-vertical-item:hover {
             transform: translateX(5px);
             background-color: #3b82f6;
-            
         }
-        
+
         .category-icon-medium {
             font-size: 1.5rem;
             margin-right: 1rem;
@@ -71,36 +70,36 @@
             border-radius: 50%;
             border: 1px solid #3b82f6;
         }
-        
+
         .category-vertical-item h3 {
             color: #ffffff;
             margin: 0;
             font-size: 1.1rem;
         }
-        
+
         /* Vertical features layout */
         .features-vertical {
             background-color: #0f172a;
             padding: 4rem 1rem;
         }
-        
+
         .features-vertical .container {
             max-width: 800px;
             margin: 0 auto;
         }
-        
+
         .features-vertical h2 {
             text-align: center;
             margin-bottom: 3rem;
             color: #ffffff;
         }
-        
+
         .feature-vertical-list {
             display: flex;
             flex-direction: column;
             gap: 2rem;
         }
-        
+
         .feature-vertical-card {
             display: flex;
             background-color: #10235d;
@@ -110,12 +109,12 @@
             border: 1px solid #334155;
             transition: transform 0.3s ease;
         }
-        
+
         .feature-vertical-card:hover {
             transform: translateY(-5px);
             background-color: #3b82f6;
         }
-        
+
         .feature-vertical-icon {
             font-size: 2rem;
             margin-right: 1.5rem;
@@ -125,45 +124,45 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         .feature-vertical-content h3 {
             color: #ffffff;
             margin: 0 0 0.5rem 0;
             font-size: 1.5rem;
         }
-        
+
         .feature-vertical-content p {
             color: #94a3b8;
             margin: 0;
             font-size: 1.1rem;
             line-height: 1.6;
         }
-        
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .hero-centered h1 {
                 font-size: 2rem;
             }
-            
+
             .hero-centered p {
                 font-size: 1rem;
             }
-            
+
             .category-icon-medium {
                 font-size: 1.25rem;
                 width: 35px;
                 height: 35px;
             }
-            
+
             .category-vertical-item h3 {
                 font-size: 1rem;
             }
-            
+
             .feature-vertical-card {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .feature-vertical-icon {
                 margin-right: 0;
                 margin-bottom: 1rem;
@@ -173,239 +172,13 @@
     </style>
 </head>
 <body>
-    
-<!-- Navbar Component -->
+
 <nav class="navbar">
     <div class="nav-container">
         <h1 class="nav-logo">BookShop</h1>
         <ul class="nav-menu">
             <li class="nav-item">
-                <a href="index.html" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="books.html" class="nav-link">Books</a>
-            </li>
-            <li class="nav-item">
-                <a href="orders.html" class="nav-link">Orders</a>
-            </li>
-            <li class="nav-item">
-                <a href="profile.html" class="nav-link">Profile</a>
-            </li>
-            <li class="nav-item">
-                <a href="login.html" class="nav-link">Login</a>
-            </li>
-            <li class="nav-item">
-                <a href="register.html" class="nav-link">Register</a>
-            </li>
-        </ul>
-        <div class="nav-toggle">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </div>
-    </div>
-</nav>
-
-    <!-- Centered Hero Section -->
-    <section class="hero-centered">
-        <h1>Welcome to BookShop</h1>
-        <p>Your one-stop destination for all kinds of books. Discover thousands of titles across various genres and categories.</p>
-        <div class="hero-buttons">
-            <a href="books.html" class="btn btn-primary btn-lg">Browse Books</a>
-            <a href="#featured" class="btn btn-secondary btn-lg">Featured Books</a>
-        </div>
-        
-        <!-- Vertical Categories Section -->
-        <div class="category-vertical-container">
-            <h2>Browse Categories</h2>
-            <a href="books.html#fiction" class="category-vertical-item">
-                <div class="category-icon-medium">📚</div>
-                <h3>Fiction</h3>
-            </a>
-            <a href="books.html#non-fiction" class="category-vertical-item">
-                <div class="category-icon-medium">📖</div>
-                <h3>Non-Fiction</h3>
-            </a>
-            <a href="books.html#sci-fi" class="category-vertical-item">
-                <div class="category-icon-medium">🚀</div>
-                <h3>Sci-Fi</h3>
-            </a>
-            <a href="books.html#mystery" class="category-vertical-item">
-                <div class="category-icon-medium">🔍</div>
-                <h3>Mystery</h3>
-            </a>
-            <a href="books.html#romance" class="category-vertical-item">
-                <div class="category-icon-medium">💖</div>
-                <h3>Romance</h3>
-            </a>
-            <a href="books.html#biography" class="category-vertical-item">
-                <div class="category-icon-medium">👤</div>
-                <h3>Biography</h3>
-            </a>
-        </div>
-    </section>
-
-    <!-- Features Section - Changed to vertical axis -->
-    <section class="features-vertical">
-        <div class="container">
-            <h2>Why Choose BookShop?</h2>
-            <div class="feature-vertical-list">
-                <div class="feature-vertical-card">
-                    <div class="feature-vertical-icon">📚</div>
-                    <div class="feature-vertical-content">
-                        <h3>Wide Selection</h3>
-                        <p>Thousands of books across all genres and categories. From bestsellers to rare finds, we have something for every reader.</p>
-                    </div>
-                </div>
-                <div class="feature-vertical-card">
-                    <div class="feature-vertical-icon">🚚</div>
-                    <div class="feature-vertical-content">
-                        <h3>Fast Delivery</h3>
-                        <p>Quick and reliable shipping to your doorstep. Get your favorite books delivered within 2-3 business days.</p>
-                    </div>
-                </div>
-                <div class="feature-vertical-card">
-                    <div class="feature-vertical-icon">💰</div>
-                    <div class="feature-vertical-content">
-                        <h3>Best Prices</h3>
-                        <p>Competitive prices and regular discounts. Save up to 30% on selected titles with our special offers.</p>
-                    </div>
-                </div>
-                <div class="feature-vertical-card">
-                    <div class="feature-vertical-icon">↩️</div>
-                    <div class="feature-vertical-content">
-                        <h3>Easy Returns</h3>
-                        <p>Hassle-free return policy for your satisfaction. Return any book within 30 days for a full refund.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Featured Books Preview -->
-    <section class="featured-books" id="featured">
-        <div class="container">
-            <div class="section-header">
-                <h2>Featured Books</h2>
-                <a href="books.html" class="btn btn-primary">View All Books</a>
-            </div>
-            <div class="book-grid">
-                <div class="book-card">
-                    <img src="../images/Gbook.jpg" alt="The Great Gatsby" class="book-image">
-                    <h3>The Great Gatsby</h3>
-                    <p class="author">F. Scott Fitzgerald</p>
-                    <p class="price">$12.99</p>
-                    <button class="btn btn-secondary">Add to Cart</button>
-                </div>
-                <div class="book-card">
-                    <img src="../images/Hbook.jpg" alt="To Kill a Mockingbird" class="book-image">
-                    <h3>To Kill a Mockingbird</h3>
-                    <p class="author">Harper Lee</p>
-                    <p class="price">$14.99</p>
-                    <button class="btn btn-secondary">Add to Cart</button>
-                </div>
-                <div class="book-card">
-                    <img src="../images/1984.png" alt="1984" class="book-image">
-                    <h3>1984</h3>
-                    <p class="author">George Orwell</p>
-                    <p class="price">$13.99</p>
-                    <button class="btn btn-secondary">Add to Cart</button>
-                </div>
-                <div class="book-card">
-                    <img src="../images/Pbook.jpg" alt="Pride and Prejudice" class="book-image">
-                    <h3>Pride and Prejudice</h3>
-                    <p class="author">Jane Austen</p>
-                    <p class="price">$11.99</p>
-                    <button class="btn btn-secondary">Add to Cart</button>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    
-   <!-- Footer Component -->
-<footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>BookShop</h3>
-                <p>Your one-stop destination for all kinds of books. Discover, explore, and enjoy reading with us.</p>
-                <div class="social-links">
-                    <a href="#" class="social-link">Facebook</a>
-                    <a href="#" class="social-link">Twitter</a>
-                    <a href="#" class="social-link">Instagram</a>
-                    <a href="#" class="social-link">Pinterest</a>
-                </div>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul class="footer-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="books.html">Books</a></li>
-                    <li><a href="orders.html">Orders</a></li>
-                    <li><a href="profile.html">Profile</a></li>
-                    <li><a href="login.html">Login</a></li>
-                    <li><a href="register.html">Register</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Categories</h4>
-                <ul class="footer-links">
-                    <li><a href="#">Fiction</a></li>
-                    <li><a href="#">Non-Fiction</a></li>
-                    <li><a href="#">Science Fiction</a></li>
-                    <li><a href="#">Mystery & Thriller</a></li>
-                    <li><a href="#">Romance</a></li>
-                    <li><a href="#">Biography</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Contact Us</h4>
-                <ul class="contact-info">
-                    <li>Email: info@bookshop.com</li>
-                    <li>Phone: (123) 456-7890</li>
-                    <li>Address: 123 Book Street, Library City, LC 12345</li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2025 BookShop. All rights reserved.</p>
-            <div class="footer-legal">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Cookie Policy</a>
-            </div>
-        </div>
-    </div>
-</footer>
-
-    <script>
-        // Mobile menu toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add to cart functionality
-            const addToCartButtons = document.querySelectorAll('.btn-secondary');
-            
-            addToCartButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const bookCard = this.closest('.book-card');
-                    const bookTitle = bookCard.querySelector('h3').textContent;
-                    
-                    // In a real app, this would add the book to a cart
-                    alert(`Added "${bookTitle}" to your cart!`);
-                });
-            });
-        });
-    </script>
-<nav class="navbar">
-    <div class="nav-container">
-        <h1 class="nav-logo">BookShop</h1>
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html" class="nav-link active">Home</a>
             </li>
             <li class="nav-item">
                 <a href="books.html" class="nav-link">Books</a>
@@ -423,9 +196,8 @@
             <li class="nav-item" id="nav-register">
                 <a href="register.html" class="nav-link">Register</a>
             </li>
-
             <li class="nav-item" id="nav-logout" style="display: none;">
-                <a href="#" class="nav-link logout-link" id="logoutBtn">Logout</a>
+                <a href="#" class="nav-link logout-link" id="logoutBtn" style="color: #a0c0ff;">Logout</a>
             </li>
         </ul>
         <div class="nav-toggle">
@@ -435,6 +207,195 @@
         </div>
     </div>
 </nav>
+
+<section class="hero-centered">
+    <h1>Welcome to BookShop</h1>
+    <p>Your one-stop destination for all kinds of books. Discover thousands of titles across various genres and categories.</p>
+    <div class="hero-buttons">
+        <a href="books.html" class="btn btn-primary btn-lg">Browse Books</a>
+        <a href="#featured" class="btn btn-secondary btn-lg">Featured Books</a>
+    </div>
+
+    <div class="category-vertical-container">
+        <h2>Browse Categories</h2>
+        <a href="books.html#fiction" class="category-vertical-item">
+            <div class="category-icon-medium">📚</div>
+            <h3>Fiction</h3>
+        </a>
+        <a href="books.html#non-fiction" class="category-vertical-item">
+            <div class="category-icon-medium">📖</div>
+            <h3>Non-Fiction</h3>
+        </a>
+        <a href="books.html#sci-fi" class="category-vertical-item">
+            <div class="category-icon-medium">🚀</div>
+            <h3>Sci-Fi</h3>
+        </a>
+        <a href="books.html#mystery" class="category-vertical-item">
+            <div class="category-icon-medium">🔍</div>
+            <h3>Mystery</h3>
+        </a>
+        <a href="books.html#romance" class="category-vertical-item">
+            <div class="category-icon-medium">💖</div>
+            <h3>Romance</h3>
+        </a>
+        <a href="books.html#biography" class="category-vertical-item">
+            <div class="category-icon-medium">👤</div>
+            <h3>Biography</h3>
+        </a>
+    </div>
+</section>
+
+<section class="features-vertical">
+    <div class="container">
+        <h2>Why Choose BookShop?</h2>
+        <div class="feature-vertical-list">
+            <div class="feature-vertical-card">
+                <div class="feature-vertical-icon">📚</div>
+                <div class="feature-vertical-content">
+                    <h3>Wide Selection</h3>
+                    <p>Thousands of books across all genres and categories. From bestsellers to rare finds, we have something for every reader.</p>
+                </div>
+            </div>
+            <div class="feature-vertical-card">
+                <div class="feature-vertical-icon">🚚</div>
+                <div class="feature-vertical-content">
+                    <h3>Fast Delivery</h3>
+                    <p>Quick and reliable shipping to your doorstep. Get your favorite books delivered within 2-3 business days.</p>
+                </div>
+            </div>
+            <div class="feature-vertical-card">
+                <div class="feature-vertical-icon">💰</div>
+                <div class="feature-vertical-content">
+                    <h3>Best Prices</h3>
+                    <p>Competitive prices and regular discounts. Save up to 30% on selected titles with our special offers.</p>
+                </div>
+            </div>
+            <div class="feature-vertical-card">
+                <div class="feature-vertical-icon">↩️</div>
+                <div class="feature-vertical-content">
+                    <h3>Easy Returns</h3>
+                    <p>Hassle-free return policy for your satisfaction. Return any book within 30 days for a full refund.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="featured-books" id="featured">
+    <div class="container">
+        <div class="section-header">
+            <h2>Featured Books</h2>
+            <a href="books.html" class="btn btn-primary">View All Books</a>
+        </div>
+        <div class="book-grid">
+            <div class="book-card">
+                <img src="../images/Gbook.jpg" alt="The Great Gatsby" class="book-image">
+                <h3>The Great Gatsby</h3>
+                <p class="author">F. Scott Fitzgerald</p>
+                <p class="price">$12.99</p>
+                <button class="btn btn-secondary">Add to Cart</button>
+            </div>
+            <div class="book-card">
+                <img src="../images/Hbook.jpg" alt="To Kill a Mockingbird" class="book-image">
+                <h3>To Kill a Mockingbird</h3>
+                <p class="author">Harper Lee</p>
+                <p class="price">$14.99</p>
+                <button class="btn btn-secondary">Add to Cart</button>
+            </div>
+            <div class="book-card">
+                <img src="../images/1984.png" alt="1984" class="book-image">
+                <h3>1984</h3>
+                <p class="author">George Orwell</p>
+                <p class="price">$13.99</p>
+                <button class="btn btn-secondary">Add to Cart</button>
+            </div>
+            <div class="book-card">
+                <img src="../images/Pbook.jpg" alt="Pride and Prejudice" class="book-image">
+                <h3>Pride and Prejudice</h3>
+                <p class="author">Jane Austen</p>
+                <p class="price">$11.99</p>
+                <button class="btn btn-secondary">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>BookShop</h3>
+                <p>Your one-stop destination for all kinds of books. Discover, explore, and enjoy reading with us.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">Facebook</a>
+                    <a href="#" class="social-link">Twitter</a>
+                    <a href="#" class="social-link">Instagram</a>
+                    <a href="#" class="social-link">Pinterest</a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="books.html">Books</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Fiction</a></li>
+                    <li><a href="#">Non-Fiction</a></li>
+                    <li><a href="#">Science Fiction</a></li>
+                    <li><a href="#">Mystery & Thriller</a></li>
+                    <li><a href="#">Romance</a></li>
+                    <li><a href="#">Biography</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <ul class="contact-info">
+                    <li>Email: info@bookshop.com</li>
+                    <li>Phone: (123) 456-7890</li>
+                    <li>Address: 123 Book Street, Library City, LC 12345</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 BookShop. All rights reserved.</p>
+            <div class="footer-legal">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
 <script src="../session.js"></script>
+<script>
+    // Mobile menu toggle
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add to cart functionality
+        const addToCartButtons = document.querySelectorAll('.btn-secondary');
+
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const bookCard = this.closest('.book-card');
+                const bookTitle = bookCard.querySelector('h3').textContent;
+
+                // In a real app, this would add the book to a cart
+                alert(`Added "${bookTitle}" to your cart!`);
+            });
+        });
+    });
+</script>
 </body>
 </html>

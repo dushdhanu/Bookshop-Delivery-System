@@ -1,12 +1,14 @@
 package ac.nsbm.bookshop_delivery_system.service;
 
 import ac.nsbm.bookshop_delivery_system.dto.AuthRequest;
+import ac.nsbm.bookshop_delivery_system.dto.AuthResponse;
 import ac.nsbm.bookshop_delivery_system.dto.RegisterRequest;
 import ac.nsbm.bookshop_delivery_system.entity.Role;
 import ac.nsbm.bookshop_delivery_system.entity.User;
 import ac.nsbm.bookshop_delivery_system.repository.UserRepository;
 import ac.nsbm.bookshop_delivery_system.util.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,10 +28,11 @@ public class AuthService {
         this.authenticationManager = authenticationManager;
     }
 
-    public String register(RegisterRequest request) {
+    public AuthResponse register(RegisterRequest request) {
         if(userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
+
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
@@ -37,20 +40,30 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         try {
-            user.setRole(Role.valueOf(request.getRole().toUpperCase()));
-        } catch (Exception e) {
+            String roleStr = (request.getRole() == null || request.getRole().isEmpty()) ? "CUSTOMER" : request.getRole().toUpperCase();
+            user.setRole(Role.valueOf(roleStr));
+        } catch (IllegalArgumentException e) {
             user.setRole(Role.CUSTOMER);
         }
 
         userRepository.save(user);
-        return jwtUtils.generateToken(new CustomUserDetails(user));
+        String token = jwtUtils.generateToken(new CustomUserDetails(user));
+        return new AuthResponse(token, user.getRole().name());
     }
 
-    public String login(AuthRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
-        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        return jwtUtils.generateToken(new CustomUserDetails(user));
+    public AuthResponse login(AuthRequest request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
+        } catch (Exception e) {
+            throw new BadCredentialsException("Invalid email or password");
+        }
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String token = jwtUtils.generateToken(new CustomUserDetails(user));
+        return new AuthResponse(token, user.getRole().name());
     }
 }

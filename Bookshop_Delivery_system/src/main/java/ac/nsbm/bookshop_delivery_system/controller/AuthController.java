@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*") // Allows access from any frontend during dev
 public class AuthController {
 
     private final AuthService authService;
@@ -20,22 +20,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        String token = authService.register(request);
-        return ResponseEntity.ok(new AuthResponse(token));
+        return ResponseEntity.ok(authService.register(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        String token = authService.login(request);
-        return ResponseEntity.ok(new AuthResponse(token));
-    }
-
-    // --- NEW LOGOUT ENDPOINT ---
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        // Since we are using stateless JWT, the server doesn't hold a session.
-        // The client is responsible for deleting the token.
-        // We return OK to acknowledge the request.
-        return ResponseEntity.ok().body("Logged out successfully");
+        return ResponseEntity.ok(authService.login(request));
     }
 }

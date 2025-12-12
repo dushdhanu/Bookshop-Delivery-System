@@ -1,25 +1,27 @@
-// Customer Authentication JavaScript
+// src/main/resources/static/frontend/bookshop/customer/js/auth.js
+
+const API_BASE_URL = "http://localhost:8080/api/auth";
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle login form submission
+    // 1. Handle Login Form
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Stop page reload
             handleLogin();
         });
     }
 
-    // Handle registration form submission
+    // 2. Handle Register Form
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Stop page reload
             handleRegister();
         });
     }
 
-    // Password visibility toggle logic (Keep existing)
+    // 3. Password Visibility Toggle
     const passwordToggles = document.querySelectorAll('.password-toggle-btn');
     passwordToggles.forEach(toggle => {
         toggle.addEventListener('click', function() {
@@ -35,107 +37,127 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Helper Functions
-function saveAuthToken(token) {
-    localStorage.setItem('jwt_token', token);
-}
-
-// Handle login functionality
+// --- LOGIN FUNCTION ---
 async function handleLogin() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const submitButton = document.querySelector('#loginForm .btn');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const submitButton = document.querySelector('#loginForm button[type="submit"]');
+    const originalText = submitButton.textContent;
 
-    if (!email || !password) {
+    if (!emailInput.value || !passwordInput.value) {
         showAlert('Please fill in all fields', 'danger');
         return;
     }
 
     // UI Loading State
-    const originalText = submitButton.textContent;
     submitButton.textContent = 'Logging in...';
     submitButton.disabled = true;
 
     try {
-        const response = await fetch('http://localhost:8080/api/auth/login', {
+        const response = await fetch(`${API_BASE_URL}/login`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: emailInput.value,
+                password: passwordInput.value
+            })
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            saveAuthToken(data.token);
-            showAlert('Login successful!', 'success');
+        // Handle non-JSON responses (server errors)
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new Error("Server returned a non-JSON response. Check backend logs.");
+        }
 
-            // Redirect based on role logic could be added here if the backend returns role
-            // For now, default to index.html
-            setTimeout(() => window.location.href = 'index.html', 1000);
+        const data = await response.json();
+
+        if (response.ok) {
+            // SUCCESS
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user_role', data.role);
+            localStorage.setItem('user_email', emailInput.value); // Store email for profile fetching
+
+            showAlert('Login successful! Redirecting...', 'success');
+
+            // Redirect based on Role
+            setTimeout(() => {
+                if (data.role === 'ADMIN') {
+                    window.location.href = '../admin/index.html';
+                } else if (data.role === 'BOOKSELLER') {
+                    window.location.href = '../bookseller/index.html';
+                } else if (data.role === 'DELIVERY_PERSON') {
+                    window.location.href = '../delivery person/index.html';
+                } else {
+                    window.location.href = 'index.html'; // Customer Home
+                }
+            }, 1000);
         } else {
-            showAlert('Invalid email or password', 'danger');
+            // FAILURE (Bad credentials)
+            throw new Error(data.message || 'Invalid email or password');
         }
     } catch (error) {
         console.error('Login Error:', error);
-        showAlert('Server connection failed', 'danger');
-    } finally {
+        showAlert(error.message, 'danger');
         submitButton.textContent = originalText;
         submitButton.disabled = false;
     }
 }
 
-// Handle registration functionality
+// --- REGISTER FUNCTION ---
 async function handleRegister() {
-    const name = document.getElementById('name').value;
-    // Split name into first and last
-    const nameParts = name.split(' ');
-    const firstName = nameParts[0];
-    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
-
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-
-    // Capture the selected role from the dropdown
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
     const roleSelect = document.getElementById('role');
-    const role = roleSelect ? roleSelect.value : 'CUSTOMER';
-
-    const submitButton = document.querySelector('#registerForm .btn');
+    const submitButton = document.querySelector('#registerForm button[type="submit"]');
+    const originalText = submitButton.textContent;
 
     // Validation
-    if (!name || !email || !password || !confirmPassword) {
+    if (!nameInput.value || !emailInput.value || !passwordInput.value) {
         showAlert('Please fill in all fields', 'danger');
         return;
     }
 
-    if (password !== confirmPassword) {
+    if (passwordInput.value !== confirmPasswordInput.value) {
         showAlert('Passwords do not match', 'danger');
         return;
     }
 
+    // Split Name
+    const nameParts = nameInput.value.trim().split(' ');
+    const firstName = nameParts[0];
+    const lastName = nameParts.slice(1).join(' ') || '';
+    const role = roleSelect ? roleSelect.value : 'CUSTOMER';
+
+    // UI Loading State
     submitButton.textContent = 'Creating Account...';
     submitButton.disabled = true;
 
     try {
-        const response = await fetch('http://localhost:8080/api/auth/register', {
+        const response = await fetch(`${API_BASE_URL}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                firstName,
-                lastName,
-                email,
-                password,
-                role: role // Send the selected role (CUSTOMER, BOOKSELLER, or DELIVERY_PERSON)
+                firstName: firstName,
+                lastName: lastName,
+                email: emailInput.value,
+                password: passwordInput.value,
+                role: role
             })
         });
 
         if (response.ok) {
             const data = await response.json();
-            saveAuthToken(data.token); // Auto-login on register
+
+            // Auto-Login after Register
+            localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('user_role', data.role);
+            localStorage.setItem('user_email', emailInput.value);
+
             showAlert('Account created successfully!', 'success');
 
-            // Redirect based on role
+            // Redirect
             setTimeout(() => {
                 if (role === 'BOOKSELLER') {
                     window.location.href = '../bookseller/index.html';
@@ -146,36 +168,46 @@ async function handleRegister() {
                 }
             }, 1000);
         } else {
-            const err = await response.text();
-            // Attempt to parse error as JSON if possible, otherwise use text
-            try {
-                const errObj = JSON.parse(err);
-                showAlert('Registration failed: ' + (errObj.message || err), 'danger');
-            } catch(e) {
-                showAlert('Registration failed: ' + err, 'danger');
-            }
+            // Handle plain text errors from backend
+            const errorText = await response.text();
+            throw new Error(errorText || 'Registration failed');
         }
     } catch (error) {
         console.error('Register Error:', error);
-        showAlert('Network error occurred', 'danger');
-    } finally {
-        submitButton.textContent = 'Create Account';
+        showAlert(error.message, 'danger');
+        submitButton.textContent = originalText;
         submitButton.disabled = false;
     }
 }
 
-// Show alert messages (Keep existing)
+// Helper: Show Alert
 function showAlert(message, type = 'success') {
+    // Remove existing alerts
     const existingAlert = document.querySelector('.alert');
     if (existingAlert) existingAlert.remove();
 
+    // Create new alert
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type}`;
     alertDiv.textContent = message;
 
-    const formContainer = document.querySelector('.form-container');
-    if (formContainer) {
-        formContainer.insertBefore(alertDiv, formContainer.firstChild);
+    // Add simple styling if css missing
+    alertDiv.style.padding = '10px';
+    alertDiv.style.marginBottom = '15px';
+    alertDiv.style.borderRadius = '5px';
+    alertDiv.style.textAlign = 'center';
+
+    if(type === 'danger') {
+        alertDiv.style.backgroundColor = '#f8d7da';
+        alertDiv.style.color = '#721c24';
+    } else {
+        alertDiv.style.backgroundColor = '#d4edda';
+        alertDiv.style.color = '#155724';
+    }
+
+    const container = document.querySelector('.form-container') || document.querySelector('.container');
+    if (container) {
+        container.insertBefore(alertDiv, container.firstChild);
     }
 
     setTimeout(() => {

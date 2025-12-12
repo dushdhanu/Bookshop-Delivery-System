@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookseller Login - BookShop</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../components.css">
+    <link rel="stylesheet" href="../auth.css">
+    <link rel="stylesheet" href="../blue-theme.css">
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <h1 class="nav-logo">BookShop Bookseller</h1>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="../index.html" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="login.html" class="nav-link active">Login</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<section class="login-section">
+    <div class="container">
+        <div class="form-container">
+            <h2>Bookseller Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">Login to Dashboard</button>
+                </div>
+                <div class="form-group">
+                    <p>Not a bookseller yet? <a href="../customer/register.html">Register here</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2025 BookShop. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('loginForm');
+
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // IMPORTANT: Stop standard form submission
+                handleBooksellerLogin();
+            });
+        }
+    });
+
+    // Helper function to show alerts
+    function showAlert(message, type = 'success') {
+        const existingAlert = document.querySelector('.alert');
+        if (existingAlert) existingAlert.remove();
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.textContent = message;
+
+        const formContainer = document.querySelector('.form-container');
+        if (formContainer) {
+            formContainer.insertBefore(alertDiv, formContainer.firstChild);
+        }
+
+        setTimeout(() => {
+            if (alertDiv.parentNode) alertDiv.remove();
+        }, 5000);
+    }
+
+    async function handleBooksellerLogin() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const submitButton = document.querySelector('#loginForm .btn');
+        const originalText = submitButton.textContent;
+
+        if (!email || !password) {
+            showAlert('Please fill in all fields', 'danger');
+            return;
+        }
+
+        submitButton.textContent = 'Logging in...';
+        submitButton.disabled = true;
+
+        try {
+            const response = await fetch('http://localhost:8080/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email, password: password })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                // Security Check for Role
+                if (data.role !== 'BOOKSELLER' && data.role !== 'ADMIN') {
+                    showAlert('Access Denied: This portal is for Booksellers only.', 'danger');
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                    return;
+                }
+
+                localStorage.setItem('jwt_token', data.token);
+                localStorage.setItem('user_role', data.role);
+
+                showAlert('Login successful! Redirecting...', 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            } else {
+                showAlert('Invalid email or password', 'danger');
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            showAlert('Server connection failed. Please try again.', 'danger');
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+        }
+    }
+    // Inside your login function
+    try {
+        const response = await fetch('http://localhost:8080/api/auth/login', { ... });
+
+        // Check Content-Type header to ensure it's JSON
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            // If we still get HTML (e.g. 404 or 502), throw specific error
+            const text = await response.text();
+            console.error("Non-JSON Response:", text);
+            throw new Error("Server Error: Received non-JSON response.");
+        }
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // ... success logic ...
+        } else {
+            // Use the message from our new GlobalExceptionHandler
+            showAlert(data.message || 'Login failed', 'danger');
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        showAlert(error.message, 'danger');
+    }
+</script>
+</body>
+</html>

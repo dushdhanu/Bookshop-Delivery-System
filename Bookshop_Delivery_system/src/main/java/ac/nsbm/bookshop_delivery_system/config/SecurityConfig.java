@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -33,14 +34,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Link CORS config
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/images/**", "/error").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll() // Allow guests to view books
-                        .requestMatchers("/api/books/**").hasAnyAuthority("ADMIN", "BOOKSELLER")
-                        .requestMatchers("/api/orders/place").hasAuthority("CUSTOMER")
-                        .requestMatchers("/api/orders/update-status/**").hasAnyAuthority("ADMIN", "BOOKSELLER", "DELIVERY_PERSON")
+                        .requestMatchers("/api/auth/**").permitAll() // Allow Login/Register
+                        .requestMatchers("/images/**").permitAll()   // Allow Images
+                        .requestMatchers(HttpMethod.GET, "/api/books/**").permitAll() // Allow browsing books
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -52,9 +51,18 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:63342", "http://127.0.0.1:5500", "*")); // Adjust for your frontend port
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        // Allow all common local development ports
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:63342",
+                "http://127.0.0.1:63342",
+                "http://localhost:5500",
+                "http://127.0.0.1:5500",
+                "http://localhost:3000"
+        ));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowCredentials(true);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
