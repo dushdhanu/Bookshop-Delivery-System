@@ -1,9 +1,10 @@
 package ac.nsbm.bookshop_delivery_system.controller;
 
-import ac.nsbm.bookshop_delivery_system.dto.OrderRequest;
 import ac.nsbm.bookshop_delivery_system.entity.Order;
 import ac.nsbm.bookshop_delivery_system.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,35 +14,30 @@ import java.util.List;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    private final OrderService orderService;
+    @Autowired
+    private OrderService orderService;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
+    @GetMapping("/my-orders")
+    public ResponseEntity<List<Order>> getMyOrders(Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.ok(orderService.getUserOrders(email));
     }
 
     @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest request, Authentication authentication) {
-        Order order = orderService.placeOrder(request, authentication.getName());
-        return ResponseEntity.ok(order);
+    public ResponseEntity<Order> placeOrder(Authentication authentication, @RequestBody ac.nsbm.bookshop_delivery_system.dto.OrderRequest request) {
+        String email = authentication.getName();
+        return ResponseEntity.ok(orderService.placeOrder(email, request));
     }
 
-    @GetMapping
-    public ResponseEntity<List<Order>> getMyOrders(Authentication authentication) {
-        return ResponseEntity.ok(orderService.getUserOrders(authentication.getName()));
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<List<Order>> getAllOrders() {
-        return ResponseEntity.ok(orderService.getAllOrders());
-    }
-
-    @PutMapping("/{id}/status")
-    public ResponseEntity<Order> updateStatus(@PathVariable Long id, @RequestParam String status) {
-        return ResponseEntity.ok(orderService.updateStatus(id, status));
-    }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
-        orderService.deleteOrder(id);
-        return ResponseEntity.ok("Order cancelled/deleted");
+    // --- FIX: ADDED DELETE ENDPOINT ---
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<String> deleteOrder(Authentication authentication, @PathVariable Long orderId) {
+        String email = authentication.getName();
+        try {
+            orderService.deleteOrder(email, orderId);
+            return ResponseEntity.ok("Order deleted successfully");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

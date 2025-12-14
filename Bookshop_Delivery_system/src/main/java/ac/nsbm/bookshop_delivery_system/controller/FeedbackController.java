@@ -1,36 +1,48 @@
 package ac.nsbm.bookshop_delivery_system.controller;
 
+import ac.nsbm.bookshop_delivery_system.dto.FeedbackRequest;
 import ac.nsbm.bookshop_delivery_system.entity.Feedback;
 import ac.nsbm.bookshop_delivery_system.entity.User;
 import ac.nsbm.bookshop_delivery_system.repository.FeedbackRepository;
 import ac.nsbm.bookshop_delivery_system.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/feedback")
 public class FeedbackController {
 
-    private final FeedbackRepository feedbackRepository;
-    private final UserRepository userRepository;
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
-    public FeedbackController(FeedbackRepository feedbackRepository, UserRepository userRepository) {
-        this.feedbackRepository = feedbackRepository;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private UserRepository userRepository;
 
-    @PostMapping
-    public ResponseEntity<Feedback> addFeedback(@RequestBody Feedback feedback, Authentication auth) {
-        User user = userRepository.findByEmail(auth.getName()).orElseThrow();
-        feedback.setUser(user);
-        return ResponseEntity.ok(feedbackRepository.save(feedback));
-    }
+    @PostMapping("/add")
+    public ResponseEntity<?> addFeedback(Authentication authentication, @RequestBody FeedbackRequest request) {
+        // 1. Find User
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    @GetMapping
-    public List<Feedback> getAllFeedback() {
-        return feedbackRepository.findAll();
+        try {
+            // 2. Create Feedback Object
+            Feedback feedback = new Feedback();
+            feedback.setUser(user);
+            feedback.setMessage(request.getMessage());
+            feedback.setRating(request.getRating());
+            feedback.setDate(LocalDateTime.now());
+
+            // 3. Save to Database
+            feedbackRepository.save(feedback);
+
+            return ResponseEntity.ok("Feedback submitted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error saving feedback: " + e.getMessage());
+        }
     }
 }

@@ -29,26 +29,37 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        if(userRepository.findByEmail(request.getEmail()).isPresent()) {
+        // 1. Check if email exists
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
 
+        // 2. Determine Role
+        Role userRole = Role.CUSTOMER;
+        if (request.getRole() != null && !request.getRole().isEmpty()) {
+            try {
+                userRole = Role.valueOf(request.getRole().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                userRole = Role.CUSTOMER;
+            }
+        }
+
+        // 3. Create User (Using standard setters - Fixes 'cannot find builder' error)
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(userRole);
 
-        try {
-            String roleStr = (request.getRole() == null || request.getRole().isEmpty()) ? "CUSTOMER" : request.getRole().toUpperCase();
-            user.setRole(Role.valueOf(roleStr));
-        } catch (IllegalArgumentException e) {
-            user.setRole(Role.CUSTOMER);
-        }
-
+        // 4. Save User
         userRepository.save(user);
+
+        // 5. Generate Token
         String token = jwtUtils.generateToken(new CustomUserDetails(user));
-        return new AuthResponse(token, user.getRole().name());
+
+        // 6. Return Response (Passes 3 args - Fixes constructor error)
+        return new AuthResponse(token, user.getRole().name(), user.getId());
     }
 
     public AuthResponse login(AuthRequest request) {
@@ -64,6 +75,8 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         String token = jwtUtils.generateToken(new CustomUserDetails(user));
-        return new AuthResponse(token, user.getRole().name());
+
+        // 6. Return Response (Passes 3 args - Fixes constructor error)
+        return new AuthResponse(token, user.getRole().name(), user.getId());
     }
 }

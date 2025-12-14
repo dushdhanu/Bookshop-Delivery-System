@@ -4,355 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Place Order - BookShop</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="../components.css">
-    <link rel="stylesheet" href="../blue-theme.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/blue-theme.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <h1 class="nav-logo">BookShop</h1>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="books.html" class="nav-link">Books</a>
-                </li>
-                <li class="nav-item">
-                    <a href="orders.html" class="nav-link">Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a href="profile.html" class="nav-link">Profile</a>
-                </li>
-                <li class="nav-item">
-                    <a href="login.html" class="nav-link">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a href="register.html" class="nav-link">Register</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+<nav class="navbar">
+    <div class="nav-container">
+        <h1 class="nav-logo">BookShop</h1>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="books.html" class="nav-link">Books</a></li>
+            <li class="nav-item"><a href="orders.html" class="nav-link">Orders</a></li>
+            <li class="nav-item"><a href="place-order.html" class="nav-link active">Checkout</a></li>
+        </ul>
+    </div>
+</nav>
 
-    <!-- Place Order Page Content -->
-    <section class="place-order-page">
-        <div class="container">
-            <div class="page-header">
-                <h1>Place Order</h1>
-                <p>Review your order and complete the checkout process</p>
+<section class="place-order-page">
+    <div class="container" style="padding: 2rem;">
+        <div class="page-header">
+            <h1>Checkout</h1>
+            <p>Review your cart and place order</p>
+        </div>
+
+        <div class="content-wrapper" style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <div class="main-content">
+                <div class="card" style="background:#fff; padding:20px; border-radius:8px;">
+                    <h2 style="color:#333; margin-bottom:15px;">Shipping Details</h2>
+                    <form id="orderForm">
+                        <div style="margin-bottom:15px;">
+                            <label style="display:block; margin-bottom:5px;">Address</label>
+                            <input type="text" id="address" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;" required>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:15px;">
+                            <div>
+                                <label style="display:block; margin-bottom:5px;">City</label>
+                                <input type="text" id="city" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;" required>
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:5px;">State</label>
+                                <input type="text" id="state" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;" required>
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:5px;">ZIP</label>
+                                <input type="text" id="zipCode" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
 
-            <div class="content-wrapper">
-                <!-- Order Summary -->
-                <div class="main-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Order Summary</h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="order-items">
-                                <!-- Order Item 1 -->
-                                <div class="order-item">
-                                    <div class="book-image-placeholder-small"></div>
-                                    <div class="item-details">
-                                        <h3>The Great Gatsby</h3>
-                                        <p class="author">F. Scott Fitzgerald</p>
-                                        <p class="item-price">$12.99 x 1</p>
-                                    </div>
-                                    <div class="item-total">
-                                        <p>$12.99</p>
-                                    </div>
-                                </div>
+            <div class="sidebar-wrapper">
+                <div class="card" style="background:#f8f9fa; padding:20px; border-radius:8px; border:1px solid #ddd;">
+                    <h3 style="color:#333; border-bottom:1px solid #ddd; padding-bottom:10px; margin-bottom:15px;">Your Cart</h3>
 
-                                <!-- Order Item 2 -->
-                                <div class="order-item">
-                                    <div class="book-image-placeholder-small"></div>
-                                    <div class="item-details">
-                                        <h3>To Kill a Mockingbird</h3>
-                                        <p class="author">Harper Lee</p>
-                                        <p class="item-price">$14.99 x 1</p>
-                                    </div>
-                                    <div class="item-total">
-                                        <p>$14.99</p>
-                                    </div>
-                                </div>
-
-                                <!-- Order Item 3 -->
-                                <div class="order-item">
-                                    <div class="book-image-placeholder-small"></div>
-                                    <div class="item-details">
-                                        <h3>1984</h3>
-                                        <p class="author">George Orwell</p>
-                                        <p class="item-price">$13.99 x 2</p>
-                                    </div>
-                                    <div class="item-total">
-                                        <p>$27.98</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="order-totals">
-                                <div class="total-row">
-                                    <p>Subtotal</p>
-                                    <p>$55.96</p>
-                                </div>
-                                <div class="total-row">
-                                    <p>Shipping</p>
-                                    <p>$5.99</p>
-                                </div>
-                                <div class="total-row">
-                                    <p>Tax</p>
-                                    <p>$4.48</p>
-                                </div>
-                                <div class="total-row grand-total">
-                                    <p>Total</p>
-                                    <p>$66.43</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="orderItemsContainer">
+                        <p>Loading cart...</p>
                     </div>
 
-                    <!-- Billing & Shipping Information -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Billing & Shipping Information</h2>
-                        </div>
-                        <div class="card-body">
-                            <form id="orderForm">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="firstName" class="form-label">First Name</label>
-                                        <input type="text" id="firstName" name="firstName" class="form-input" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="lastName" class="form-label">Last Name</label>
-                                        <input type="text" id="lastName" name="lastName" class="form-input" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" id="email" name="email" class="form-input" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="address" class="form-label">Street Address</label>
-                                    <input type="text" id="address" name="address" class="form-input" required>
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="city" class="form-label">City</label>
-                                        <input type="text" id="city" name="city" class="form-input" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="state" class="form-label">State</label>
-                                        <select id="state" name="state" class="form-input" required>
-                                            <option value="">Select State</option>
-                                            <option value="AL">Alabama</option>
-                                            <option value="AK">Alaska</option>
-                                            <option value="AZ">Arizona</option>
-                                            <option value="AR">Arkansas</option>
-                                            <option value="CA">California</option>
-                                            <option value="CO">Colorado</option>
-                                            <option value="CT">Connecticut</option>
-                                            <option value="DE">Delaware</option>
-                                            <option value="FL">Florida</option>
-                                            <option value="GA">Georgia</option>
-                                            <option value="HI">Hawaii</option>
-                                            <option value="ID">Idaho</option>
-                                            <option value="IL">Illinois</option>
-                                            <option value="IN">Indiana</option>
-                                            <option value="IA">Iowa</option>
-                                            <option value="KS">Kansas</option>
-                                            <option value="KY">Kentucky</option>
-                                            <option value="LA">Louisiana</option>
-                                            <option value="ME">Maine</option>
-                                            <option value="MD">Maryland</option>
-                                            <option value="MA">Massachusetts</option>
-                                            <option value="MI">Michigan</option>
-                                            <option value="MN">Minnesota</option>
-                                            <option value="MS">Mississippi</option>
-                                            <option value="MO">Missouri</option>
-                                            <option value="MT">Montana</option>
-                                            <option value="NE">Nebraska</option>
-                                            <option value="NV">Nevada</option>
-                                            <option value="NH">New Hampshire</option>
-                                            <option value="NJ">New Jersey</option>
-                                            <option value="NM">New Mexico</option>
-                                            <option value="NY">New York</option>
-                                            <option value="NC">North Carolina</option>
-                                            <option value="ND">North Dakota</option>
-                                            <option value="OH">Ohio</option>
-                                            <option value="OK">Oklahoma</option>
-                                            <option value="OR">Oregon</option>
-                                            <option value="PA">Pennsylvania</option>
-                                            <option value="RI">Rhode Island</option>
-                                            <option value="SC">South Carolina</option>
-                                            <option value="SD">South Dakota</option>
-                                            <option value="TN">Tennessee</option>
-                                            <option value="TX">Texas</option>
-                                            <option value="UT">Utah</option>
-                                            <option value="VT">Vermont</option>
-                                            <option value="VA">Virginia</option>
-                                            <option value="WA">Washington</option>
-                                            <option value="WV">West Virginia</option>
-                                            <option value="WI">Wisconsin</option>
-                                            <option value="WY">Wyoming</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="zipCode" class="form-label">ZIP Code</label>
-                                        <input type="text" id="zipCode" name="zipCode" class="form-input" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="phone" class="form-label">Phone Number</label>
-                                    <input type="tel" id="phone" name="phone" class="form-input" required>
-                                </div>
-                            </form>
-                        </div>
+                    <div style="margin-top:20px; border-top:2px solid #333; padding-top:10px; font-size:1.2rem; font-weight:bold; display:flex; justify-content:space-between;">
+                        <span>Total:</span>
+                        <span id="grandTotal">$0.00</span>
                     </div>
 
-                    <!-- Payment Information -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Payment Information</h2>
-                        </div>
-                        <div class="card-body">
-                            <form id="paymentForm">
-                                <div class="form-group">
-                                    <label for="cardNumber" class="form-label">Card Number</label>
-                                    <input type="text" id="cardNumber" name="cardNumber" class="form-input" placeholder="1234 5678 9012 3456" required>
-                                </div>
-
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="expiryDate" class="form-label">Expiry Date</label>
-                                        <input type="text" id="expiryDate" name="expiryDate" class="form-input" placeholder="MM/YY" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="cvv" class="form-label">CVV</label>
-                                        <input type="text" id="cvv" name="cvv" class="form-input" placeholder="123" required>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="cardName" class="form-label">Name on Card</label>
-                                    <input type="text" id="cardName" name="cardName" class="form-input" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="form-checkbox">
-                                        <input type="checkbox" id="saveInfo" name="saveInfo">
-                                        <label for="saveInfo">Save my information for future purchases</label>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Order Actions -->
-                    <div class="order-actions">
-                        <button type="button" class="btn btn-secondary" onclick="window.history.back()">Back to Cart</button>
-                        <button type="button" class="btn btn-primary" id="placeOrderBtn">Place Order</button>
-                    </div>
-                </div>
-
-                <!-- Order Summary Sidebar -->
-                <div class="sidebar-wrapper">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Order Total</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="summary-row">
-                                <p>Subtotal</p>
-                                <p>$55.96</p>
-                            </div>
-                            <div class="summary-row">
-                                <p>Shipping</p>
-                                <p>$5.99</p>
-                            </div>
-                            <div class="summary-row">
-                                <p>Tax</p>
-                                <p>$4.48</p>
-                            </div>
-                            <div class="summary-row grand-total">
-                                <p>Total</p>
-                                <p>$66.43</p>
-                            </div>
-                            <button type="button" class="btn btn-primary btn-block" id="mobilePlaceOrderBtn">Place Order</button>
-                        </div>
-                    </div>
+                    <button id="placeOrderBtn" class="btn-primary" style="width:100%; margin-top:20px; padding:12px; background-color:#2563eb; color:white; border:none; border-radius:5px; cursor:pointer;">
+                        Confirm Order
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>BookShop</h3>
-                    <p>Your one-stop destination for all kinds of books. Discover, explore, and enjoy reading with us.</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link">Facebook</a>
-                        <a href="#" class="social-link">Twitter</a>
-                        <a href="#" class="social-link">Instagram</a>
-                        <a href="#" class="social-link">Pinterest</a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="books.html">Books</a></li>
-                        <li><a href="orders.html">Orders</a></li>
-                        <li><a href="profile.html">Profile</a></li>
-                        <li><a href="login.html">Login</a></li>
-                        <li><a href="register.html">Register</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Categories</h4>
-                    <ul class="footer-links">
-                        <li><a href="#">Fiction</a></li>
-                        <li><a href="#">Non-Fiction</a></li>
-                        <li><a href="#">Science Fiction</a></li>
-                        <li><a href="#">Mystery & Thriller</a></li>
-                        <li><a href="#">Romance</a></li>
-                        <li><a href="#">Biography</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Contact Us</h4>
-                    <ul class="contact-info">
-                        <li>Email: info@bookshop.com</li>
-                        <li>Phone: (123) 456-7890</li>
-                        <li>Address: 123 Book Street, Library City, LC 12345</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 BookShop. All rights reserved.</p>
-                <div class="footer-legal">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="../orders.js"></script>
+<script src="js/api.js"></script>
+<script src="js/place-order.js"></script>
 </body>
 </html>

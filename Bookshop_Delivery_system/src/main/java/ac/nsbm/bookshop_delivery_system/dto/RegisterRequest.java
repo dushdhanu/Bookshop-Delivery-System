@@ -7,7 +7,20 @@ public class RegisterRequest {
     private String password;
     private String role;
 
-    // Getters and Setters
+    // --- CONSTRUCTORS ---
+    public RegisterRequest() {
+    }
+
+    public RegisterRequest(String firstName, String lastName, String email, String password, String role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
+
+    // --- MANUAL GETTERS AND SETTERS ---
+
     public String getFirstName() {
         return firstName;
     }
