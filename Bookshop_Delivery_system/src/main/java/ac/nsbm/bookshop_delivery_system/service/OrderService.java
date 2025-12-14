@@ -81,4 +81,8 @@ public class OrderService {
         order.setStatus(status.toUpperCase());
         return orderRepository.save(order);
     }
+    public void deleteOrder(Long id) {
+        // Optional: Add check to only delete if status is PENDING
+        orderRepository.deleteById(id);
+    }
 }

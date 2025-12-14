@@ -5,6 +5,7 @@ public class UserProfileDto {
     private String lastName;
     private String phone;
     private String address;
+    private String birthDate; // Added
 
     // For Bookseller
     private String storeName;
@@ -24,6 +25,8 @@ public class UserProfileDto {
     public void setPhone(String phone) { this.phone = phone; }
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+    public String getBirthDate() { return birthDate; }
+    public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
     public String getStoreName() { return storeName; }
     public void setStoreName(String storeName) { this.storeName = storeName; }
     public String getWebsite() { return website; }

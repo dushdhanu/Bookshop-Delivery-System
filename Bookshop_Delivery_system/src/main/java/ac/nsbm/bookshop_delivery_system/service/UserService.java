@@ -3,30 +3,52 @@ package ac.nsbm.bookshop_delivery_system.service;
 import ac.nsbm.bookshop_delivery_system.dto.UserProfileDto;
 import ac.nsbm.bookshop_delivery_system.entity.User;
 import ac.nsbm.bookshop_delivery_system.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
 
+    // Path matches your WebConfig: file:src/main/resources/static/images/
+    private final Path fileStorageLocation = Paths.get("src/main/resources/static/images").toAbsolutePath().normalize();
+
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+        try {
+            Files.createDirectories(this.fileStorageLocation);
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not create the directory where the uploaded files will be stored.", ex);
+        }
     }
 
     public User getProfile(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
     public User updateProfile(String email, UserProfileDto dto) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setPhone(dto.getPhone());
-        user.setAddress(dto.getAddress());
+        if (dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
+        if (dto.getLastName() != null) user.setLastName(dto.getLastName());
+        if (dto.getPhone() != null) user.setPhone(dto.getPhone());
+        if (dto.getAddress() != null) user.setAddress(dto.getAddress());
+        if (dto.getBirthDate() != null) user.setBirthDate(dto.getBirthDate()); // Update birthDate
 
-        // Update role specific fields
+        // Role-specific updates
         if (dto.getStoreName() != null) user.setStoreName(dto.getStoreName());
         if (dto.getWebsite() != null) user.setWebsite(dto.getWebsite());
         if (dto.getVehicleType() != null) user.setVehicleType(dto.getVehicleType());
@@ -34,5 +56,26 @@ public class UserService {
         if (dto.getDeliveryArea() != null) user.setDeliveryArea(dto.getDeliveryArea());
 
         return userRepository.save(user);
+    }
+
+    public String uploadProfileImage(String email, MultipartFile file) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        try {
+            // Generate unique filename
+            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            // Update user record with the URL path (accessible via /images/filename)
+            String imageUrl = "/images/" + fileName;
+            user.setProfileImage(imageUrl);
+            userRepository.save(user);
+
+            return imageUrl;
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not store file " + file.getOriginalFilename() + ". Please try again!", ex);
+        }
     }
 }

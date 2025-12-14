@@ -8,11 +8,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Maps http://localhost:8080/images/filename.jpg
+        // Maps http://localhost:8080/images/filename.jpg to the local directory
         registry.addResourceHandler("/images/**")
-                // Load from local file system (for newly uploaded books)
-                .addResourceLocations("file:src/main/resources/static/images/")
-                // Load from classpath (for default/static images in built jar)
-                .addResourceLocations("classpath:/static/images/");
+                .addResourceLocations("file:src/main/resources/static/images/");
     }
 }

@@ -6,11 +6,8 @@ import ac.nsbm.bookshop_delivery_system.repository.BookRepository;
 import ac.nsbm.bookshop_delivery_system.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,8 +30,9 @@ public class BookService {
         return bookRepository.findAll();
     }
 
-    public Book addBook(String title, String author, Double price, Integer stock,
-                        String category, boolean featured, boolean active,
+    public Book addBook(String title, String author, String isbn, Double price, Integer stock,
+                        String category, String description, String bookType, String bookSize,
+                        String bookFormat, boolean featured, boolean active,
                         MultipartFile image, String sellerEmail) throws IOException {
 
         User seller = userRepository.findByEmail(sellerEmail)
@@ -43,9 +41,14 @@ public class BookService {
         Book book = new Book();
         book.setTitle(title);
         book.setAuthor(author);
+        book.setIsbn(isbn);
         book.setPrice(price);
         book.setStock(stock);
         book.setCategory(category);
+        book.setDescription(description);
+        book.setBookType(bookType);
+        book.setBookSize(bookSize);
+        book.setBookFormat(bookFormat);
         book.setFeatured(featured);
         book.setActive(active);
         book.setSeller(seller);
@@ -57,15 +60,10 @@ public class BookService {
             Files.write(path, image.getBytes());
             book.setImageUrl("/images/" + fileName);
         }
-
         return bookRepository.save(book);
     }
 
     public void deleteBook(Long id) {
         bookRepository.deleteById(id);
-    }
-
-    public boolean exists(Long id) {
-        return bookRepository.existsById(id);
     }
 }

@@ -72,18 +72,7 @@
             text-align: center;
         }
 
-        .profile-image-placeholder {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            border: 3px solid #3b82f6;
-            margin: 0 auto 1rem;
-        }
+        /* Removed old .profile-image-placeholder styles as we are using your new snippet */
 
         .profile-details h3 {
             color: #ffffff;
@@ -218,13 +207,18 @@
                     <div class="card-body">
                         <form id="profileForm">
                             <div class="profile-header">
+
                                 <div class="profile-image">
-                                    <div class="profile-image-placeholder">JD</div>
-                                    <button type="button" class="btn btn-secondary btn-sm">Change Photo</button>
+                                    <img id="profileImagePreview" src="../images/default-user.png" alt="Profile"
+                                         style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 3px solid #3b82f6; margin-bottom: 1rem; display: block; margin-left: auto; margin-right: auto; background-color: #0f172a;">
+
+                                    <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profileImageInput').click()">Change Photo</button>
                                 </div>
                                 <div class="profile-details">
-                                    <h3>John Doe</h3>
-                                    <p class="profile-email">john.doe@example.com</p>
+                                    <h3 id="displayName">John Doe</h3>
+                                    <p class="profile-email" id="displayEmail">john.doe@example.com</p>
                                     <p class="profile-member-since">Member since: January 15, 2023</p>
                                 </div>
                             </div>
@@ -242,7 +236,7 @@
 
                             <div class="form-group">
                                 <label for="email" class="form-label">Email Address</label>
-                                <input type="email" id="email" name="email" class="form-input" value="john.doe@example.com">
+                                <input type="email" id="email" name="email" class="form-input" value="john.doe@example.com" readonly style="background-color: #1e293b; color: #94a3b8;">
                             </div>
 
                             <div class="form-row">
@@ -417,5 +411,5 @@
 </footer>
 
 <script src="../session.js"></script>
-</body>
+<script src="js/profile.js"></script> </body>
 </html>
