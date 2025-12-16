@@ -26,17 +26,19 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<User> getProfile(Authentication authentication) {
+    public ResponseEntity<UserProfileDto> getProfile(Authentication authentication) {
         String email = authentication.getName();
-        User user = userService.getProfile(email);
-        return ResponseEntity.ok(user);
+        // FIX: Changed to match Service method 'getUserProfile'
+        UserProfileDto userProfile = userService.getUserProfile(email);
+        return ResponseEntity.ok(userProfile);
     }
 
     @PutMapping("/profile")
     public ResponseEntity<?> updateProfile(@RequestBody UserProfileDto userProfileDto, Authentication authentication) {
         String email = authentication.getName();
         try {
-            User updatedUser = userService.updateProfile(email, userProfileDto);
+            // FIX: Changed to match Service method 'updateUserProfile'
+            User updatedUser = userService.updateUserProfile(email, userProfileDto);
             return ResponseEntity.ok(updatedUser);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
@@ -47,7 +49,8 @@ public class UserController {
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, Authentication authentication) {
         String email = authentication.getName();
         try {
-            userService.changePassword(email, request.getCurrentPassword(), request.getNewPassword());
+            // FIX: Pass the 'request' object directly, not separate strings
+            userService.changePassword(email, request);
             return ResponseEntity.ok(Collections.singletonMap("message", "Password updated successfully"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
@@ -58,6 +61,7 @@ public class UserController {
     public ResponseEntity<?> deleteProfile(Authentication authentication) {
         String email = authentication.getName();
         try {
+            // FIX: Service now has this method
             userService.deleteProfile(email);
             return ResponseEntity.ok(Collections.singletonMap("message", "Account deleted successfully"));
         } catch (Exception e) {
@@ -68,6 +72,7 @@ public class UserController {
     @PostMapping("/profile/image")
     public ResponseEntity<Map<String, String>> uploadProfileImage(@RequestParam("file") MultipartFile file, Authentication authentication) {
         String email = authentication.getName();
+        // FIX: Service now has this method
         String imageUrl = userService.uploadProfileImage(email, file);
         return ResponseEntity.ok(Collections.singletonMap("imageUrl", imageUrl));
     }

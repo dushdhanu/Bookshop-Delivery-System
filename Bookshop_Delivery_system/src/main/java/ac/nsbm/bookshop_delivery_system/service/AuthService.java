@@ -44,7 +44,7 @@ public class AuthService {
             }
         }
 
-        // 3. Create User (Using standard setters - Fixes 'cannot find builder' error)
+        // 3. Create User
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
@@ -56,9 +56,10 @@ public class AuthService {
         userRepository.save(user);
 
         // 5. Generate Token
-        String token = jwtUtils.generateToken(new CustomUserDetails(user));
+        // FIXED: Passing user.getEmail() (String) instead of UserDetails object to match updated JwtUtils
+        String token = jwtUtils.generateToken(user.getEmail());
 
-        // 6. Return Response (Passes 3 args - Fixes constructor error)
+        // 6. Return Response
         return new AuthResponse(token, user.getRole().name(), user.getId());
     }
 
@@ -74,9 +75,9 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String token = jwtUtils.generateToken(new CustomUserDetails(user));
+        // FIXED: Passing user.getEmail() (String) instead of UserDetails object to match updated JwtUtils
+        String token = jwtUtils.generateToken(user.getEmail());
 
-        // 6. Return Response (Passes 3 args - Fixes constructor error)
         return new AuthResponse(token, user.getRole().name(), user.getId());
     }
 }

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Cart - Bookshop</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #0f1014; color: white; display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background-color: #1a1a2e; padding: 20px; display: flex; flex-direction: column; gap: 15px; border-right: 1px solid #2a2d3e; }
+        .sidebar a { text-decoration: none; color: #a0c0ff; padding: 12px; border-radius: 8px; background-color:#10235d; display: flex; align-items: center; gap: 10px; }
+        .sidebar a:hover, .sidebar a.active { background-color: #3b82f6; color: white; border-left: 4px solid #3a6df0; }
+
+        .main-content { flex-grow: 1; padding: 30px; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #333; background: #161822; margin-bottom: 10px; border-radius: 5px;}
+        .cart-item img { width: 50px; height: 75px; object-fit: cover; margin-right: 15px; }
+        .btn-checkout { background-color: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2 style="text-align:center;">BookShop</h2>
+    <a href="books.html"><i class="fas fa-book"></i> Books</a>
+    <a href="cart.html" class="active"><i class="fas fa-shopping-cart"></i> Cart</a>
+</div>
+
+<div class="main-content">
+    <h2>Shopping Cart</h2>
+    <div id="cart-items"></div>
+    <div style="margin-top: 20px; text-align: right;">
+        <h3>Total: $<span id="total-price">0.00</span></h3>
+        <button class="btn-checkout" onclick="alert('Proceeding to Checkout...')">Checkout</button>
+    </div>
+</div>
+
+<script src="/frontend/bookshop/customer/js/cart.js"></script>
+</body>
+</html>

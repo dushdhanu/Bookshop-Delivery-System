@@ -1,114 +1,87 @@
-// Admin Books Page JavaScript
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Search functionality
-    const searchInput = document.querySelector('.search-bar .form-input');
-    const searchButton = document.querySelector('.search-bar .btn');
-    
-    if (searchButton) {
-        searchButton.addEventListener('click', function() {
-            const searchTerm = searchInput.value.trim();
-            if (searchTerm) {
-                performSearch(searchTerm);
-            }
-        });
-    }
-    
-    if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    performSearch(searchTerm);
-                }
-            }
-        });
-    }
-    
-    // Filter by category
-    const categoryFilter = document.querySelector('.filter-options select');
-    if (categoryFilter) {
-        categoryFilter.addEventListener('change', function() {
-            filterByCategory(this.value);
-        });
-    }
-    
-    // Handle delete buttons
-    const deleteButtons = document.querySelectorAll('.btn-danger');
-    deleteButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const row = this.closest('tr');
-            const bookTitle = row.cells[1].textContent;
-            deleteBook(row, bookTitle);
-        });
-    });
+document.addEventListener('DOMContentLoaded', () => {
+    loadBooks();
 });
 
-// Perform search
-function performSearch(term) {
-    // In a real application, this would filter the books based on the search term
-    console.log(`Searching for: ${term}`);
-    
-    // Show search results message
-    showAlert(`Showing results for "${term}"`, 'info');
+const API_URL = '/api/books'; // Ensure this matches your backend
+
+async function loadBooks() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(API_URL, {
+            headers: {
+                'Authorization': `Bearer ${token}` // Send Token
+            }
+        });
+
+        if (!response.ok) throw new Error('Failed to load books');
+
+        const books = await response.json();
+        const tableBody = document.querySelector('tbody'); // Targets the table body
+        tableBody.innerHTML = ''; // Clear existing rows
+
+        books.forEach(book => {
+            const row = `
+                <tr>
+                    <td>${book.id}</td>
+                    <td><img src="${book.imageUrl}" alt="Cover" style="width:50px;height:75px;object-fit:cover;"></td>
+                    <td>${book.title}</td>
+                    <td>${book.author}</td>
+                    <td>$${book.price}</td>
+                    <td>${book.category}</td>
+                    <td>${book.stockQuantity}</td>
+                    <td>
+                        <button class="btn-edit" data-id="${book.id}">Edit</button>
+                        <button class="btn-delete" data-id="${book.id}">Delete</button>
+                    </td>
+                </tr>
+            `;
+            tableBody.insertAdjacentHTML('beforeend', row);
+        });
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Could not load books. Please login again.');
+    }
 }
 
-// Filter books by category
-function filterByCategory(category) {
-    console.log(`Filtering by category: ${category}`);
-    // In a real application, this would filter the books by category
-    
-    if (category === '') {
-        showAlert('Showing all books', 'info');
-    } else {
-        showAlert(`Showing books in category: ${category}`, 'info');
-    }
-}
+// --- CRITICAL FIX: EVENT DELEGATION ---
+// We attach the listener to the TABLE (parent), not the buttons
+document.querySelector('table').addEventListener('click', async (e) => {
+    const token = localStorage.getItem('token');
 
-// Delete book
-function deleteBook(row, bookTitle) {
-    if (confirm(`Are you sure you want to delete "${bookTitle}"?`)) {
-        // In a real application, this would send a delete request to the server
-        console.log(`Deleting book: ${bookTitle}`);
-        
-        // Show loading state
-        const originalText = row.cells[7].innerHTML;
-        row.cells[7].innerHTML = '<span>Deleting...</span>';
-        
-        // Simulate API call delay
-        setTimeout(() => {
-            // Remove the row
-            row.remove();
-            
-            // Show success message
-            showAlert(`"${bookTitle}" has been deleted successfully!`, 'success');
-        }, 1000);
-    }
-}
+    // HANDLE DELETE CLICK
+    if (e.target.classList.contains('btn-delete')) {
+        const bookId = e.target.getAttribute('data-id');
 
-// Show alert messages
-function showAlert(message, type = 'success') {
-    // Remove existing alerts
-    const existingAlert = document.querySelector('.alert');
-    if (existingAlert) {
-        existingAlert.remove();
-    }
-    
-    // Create alert element
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type === 'info' ? 'warning' : type}`;
-    alertDiv.textContent = message;
-    
-    // Insert at the top of the main content
-    const mainContent = document.querySelector('.main-content');
-    if (mainContent) {
-        mainContent.insertBefore(alertDiv, mainContent.firstChild);
-    }
-    
-    // Remove after 5 seconds
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
+        if (!confirm('Are you sure you want to delete this book?')) return;
+
+        try {
+            const response = await fetch(`${API_URL}/${bookId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                alert('Book deleted successfully');
+                // Remove the row from UI immediately without reload
+                e.target.closest('tr').remove();
+            } else {
+                const errorData = await response.text();
+                alert(`Error deleting book: ${errorData}`);
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('Failed to delete book.');
         }
-    }, 5000);
-}
+    }
+
+    // HANDLE EDIT CLICK
+    if (e.target.classList.contains('btn-edit')) {
+        const bookId = e.target.getAttribute('data-id');
+        // Redirect to edit page with ID
+        window.location.href = `edit-book.html?id=${bookId}`;
+    }
+});

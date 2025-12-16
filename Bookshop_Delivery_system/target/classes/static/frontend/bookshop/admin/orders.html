@@ -15,7 +15,7 @@
             flex-direction: column;
             gap: 0.5rem;
         }
-        
+
         .sidebar-item-vertical {
             display: flex;
             align-items: center;
@@ -27,19 +27,18 @@
             transition: all 0.3s ease;
             border: 1px solid transparent;
         }
-        
+
         .sidebar-item-vertical:hover{
             background-color: #1a3a8a;
             transform: translateY(-5px);
         }
-            
-        
+
         .sidebar-item-vertical.active {
             background-color: #10235d;
             color: #3b82f6;
             border-color: #334155;
         }
-        
+
         .sidebar-icon-medium {
             font-size: 1.2rem;
             margin-right: 0.75rem;
@@ -49,7 +48,7 @@
             align-items: center;
             justify-content: center;
         }
-        
+
         /* Integrated search icon styling */
         .search-container {
             position: relative;
@@ -57,7 +56,7 @@
             width: 100%;
             max-width: 400px;
         }
-        
+
         .search-input {
             width: 100%;
             padding: 0.75rem 2.5rem 0.75rem 1rem;
@@ -67,13 +66,13 @@
             color: #ffffff;
             font-size: 1rem;
         }
-        
+
         .search-input:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
-        
+
         .search-icon-btn {
             position: absolute;
             right: -50px;
@@ -85,11 +84,11 @@
             cursor: pointer;
             font-size: 1.2rem;
         }
-        
+
         .search-icon-btn:hover {
             color: #3b82f6;
         }
-        
+
         /* Enhanced table styling with clearer column and row separation */
         .data-table-enhanced {
             width: 100%;
@@ -99,7 +98,7 @@
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
-        
+
         .data-table-enhanced th {
             background-color: #0f172a;
             color: #ffffff;
@@ -108,27 +107,27 @@
             font-weight: 600;
             border-bottom: 2px solid #3b82f6;
         }
-        
+
         .data-table-enhanced td {
             padding: 1.25rem 1rem;
             border-bottom: 1px solid #334155;
             color: #ffffff;
             vertical-align: middle;
         }
-        
+
         .data-table-enhanced tr:last-child td {
             border-bottom: none;
         }
-        
+
         .data-table-enhanced tr:hover {
             background-color: #3b82f6;
         }
-        
+
         .table-actions {
             display: flex;
             gap: 0.5rem;
         }
-        
+
         /* Book covers in orders */
         .book-cover-small {
             font-size: 1.5rem;
@@ -137,286 +136,165 @@
     </style>
 </head>
 <body>
-    
-    <!-- Navbar Component -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <h1 class="nav-logo">BookShop Admin</h1>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="index.html" class="nav-link">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a href="books.html" class="nav-link">Books</a>
-                </li>
-                <li class="nav-item">
-                    <a href="add-book.html" class="nav-link">Add Book</a>
-                </li>
-                <li class="nav-item">
-                    <a href="orders.html" class="nav-link active">Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a href="profile.html" class="nav-link">Profile</a>
-                </li>
-              
-            </ul>
-            <div class="nav-toggle">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <h1 class="nav-logo">BookShop Admin</h1>
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="index.html" class="nav-link">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a href="books.html" class="nav-link">Books</a>
+            </li>
+            <li class="nav-item">
+                <a href="add-book.html" class="nav-link">Add Book</a>
+            </li>
+            <li class="nav-item">
+                <a href="orders.html" class="nav-link active">Orders</a>
+            </li>
+            <li class="nav-item">
+                <a href="profile.html" class="nav-link">Profile</a>
+            </li>
+
+        </ul>
+        <div class="nav-toggle">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Order Management Content -->
-    <section class="order-management">
-        <div class="container">
-            <div class="page-header">
-                <h1>Order Management</h1>
-                <p>Manage customer orders</p>
+<section class="order-management">
+    <div class="container">
+        <div class="page-header">
+            <h1>Order Management</h1>
+            <p>Manage customer orders</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="sidebar-wrapper">
+                <div class="sidebar">
+                    <h3 class="sidebar-title">Admin Panel</h3>
+                    <div class="sidebar-panel-vertical">
+                        <a href="index.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">📊</div>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="books.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">📚</div>
+                            <span>Book Management</span>
+                        </a>
+                        <a href="add-book.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">➕</div>
+                            <span>Add New Book</span>
+                        </a>
+                        <a href="orders.html" class="sidebar-item-vertical active">
+                            <div class="sidebar-icon-medium">📦</div>
+                            <span>Order Management</span>
+                        </a>
+                        <a href="profile.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">👤</div>
+                            <span>Admin Profile</span>
+                        </a>
+                        <a href="feedback.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">💬</div>
+                            <span>Customer Feedback</span>
+                        </a>
+                        <a href="notifications.html" class="sidebar-item-vertical">
+                            <div class="sidebar-icon-medium">🔔</div>
+                            <span>Notifications & Updates</span>
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div class="content-wrapper">
-                <!-- Sidebar Panel - Changed to vertical axis -->
-                <div class="sidebar-wrapper">
-                    <div class="sidebar">
-                        <h3 class="sidebar-title">Admin Panel</h3>
-                        <div class="sidebar-panel-vertical">
-                            <a href="index.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">📊</div>
-                                <span>Dashboard</span>
-                            </a>
-                            <a href="books.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">📚</div>
-                                <span>Book Management</span>
-                            </a>
-                            <a href="add-book.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">➕</div>
-                                <span>Add New Book</span>
-                            </a>
-                            <a href="orders.html" class="sidebar-item-vertical active">
-                                <div class="sidebar-icon-medium">📦</div>
-                                <span>Order Management</span>
-                            </a>
-                            <a href="profile.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">👤</div>
-                                <span>Admin Profile</span>
-                            </a>
-                            <a href="feedback.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">💬</div>
-                                <span>Customer Feedback</span>
-                            </a>
-                            <a href="notifications.html" class="sidebar-item-vertical">
-                                <div class="sidebar-icon-medium">🔔</div>
-                                <span>Notifications & Updates</span>
-                            </a>
-                        </div>
+            <div class="main-content">
+                <div class="search-bar">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search orders by ID, customer, or date...">
+                        <button class="search-icon-btn" onclick="searchOrders()">🔍</button>
                     </div>
                 </div>
 
-                <!-- Main Content -->
-                <div class="main-content">
-                    <!-- Search Bar with Integrated Icon -->
-                    <div class="search-bar">
-                        <div class="search-container">
-                            <input type="text" class="search-input" placeholder="Search orders by ID, customer, or date...">
-                            <button class="search-icon-btn">🔍</button>
-                        </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Order List</h2>
                     </div>
-
-                    <!-- Order List - Enhanced table with clearer column and row separation -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2 class="card-title">Order List</h2>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="data-table-enhanced">
+                                <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody id="ordersTableBody">
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="data-table-enhanced">
-                                    <thead>
-                                        <tr>
-                                            <th>Order ID</th>
-                                            <th>Customer</th>
-                                            <th>Date</th>
-                                            <th>Books</th>
-                                            <th>Total</th>
-                                            <th>Status</th>
-                                            <th>Feedback</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>#ORD-7842</td>
-                                            <td>John Smith</td>
-                                            <td>Jun 15, 2025</td>
-                                            <td>
-                                                <span class="book-cover-small">📚</span>
-                                                <span class="book-cover-small">📖</span>
-                                                <span class="book-cover-small">📘</span>
-                                                3 books
-                                            </td>
-                                            <td>$42.97</td>
-                                            <td>
-                                                <span class="status-badge status-delivered">Delivered</span>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-sm btn-secondary">View Feedback</button>
-                                            </td>
-                                            <td>
-                                                <div class="table-actions">
-                                                    <button class="btn btn-sm btn-secondary">View</button>
-                                                    <button class="btn btn-sm btn-primary">Update</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#ORD-7521</td>
-                                            <td>Sarah Johnson</td>
-                                            <td>May 28, 2025</td>
-                                            <td>
-                                                <span class="book-cover-small">📕</span>
-                                                <span class="book-cover-small">📗</span>
-                                                2 books
-                                            </td>
-                                            <td>$27.98</td>
-                                            <td>
-                                                <span class="status-badge status-shipped">Shipped</span>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-sm btn-secondary">View Feedback</button>
-                                            </td>
-                                            <td>
-                                                <div class="table-actions">
-                                                    <button class="btn btn-sm btn-secondary">View</button>
-                                                    <button class="btn btn-sm btn-primary">Update</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#ORD-7294</td>
-                                            <td>Michael Brown</td>
-                                            <td>May 10, 2025</td>
-                                            <td>
-                                                <span class="book-cover-small">📙</span>
-                                                1 book
-                                            </td>
-                                            <td>$19.99</td>
-                                            <td>
-                                                <span class="status-badge status-processing">Processing</span>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-sm btn-secondary">View Feedback</button>
-                                            </td>
-                                            <td>
-                                                <div class="table-actions">
-                                                    <button class="btn btn-sm btn-secondary">View</button>
-                                                    <button class="btn btn-sm btn-primary">Update</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#ORD-7105</td>
-                                            <td>Emily Davis</td>
-                                            <td>Apr 22, 2025</td>
-                                            <td>
-                                                <span class="book-cover-small">📓</span>
-                                                <span class="book-cover-small">📔</span>
-                                                <span class="book-cover-small">📒</span>
-                                                <span class="book-cover-small">📕</span>
-                                                4 books
-                                            </td>
-                                            <td>$54.96</td>
-                                            <td>
-                                                <span class="status-badge status-pending">Pending</span>
-                                            </td>
-                                            <td>
-                                                <div class="table-actions">
-                                                    <button class="btn btn-sm btn-secondary">View</button>
-                                                    <button class="btn btn-sm btn-primary">Update</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#ORD-6987</td>
-                                            <td>Robert Wilson</td>
-                                            <td>Apr 15, 2025</td>
-                                            <td>
-                                                <span class="book-cover-small">📗</span>
-                                                <span class="book-cover-small">📘</span>
-                                                2 books
-                                            </td>
-                                            <td>$28.98</td>
-                                            <td>
-                                                <span class="status-badge status-cancelled">Cancelled</span>
-                                            </td>
-                                            <td>
-                                                <div class="table-actions">
-                                                    <button class="btn btn-sm btn-secondary">View</button>
-                                                    <button class="btn btn-sm btn-primary">Update</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <!-- Pagination -->
-                            <div class="pagination">
-                                <button class="btn btn-secondary">Previous</button>
-                                <span class="page-numbers">
+
+                        <div class="pagination">
+                            <button class="btn btn-secondary">Previous</button>
+                            <span class="page-numbers">
                                     <button class="btn btn-primary">1</button>
-                                    <button class="btn btn-secondary">2</button>
-                                    <button class="btn btn-secondary">3</button>
-                                    <button class="btn btn-secondary">4</button>
-                                    <button class="btn btn-secondary">5</button>
                                 </span>
-                                <button class="btn btn-secondary">Next</button>
-                            </div>
+                            <button class="btn btn-secondary">Next</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer Component -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>BookShop Admin</h3>
-                    <p>Administration panel for BookShop online bookstore</p>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="index.html">Dashboard</a></li>
-                        <li><a href="books.html">Books</a></li>
-                        <li><a href="orders.html">Orders</a></li>
-                        <li><a href="profile.html">Profile</a></li>
-                        <li><a href="../index.html">Customer View</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <ul class="footer-links">
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">System Status</a></li>
-                    </ul>
-                </div>
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>BookShop Admin</h3>
+                <p>Administration panel for BookShop online bookstore</p>
             </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2025 BookShop. All rights reserved.</p>
-                <div class="footer-legal">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                </div>
+
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html">Dashboard</a></li>
+                    <li><a href="books.html">Books</a></li>
+                    <li><a href="orders.html">Orders</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="../index.html">Customer View</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">System Status</a></li>
+                </ul>
             </div>
         </div>
-    </footer>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 BookShop. All rights reserved.</p>
+            <div class="footer-legal">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="js/api.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/orders.js"></script>
 </body>
 </html>

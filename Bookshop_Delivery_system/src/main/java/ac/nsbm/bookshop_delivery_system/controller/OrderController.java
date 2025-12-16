@@ -1,11 +1,11 @@
 package ac.nsbm.bookshop_delivery_system.controller;
 
+import ac.nsbm.bookshop_delivery_system.dto.OrderRequest;
 import ac.nsbm.bookshop_delivery_system.entity.Order;
 import ac.nsbm.bookshop_delivery_system.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,27 +17,45 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    // Place Order
+    @PostMapping
+    public ResponseEntity<?> placeOrder(@RequestBody OrderRequest request) {
+        try {
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            Order order = orderService.placeOrder(email, request);
+            return ResponseEntity.ok(order);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    // Get My Orders
     @GetMapping("/my-orders")
-    public ResponseEntity<List<Order>> getMyOrders(Authentication authentication) {
-        String email = authentication.getName();
+    public ResponseEntity<List<Order>> getUserOrders() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return ResponseEntity.ok(orderService.getUserOrders(email));
     }
 
-    @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(Authentication authentication, @RequestBody ac.nsbm.bookshop_delivery_system.dto.OrderRequest request) {
-        String email = authentication.getName();
-        return ResponseEntity.ok(orderService.placeOrder(email, request));
+    // Delete Order (Called by the Delete Button)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteOrder(@PathVariable Long id) {
+        try {
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            orderService.deleteOrder(email, id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
     }
 
-    // --- FIX: ADDED DELETE ENDPOINT ---
-    @DeleteMapping("/{orderId}")
-    public ResponseEntity<String> deleteOrder(Authentication authentication, @PathVariable Long orderId) {
-        String email = authentication.getName();
-        try {
-            orderService.deleteOrder(email, orderId);
-            return ResponseEntity.ok("Order deleted successfully");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    // Admin Endpoints
+    @GetMapping
+    public ResponseEntity<List<Order>> getAllOrders() {
+        return ResponseEntity.ok(orderService.getAllOrders());
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestParam String status) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
     }
 }

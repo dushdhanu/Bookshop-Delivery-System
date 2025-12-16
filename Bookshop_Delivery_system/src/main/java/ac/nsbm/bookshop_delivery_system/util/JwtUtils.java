@@ -21,6 +21,7 @@ public class JwtUtils {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
+    // Generate the signing key from the secret property
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
@@ -36,18 +37,19 @@ public class JwtUtils {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(getSigningKey()) // New syntax for 0.12.x
                 .build()
-                .parseSignedClaims(token)
-                .getPayload();
+                .parseSignedClaims(token)    // Replaces parseClaimsJws
+                .getPayload();               // Replaces getBody
     }
 
-    public String generateToken(UserDetails userDetails) {
+    // Keep this taking a String to match AuthService usage
+    public String generateToken(String username) {
         return Jwts.builder()
-                .subject(userDetails.getUsername())
+                .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(getSigningKey())
+                .signWith(getSigningKey()) // New syntax requires Key object
                 .compact();
     }
 
@@ -57,6 +59,10 @@ public class JwtUtils {
     }
 
     private boolean isTokenExpired(String token) {
-        return extractClaim(token, Claims::getExpiration).before(new Date());
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 }

@@ -18,7 +18,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Converts your Role enum (e.g., ADMIN) into a GrantedAuthority for Spring Security
+        // Convert single Role enum to a GrantedAuthority
         return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
     }
 
@@ -29,29 +29,24 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        // We use the email as the unique "username" for login
+        // IMPORTANT: Return EMAIL as the username for Spring Security
         return user.getEmail();
     }
 
-    // --- Boilerplate methods required by Spring Security ---
+    @Override
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isEnabled() { return true; }
 
-    @Override
-    public boolean isEnabled() {
-        return true; // You can change this to 'return user.isActive()' if you have an active field
+    // Helper to get the actual User entity if needed
+    public User getUser() {
+        return user;
     }
 }
