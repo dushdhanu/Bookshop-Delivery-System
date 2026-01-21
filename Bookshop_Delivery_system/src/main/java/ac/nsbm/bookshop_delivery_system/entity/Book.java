@@ -14,8 +14,12 @@ public class Book {
     private Double price;
     private String description;
     private Integer stock;
-    private String imageUrl; // Must exist
-    private String category; // Must exist
+    private String imageUrl;
+    private String category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id", nullable = false)
+    private User seller;
 
     public Book() {}
 
@@ -38,6 +42,7 @@ public class Book {
     public Integer getStock() { return stock; }
     public String getImageUrl() { return imageUrl; }
     public String getCategory() { return category; }
+    public User getSeller() { return seller; }
 
     // Setters
     public void setId(Long id) { this.id = id; }
@@ -48,4 +53,5 @@ public class Book {
     public void setStock(Integer stock) { this.stock = stock; }
     public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
     public void setCategory(String category) { this.category = category; }
+    public void setSeller(User seller) { this.seller = seller; }
 }

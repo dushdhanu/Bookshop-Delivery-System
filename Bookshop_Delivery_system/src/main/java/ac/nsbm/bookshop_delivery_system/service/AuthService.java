@@ -29,12 +29,12 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        // 1. Check if email exists
+        // Check if email already exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException("Email address is already registered. Please login or use a different email.");
         }
 
-        // 2. Determine Role
+        // Handle Role Assignment from the request
         Role userRole = Role.CUSTOMER;
         if (request.getRole() != null && !request.getRole().isEmpty()) {
             try {
@@ -44,7 +44,6 @@ public class AuthService {
             }
         }
 
-        // 3. Create User
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
@@ -52,14 +51,9 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(userRole);
 
-        // 4. Save User
         userRepository.save(user);
-
-        // 5. Generate Token
-        // FIXED: Passing user.getEmail() (String) instead of UserDetails object to match updated JwtUtils
         String token = jwtUtils.generateToken(user.getEmail());
 
-        // 6. Return Response
         return new AuthResponse(token, user.getRole().name(), user.getId());
     }
 
@@ -75,9 +69,7 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // FIXED: Passing user.getEmail() (String) instead of UserDetails object to match updated JwtUtils
         String token = jwtUtils.generateToken(user.getEmail());
-
         return new AuthResponse(token, user.getRole().name(), user.getId());
     }
 }

@@ -10,6 +10,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Ensure these match the fields being set in AuthService.register()
     private String firstName;
     private String lastName;
 
@@ -32,11 +33,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // Bookseller specific
+    // Bookseller specific fields
     private String storeName;
     private String website;
 
-    // Delivery Person specific
+    // Delivery Person specific fields
     private String employeeId;
     private String vehicleType;
     private String licensePlate;

@@ -1,27 +1,22 @@
-// src/main/resources/static/frontend/bookshop/customer/js/auth.js
-
 const API_BASE_URL = "http://localhost:8080/api/auth";
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Handle Login Form
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Stop page reload
+            e.preventDefault();
             handleLogin();
         });
     }
 
-    // 2. Handle Register Form
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Stop page reload
+            e.preventDefault();
             handleRegister();
         });
     }
 
-    // 3. Password Visibility Toggle
     const passwordToggles = document.querySelectorAll('.password-toggle-btn');
     passwordToggles.forEach(toggle => {
         toggle.addEventListener('click', function() {
@@ -37,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// --- LOGIN FUNCTION ---
 async function handleLogin() {
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
@@ -49,63 +43,51 @@ async function handleLogin() {
         return;
     }
 
-    // UI Loading State
     submitButton.textContent = 'Logging in...';
     submitButton.disabled = true;
 
     try {
         const response = await fetch(`${API_BASE_URL}/login`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({
                 email: emailInput.value,
                 password: passwordInput.value
             })
         });
 
-        // Handle non-JSON responses (server errors)
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            throw new Error("Server returned a non-JSON response. Check backend logs.");
-        }
-
         const data = await response.json();
 
         if (response.ok) {
-            // SUCCESS
             localStorage.setItem('jwt_token', data.token);
             localStorage.setItem('user_role', data.role);
-            localStorage.setItem('user_email', emailInput.value); // Store email for profile fetching
+            localStorage.setItem('user_email', emailInput.value);
 
             showAlert('Login successful! Redirecting...', 'success');
 
-            // Redirect based on Role
             setTimeout(() => {
-                if (data.role === 'ADMIN') {
-                    window.location.href = '../admin/index.html';
-                } else if (data.role === 'BOOKSELLER') {
-                    window.location.href = '../bookseller/index.html';
-                } else if (data.role === 'DELIVERY_PERSON') {
-                    window.location.href = '../delivery person/index.html';
-                } else {
-                    window.location.href = 'index.html'; // Customer Home
-                }
+                if (data.role === 'ADMIN') window.location.href = '../admin/index.html';
+                else if (data.role === 'BOOKSELLER') window.location.href = '../bookseller/index.html';
+                else if (data.role === 'DELIVERY_PERSON') window.location.href = '../delivery person/index.html';
+                else window.location.href = 'index.html';
             }, 1000);
         } else {
-            // FAILURE (Bad credentials)
             throw new Error(data.message || 'Invalid email or password');
         }
     } catch (error) {
-        console.error('Login Error:', error);
         showAlert(error.message, 'danger');
         submitButton.textContent = originalText;
         submitButton.disabled = false;
     }
 }
 
-// --- REGISTER FUNCTION ---
 async function handleRegister() {
-    const nameInput = document.getElementById('name');
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirmPassword');
@@ -113,8 +95,7 @@ async function handleRegister() {
     const submitButton = document.querySelector('#registerForm button[type="submit"]');
     const originalText = submitButton.textContent;
 
-    // Validation
-    if (!nameInput.value || !emailInput.value || !passwordInput.value) {
+    if (!firstNameInput.value || !lastNameInput.value || !emailInput.value || !passwordInput.value) {
         showAlert('Please fill in all fields', 'danger');
         return;
     }
@@ -124,93 +105,73 @@ async function handleRegister() {
         return;
     }
 
-    // Split Name
-    const nameParts = nameInput.value.trim().split(' ');
-    const firstName = nameParts[0];
-    const lastName = nameParts.slice(1).join(' ') || '';
     const role = roleSelect ? roleSelect.value : 'CUSTOMER';
-
-    // UI Loading State
     submitButton.textContent = 'Creating Account...';
     submitButton.disabled = true;
 
     try {
         const response = await fetch(`${API_BASE_URL}/register`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({
-                firstName: firstName,
-                lastName: lastName,
+                firstName: firstNameInput.value,
+                lastName: lastNameInput.value,
                 email: emailInput.value,
                 password: passwordInput.value,
                 role: role
             })
         });
 
-        if (response.ok) {
-            const data = await response.json();
+        const data = await response.json();
 
-            // Auto-Login after Register
+        if (response.ok) {
             localStorage.setItem('jwt_token', data.token);
             localStorage.setItem('user_role', data.role);
             localStorage.setItem('user_email', emailInput.value);
 
-            showAlert('Account created successfully!', 'success');
+            showAlert('Account created successfully! Redirecting...', 'success');
 
-            // Redirect
+            // Updated redirection logic for registration to match roles
             setTimeout(() => {
-                if (role === 'BOOKSELLER') {
-                    window.location.href = '../bookseller/index.html';
-                } else if (role === 'DELIVERY_PERSON') {
-                    window.location.href = '../delivery person/index.html';
-                } else {
-                    window.location.href = 'index.html';
-                }
+                if (data.role === 'ADMIN') window.location.href = '../admin/index.html';
+                else if (data.role === 'BOOKSELLER') window.location.href = '../bookseller/index.html';
+                else if (data.role === 'DELIVERY_PERSON') window.location.href = '../delivery person/index.html';
+                else window.location.href = 'index.html'; // Default for CUSTOMER
             }, 1000);
         } else {
-            // Handle plain text errors from backend
-            const errorText = await response.text();
-            throw new Error(errorText || 'Registration failed');
+            throw new Error(data.message || 'Registration failed');
         }
     } catch (error) {
-        console.error('Register Error:', error);
         showAlert(error.message, 'danger');
         submitButton.textContent = originalText;
         submitButton.disabled = false;
     }
 }
 
-// Helper: Show Alert
 function showAlert(message, type = 'success') {
-    // Remove existing alerts
     const existingAlert = document.querySelector('.alert');
     if (existingAlert) existingAlert.remove();
 
-    // Create new alert
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type}`;
     alertDiv.textContent = message;
-
-    // Add simple styling if css missing
-    alertDiv.style.padding = '10px';
-    alertDiv.style.marginBottom = '15px';
-    alertDiv.style.borderRadius = '5px';
-    alertDiv.style.textAlign = 'center';
+    alertDiv.style = "padding: 15px; margin-bottom: 20px; border-radius: 8px; text-align: center; font-weight: bold; width: 100%; box-sizing: border-box;";
 
     if(type === 'danger') {
         alertDiv.style.backgroundColor = '#f8d7da';
         alertDiv.style.color = '#721c24';
+        alertDiv.style.border = '1px solid #f5c6cb';
     } else {
         alertDiv.style.backgroundColor = '#d4edda';
         alertDiv.style.color = '#155724';
+        alertDiv.style.border = '1px solid #c3e6cb';
     }
 
     const container = document.querySelector('.form-container') || document.querySelector('.container');
-    if (container) {
-        container.insertBefore(alertDiv, container.firstChild);
-    }
-
-    setTimeout(() => {
-        if (alertDiv.parentNode) alertDiv.remove();
-    }, 5000);
+    if (container) container.prepend(alertDiv);
+    setTimeout(() => { if (alertDiv.parentNode) alertDiv.remove(); }, 5000);
 }

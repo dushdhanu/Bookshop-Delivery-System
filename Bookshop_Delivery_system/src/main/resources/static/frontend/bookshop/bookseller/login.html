@@ -14,12 +14,8 @@
     <div class="nav-container">
         <h1 class="nav-logo">BookShop Bookseller</h1>
         <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="../index.html" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="login.html" class="nav-link active">Login</a>
-            </li>
+            <li class="nav-item"><a href="../index.html" class="nav-link">Home</a></li>
+            <li class="nav-item"><a href="login.html" class="nav-link active">Login</a></li>
         </ul>
     </div>
 </nav>
@@ -49,41 +45,19 @@
 </section>
 
 <footer class="footer">
-    <div class="container">
-        <p>&copy; 2025 BookShop. All rights reserved.</p>
-    </div>
+    <div class="container"><p>&copy; 2025 BookShop. All rights reserved.</p></div>
 </footer>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const loginForm = document.getElementById('loginForm');
-
         if (loginForm) {
             loginForm.addEventListener('submit', function(e) {
-                e.preventDefault(); // IMPORTANT: Stop standard form submission
+                e.preventDefault();
                 handleBooksellerLogin();
             });
         }
     });
-
-    // Helper function to show alerts
-    function showAlert(message, type = 'success') {
-        const existingAlert = document.querySelector('.alert');
-        if (existingAlert) existingAlert.remove();
-
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type}`;
-        alertDiv.textContent = message;
-
-        const formContainer = document.querySelector('.form-container');
-        if (formContainer) {
-            formContainer.insertBefore(alertDiv, formContainer.firstChild);
-        }
-
-        setTimeout(() => {
-            if (alertDiv.parentNode) alertDiv.remove();
-        }, 5000);
-    }
 
     async function handleBooksellerLogin() {
         const email = document.getElementById('email').value;
@@ -91,78 +65,48 @@
         const submitButton = document.querySelector('#loginForm .btn');
         const originalText = submitButton.textContent;
 
-        if (!email || !password) {
-            showAlert('Please fill in all fields', 'danger');
-            return;
-        }
-
         submitButton.textContent = 'Logging in...';
         submitButton.disabled = true;
 
         try {
             const response = await fetch('http://localhost:8080/api/auth/login', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: email, password: password })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
             });
 
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Server Error: Received non-JSON response.");
+            }
+
+            const data = await response.json();
+
             if (response.ok) {
-                const data = await response.json();
-
-                // Security Check for Role
                 if (data.role !== 'BOOKSELLER' && data.role !== 'ADMIN') {
-                    showAlert('Access Denied: This portal is for Booksellers only.', 'danger');
-                    submitButton.textContent = originalText;
-                    submitButton.disabled = false;
-                    return;
+                    throw new Error('Access Denied: This portal is for Booksellers only.');
                 }
-
                 localStorage.setItem('jwt_token', data.token);
                 localStorage.setItem('user_role', data.role);
-
-                showAlert('Login successful! Redirecting...', 'success');
-
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1000);
+                window.location.href = 'index.html';
             } else {
-                showAlert('Invalid email or password', 'danger');
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
+                throw new Error(data.message || 'Login failed');
             }
         } catch (error) {
-            console.error('Login error:', error);
-            showAlert('Server connection failed. Please try again.', 'danger');
+            showAlert(error.message, 'danger');
             submitButton.textContent = originalText;
             submitButton.disabled = false;
         }
     }
-    // Inside your login function
-    try {
-        const response = await fetch('http://localhost:8080/api/auth/login', { ... });
 
-        // Check Content-Type header to ensure it's JSON
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            // If we still get HTML (e.g. 404 or 502), throw specific error
-            const text = await response.text();
-            console.error("Non-JSON Response:", text);
-            throw new Error("Server Error: Received non-JSON response.");
-        }
-
-        const data = await response.json();
-
-        if (response.ok) {
-            // ... success logic ...
-        } else {
-            // Use the message from our new GlobalExceptionHandler
-            showAlert(data.message || 'Login failed', 'danger');
-        }
-    } catch (error) {
-        console.error('Login error:', error);
-        showAlert(error.message, 'danger');
+    function showAlert(message, type) {
+        const existing = document.querySelector('.alert');
+        if (existing) existing.remove();
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type}`;
+        alertDiv.textContent = message;
+        document.querySelector('.form-container').insertBefore(alertDiv, document.querySelector('#loginForm'));
+        setTimeout(() => alertDiv.remove(), 5000);
     }
 </script>
 </body>

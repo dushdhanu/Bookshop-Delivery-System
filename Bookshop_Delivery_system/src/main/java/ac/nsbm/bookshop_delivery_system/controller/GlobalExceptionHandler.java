@@ -14,10 +14,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
+        // UPDATE: Print the stack trace to the server console for debugging
+        ex.printStackTrace();
+
         Map<String, String> response = new HashMap<>();
         response.put("error", "Operation Failed");
         response.put("message", ex.getMessage());
-        // Return 400 Bad Request for general runtime errors (like User not found during register)
+        // Return 400 Bad Request for general runtime errors (like Email already exists)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -31,6 +34,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
+        // UPDATE: Print the stack trace for unexpected server errors
+        ex.printStackTrace();
+
         Map<String, String> response = new HashMap<>();
         response.put("error", "Internal Server Error");
         response.put("message", ex.getMessage());

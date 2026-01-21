@@ -1,8 +1,8 @@
 const API_BASE_URL = 'http://localhost:8080/api';
 
-// 1. Check Authentication (Matches what orders.js calls)
+// 1. Check Authentication
 function checkAuth() {
-    const token = localStorage.getItem('jwt_token'); // FIXED: Matches auth.js
+    const token = localStorage.getItem('jwt_token');
     if (!token) {
         alert('You are not logged in!');
         window.location.href = 'login.html';
@@ -13,12 +13,11 @@ function checkAuth() {
 
 // 2. Authenticated Fetch Helper
 async function authenticatedFetch(endpoint, options = {}) {
-    const token = localStorage.getItem('jwt_token'); // FIXED: Matches auth.js
+    const token = localStorage.getItem('jwt_token');
 
-    // Helper to handle URL (supports both "/api/..." and "http://...")
     let url = endpoint;
     if (!endpoint.startsWith('http')) {
-        url = `http://localhost:8080${endpoint}`;
+        url = `${API_BASE_URL}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;
     }
 
     const headers = {
@@ -27,22 +26,24 @@ async function authenticatedFetch(endpoint, options = {}) {
         ...options.headers
     };
 
+    // Remove Content-Type if sending FormData (Multipart)
+    if (options.body instanceof FormData) {
+        delete headers['Content-Type'];
+    }
+
     const response = await fetch(url, { ...options, headers });
 
-    // Handle Session Expiry
-    if (response.status === 401) {
-        alert('Session expired. Please login again.');
+    if (response.status === 401 || response.status === 403) {
+        console.error('Auth Error:', response.status);
         localStorage.removeItem('jwt_token');
-        localStorage.removeItem('user_role');
-        localStorage.removeItem('user_email');
         window.location.href = 'login.html';
-        throw new Error('Unauthorized');
+        throw new Error('Unauthorized or Forbidden');
     }
 
     return response;
 }
 
-// 3. Update Profile Function (Updated to use authenticatedFetch)
+// 3. Update Profile
 async function updateProfile() {
     const firstName = document.getElementById('firstName').value;
     const lastName = document.getElementById('lastName').value;
@@ -50,7 +51,7 @@ async function updateProfile() {
     const address = document.getElementById('address') ? document.getElementById('address').value : "";
 
     try {
-        const response = await authenticatedFetch('/api/users/profile', {
+        const response = await authenticatedFetch('/users/profile', {
             method: 'PUT',
             body: JSON.stringify({ firstName, lastName, phone, address })
         });
