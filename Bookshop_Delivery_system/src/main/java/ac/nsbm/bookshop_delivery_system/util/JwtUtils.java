@@ -21,9 +21,15 @@ public class JwtUtils {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    // Generate the signing key from the secret property
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
+        // Ensure the key is at least 32 bytes (256 bits) for HS256 as required by JJWT 0.12.x
+        if (keyBytes.length < 32) {
+            byte[] paddedKey = new byte[32];
+            System.arraycopy(keyBytes, 0, paddedKey, 0, keyBytes.length);
+            return Keys.hmacShaKeyFor(paddedKey);
+        }
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String extractUsername(String token) {
@@ -37,19 +43,18 @@ public class JwtUtils {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey()) // New syntax for 0.12.x
+                .verifyWith(getSigningKey())
                 .build()
-                .parseSignedClaims(token)    // Replaces parseClaimsJws
-                .getPayload();               // Replaces getBody
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
-    // Keep this taking a String to match AuthService usage
     public String generateToken(String username) {
         return Jwts.builder()
                 .subject(username)
-                .issuedAt(new Date(System.currentTimeMillis()))
+                .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(getSigningKey()) // New syntax requires Key object
+                .signWith(getSigningKey())
                 .compact();
     }
 

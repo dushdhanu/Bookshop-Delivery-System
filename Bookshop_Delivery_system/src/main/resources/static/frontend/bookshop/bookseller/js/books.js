@@ -1,157 +1,150 @@
 // Books Page JavaScript for Bookseller
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Edit book functionality
+    // --- NEW: Add Book Form Submission ---
+    const addBookForm = document.getElementById('addBookForm');
+    if (addBookForm) {
+        addBookForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+
+            const formData = new FormData();
+            const imageFile = document.getElementById('bookImage').files[0];
+
+            // Construct metadata object to match the "Book" entity in Java
+            const bookData = {
+                title: document.getElementById('bookTitle').value,
+                author: document.getElementById('author').value,
+                isbn: document.getElementById('isbn').value,
+                category: document.getElementById('category').value,
+                price: parseFloat(document.getElementById('price').value),
+                stock: parseInt(document.getElementById('stock').value),
+                description: document.getElementById('description').value
+            };
+
+            // Convert object to a JSON Blob so @RequestPart can read it as application/json
+            formData.append('book', new Blob([JSON.stringify(bookData)], { type: 'application/json' }));
+
+            if (imageFile) {
+                formData.append('file', imageFile);
+            }
+
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/books/add', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                        // Note: Do NOT set Content-Type header; FormData sets the multipart boundary automatically
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    showAlert('Book added successfully!', 'success');
+                    setTimeout(() => window.location.href = 'books.html', 1500);
+                } else {
+                    const error = await response.json();
+                    showAlert('Error: ' + (error.message || 'Failed to add book'), 'danger');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showAlert('Server connection failed.', 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Add Book';
+            }
+        });
+    }
+
+    // --- ORIGINAL: Edit book functionality ---
     const editBookButtons = document.querySelectorAll('.btn-secondary');
-    
     editBookButtons.forEach(button => {
         button.addEventListener('click', function() {
             const bookCard = this.closest('.book-card');
             const bookTitle = bookCard.querySelector('h3').textContent;
-            
-            // Edit book functionality
             editBook(bookTitle);
         });
     });
-    
-    // Delete book functionality
+
+    // --- ORIGINAL: Delete book functionality ---
     const deleteBookButtons = document.querySelectorAll('.btn-danger');
-    
     deleteBookButtons.forEach(button => {
         button.addEventListener('click', function() {
             const bookCard = this.closest('.book-card');
             const bookTitle = bookCard.querySelector('h3').textContent;
-            
-            // Delete book functionality
             deleteBook(bookTitle, bookCard);
         });
     });
-    
-    // Search functionality
+
+    // --- ORIGINAL: Search functionality ---
     const searchInput = document.querySelector('.search-bar .form-input');
     const searchButton = document.querySelector('.search-bar .btn');
-    
     if (searchButton) {
-        searchButton.addEventListener('click', function() {
-            const searchTerm = searchInput.value.trim();
-            if (searchTerm) {
-                performSearch(searchTerm);
-            }
-        });
+        searchButton.addEventListener('click', () => performSearch(searchInput.value.trim()));
     }
-    
     if (searchInput) {
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const searchTerm = searchInput.value.trim();
-                if (searchTerm) {
-                    performSearch(searchTerm);
-                }
-            }
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch(searchInput.value.trim());
         });
     }
 });
 
-// Edit book
+// Edit book function
 function editBook(bookTitle) {
-    // In a real application, this would redirect to the edit book page
     console.log(`Editing "${bookTitle}"`);
-    
-    // For demo purposes, show an alert
     showAlert(`Redirecting to edit "${bookTitle}"`, 'info');
-    
-    // In a real app, you would redirect to the edit page
     // window.location.href = 'edit-book.html';
 }
 
-// Delete book
+// Delete book function
 function deleteBook(bookTitle, bookElement) {
     if (confirm(`Are you sure you want to delete "${bookTitle}"? This action cannot be undone.`)) {
-        // In a real application, this would delete the book from the database
         console.log(`Deleting "${bookTitle}"`);
-        
-        // Show loading state
         const deleteButton = bookElement.querySelector('.btn-danger');
-        const originalText = deleteButton.textContent;
         deleteButton.textContent = 'Deleting...';
         deleteButton.disabled = true;
-        
-        // Simulate API call delay
+
+        // Simulate API call and DOM removal
         setTimeout(() => {
-            // Remove the book element from the DOM
             bookElement.remove();
-            
-            // Show success message
             showAlert(`"${bookTitle}" has been deleted successfully!`, 'success');
         }, 1000);
     }
 }
 
-// Perform search
+// Search function
 function performSearch(term) {
-    // In a real application, this would filter the books based on the search term
+    if (!term) return;
     console.log(`Searching for: ${term}`);
-    
-    // Show search results message
     const resultsInfo = document.querySelector('.results-info p');
-    if (resultsInfo) {
-        resultsInfo.textContent = `Showing results for "${term}"`;
-    }
-    
-    // Highlight search term in book titles (simplified implementation)
+    if (resultsInfo) resultsInfo.textContent = `Showing results for "${term}"`;
+
     const bookTitles = document.querySelectorAll('.book-card h3');
     bookTitles.forEach(title => {
         const text = title.textContent;
-        if (text.toLowerCase().includes(term.toLowerCase())) {
-            title.style.backgroundColor = '#fff3cd';
-        }
+        title.style.backgroundColor = text.toLowerCase().includes(term.toLowerCase()) ? '#fff3cd' : '';
     });
-    
-    // Show alert for demo purposes
-    showAlert(`Search results for "${term}" displayed`, 'info');
 }
 
-// Filter books by category
-function filterByCategory(category) {
-    console.log(`Filtering by category: ${category}`);
-    // In a real application, this would filter the books by category
-    
-    // Show alert for demo purposes
-    showAlert(`Filtered by category: ${category}`, 'info');
-}
-
-// Sort books
-function sortBooks(sortOption) {
-    console.log(`Sorting by: ${sortOption}`);
-    // In a real application, this would sort the books
-    
-    // Show alert for demo purposes
-    showAlert(`Sorted by: ${sortOption}`, 'info');
-}
-
-// Show alert messages
+// Unified Alert system
 function showAlert(message, type = 'success') {
-    // Remove existing alerts
     const existingAlert = document.querySelector('.alert');
-    if (existingAlert) {
-        existingAlert.remove();
-    }
-    
-    // Create alert element
+    if (existingAlert) existingAlert.remove();
+
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type === 'info' ? 'warning' : type}`;
     alertDiv.textContent = message;
-    
-    // Insert at the top of the container
+
     const container = document.querySelector('.container');
     if (container) {
         container.insertBefore(alertDiv, container.firstChild);
     }
-    
-    // Remove after 5 seconds
+
     setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
-        }
+        if (alertDiv.parentNode) alertDiv.remove();
     }, 5000);
 }

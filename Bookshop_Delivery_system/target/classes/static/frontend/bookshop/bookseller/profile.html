@@ -74,6 +74,7 @@
             font-size: 2rem;
             border: 3px solid #3b82f6;
             margin: 0 auto 1rem;
+            overflow: hidden;
         }
 
         .profile-details h3 {
@@ -147,14 +148,7 @@
             <li class="nav-item">
                 <a href="profile.html" class="nav-link active">Profile</a>
             </li>
-
-
         </ul>
-        <div class="nav-toggle">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </div>
     </div>
 </nav>
 
@@ -203,79 +197,46 @@
                         <form id="storeForm">
                             <div class="profile-header">
                                 <div class="profile-image">
-                                    <div class="profile-image-placeholder">BS</div>
-                                    <button type="button" class="btn btn-secondary btn-sm">Change Logo</button>
+                                    <div class="profile-image-placeholder" id="profileInitials">BS</div>
+                                    <input type="file" id="imageInput" style="display: none;" accept="image/*">
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('imageInput').click()">Change Logo</button>
                                 </div>
                                 <div class="profile-details">
-                                    <h3>Fantastic Fiction Books</h3>
-                                    <p class="profile-email">contact@fantasticfiction.com</p>
-                                    <p class="profile-member-since">Member since: March 15, 2023</p>
+                                    <h3 id="displayStoreName">Store Name</h3>
+                                    <p class="profile-email" id="displayEmail">Email Address</p>
+                                    <p class="profile-member-since">Member since: <span id="memberSince">March 15, 2023</span></p>
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="storeName" class="form-label">Store Name</label>
-                                    <input type="text" id="storeName" name="storeName" class="form-input" value="Fantastic Fiction Books">
+                                    <input type="text" id="storeName" name="storeName" class="form-input">
                                 </div>
                                 <div class="form-group">
                                     <label for="ownerName" class="form-label">Owner Name</label>
-                                    <input type="text" id="ownerName" name="ownerName" class="form-input" value="John Smith">
+                                    <input type="text" id="ownerName" name="ownerName" class="form-input">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="email" class="form-label">Email Address</label>
-                                <input type="email" id="email" name="email" class="form-input" value="contact@fantasticfiction.com">
+                                <input type="email" id="email" name="email" class="form-input" disabled>
                             </div>
 
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="phone" class="form-label">Phone Number</label>
-                                    <input type="tel" id="phone" name="phone" class="form-input" value="(123) 456-7890">
-                                </div>
-                                <div class="form-group">
-                                    <label for="website" class="form-label">Website</label>
-                                    <input type="url" id="website" name="website" class="form-input" value="www.fantasticfiction.com">
-                                </div>
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" class="form-input">
                             </div>
 
                             <div class="form-group">
                                 <label for="address" class="form-label">Store Address</label>
-                                <textarea id="address" name="address" class="form-input" rows="3">123 Book Street, Library City, LC 12345</textarea>
+                                <textarea id="address" name="address" class="form-input" rows="3"></textarea>
                             </div>
 
                             <div class="form-group">
                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                                 <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Change Password</h2>
-                    </div>
-                    <div class="card-body">
-                        <form id="passwordForm">
-                            <div class="form-group">
-                                <label for="currentPassword" class="form-label">Current Password</label>
-                                <input type="password" id="currentPassword" name="currentPassword" class="form-input" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="newPassword" class="form-label">New Password</label>
-                                <input type="password" id="newPassword" name="newPassword" class="form-input" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                                <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
-                            </div>
-
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-primary">Update Password</button>
                             </div>
                         </form>
                     </div>
@@ -289,14 +250,14 @@
                         <form id="preferencesForm">
                             <div class="form-group">
                                 <div class="form-checkbox">
-                                    <input type="checkbox" id="notifications" name="notifications" checked>
+                                    <input type="checkbox" id="notifications" name="notifications">
                                     <label for="notifications">Enable order notifications</label>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <div class="form-checkbox">
-                                    <input type="checkbox" id="promotions" name="promotions" checked>
+                                    <input type="checkbox" id="promotions" name="promotions">
                                     <label for="promotions">Receive promotional emails</label>
                                 </div>
                             </div>
@@ -312,7 +273,7 @@
                                 <label for="primaryCategory" class="form-label">Primary Book Category</label>
                                 <select id="primaryCategory" name="primaryCategory" class="form-input">
                                     <option value="">Select a category</option>
-                                    <option value="fiction" selected>Fiction</option>
+                                    <option value="fiction">Fiction</option>
                                     <option value="non-fiction">Non-Fiction</option>
                                     <option value="science-fiction">Science Fiction</option>
                                     <option value="mystery">Mystery & Thriller</option>
@@ -320,16 +281,6 @@
                                     <option value="biography">Biography</option>
                                     <option value="history">History</option>
                                     <option value="self-help">Self-Help</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="shippingMethod" class="form-label">Preferred Shipping Method</label>
-                                <select id="shippingMethod" name="shippingMethod" class="form-input">
-                                    <option value="">Select shipping method</option>
-                                    <option value="standard" selected>Standard Shipping</option>
-                                    <option value="express">Express Shipping</option>
-                                    <option value="overnight">Overnight Shipping</option>
                                 </select>
                             </div>
 
@@ -363,7 +314,6 @@
                 <h3>Bookseller Portal</h3>
                 <p>Manage your book listings and sales on BookShop</p>
             </div>
-
             <div class="footer-section">
                 <h4>Quick Links</h4>
                 <ul class="footer-links">
@@ -371,31 +321,17 @@
                     <li><a href="books.html">My Books</a></li>
                     <li><a href="orders.html">Orders</a></li>
                     <li><a href="profile.html">Profile</a></li>
-                    <li><a href="../index.html">Customer View</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h4>Support</h4>
-                <ul class="footer-links">
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">Selling Guidelines</a></li>
-                    <li><a href="#">Commission Structure</a></li>
                 </ul>
             </div>
         </div>
-
         <div class="footer-bottom">
             <p>&copy; 2025 BookShop. All rights reserved.</p>
-            <div class="footer-legal">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-            </div>
         </div>
     </div>
 </footer>
 
 <script src="js/session.js"></script>
 <script src="js/api.js"></script>
+<script src="js/profile.js"></script>
 </body>
 </html>

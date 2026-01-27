@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 5. Delete Account Button Listener (NEW)
+    // 5. Delete Account Button Listener
     const deleteBtn = document.getElementById('deleteAccountBtn');
     if (deleteBtn) {
         deleteBtn.addEventListener('click', deleteAccount);
@@ -64,7 +64,7 @@ function loadUserProfile() {
             return response.json();
         })
         .then(user => {
-            // Populate fields
+            // Populate form fields
             document.getElementById('firstName').value = user.firstName || '';
             document.getElementById('lastName').value = user.lastName || '';
             document.getElementById('email').value = user.email || '';
@@ -72,26 +72,32 @@ function loadUserProfile() {
             if(document.getElementById('birthDate')) document.getElementById('birthDate').value = user.birthDate || '';
             if(document.getElementById('address')) document.getElementById('address').value = user.address || '';
 
-            // Display Info
+            // Update display elements
             if(document.getElementById('displayName')) document.getElementById('displayName').textContent = `${user.firstName} ${user.lastName}`;
             if(document.getElementById('displayEmail')) document.getElementById('displayEmail').textContent = user.email;
 
-            // Image
+            // FIXED: Clean the image path to prevent double slashes
             if (user.profileImage && document.getElementById('profileImagePreview')) {
-                document.getElementById('profileImagePreview').src = 'http://localhost:8080' + user.profileImage;
+                const cleanPath = user.profileImage.startsWith('/') ? user.profileImage.substring(1) : user.profileImage;
+                document.getElementById('profileImagePreview').src = 'http://localhost:8080/' + cleanPath;
             }
 
-            // Preferences
+            // Populate preferences
             if(document.getElementById('newsletter')) document.getElementById('newsletter').checked = user.newsletter || false;
             if(document.getElementById('promotions')) document.getElementById('promotions').checked = user.promotions || false;
             if(document.getElementById('notifications')) document.getElementById('notifications').checked = user.notifications || false;
             if(document.getElementById('preferredCategory')) document.getElementById('preferredCategory').value = user.preferredCategory || '';
         })
-        .catch(error => console.error(error));
+        .catch(error => console.error('Error loading profile:', error));
 }
 
 function updateUserProfile() {
     const token = localStorage.getItem('jwt_token');
+    if (!token) {
+        alert("Session expired. Please login again.");
+        window.location.href = 'login.html';
+        return;
+    }
 
     const updatedData = {
         firstName: document.getElementById('firstName').value,
@@ -101,7 +107,6 @@ function updateUserProfile() {
         birthDate: document.getElementById('birthDate') ? document.getElementById('birthDate').value : null
     };
 
-    // Add address if exists in DOM
     const addressInput = document.getElementById('address');
     if(addressInput) updatedData.address = addressInput.value;
 
@@ -114,8 +119,12 @@ function updateUserProfile() {
         body: JSON.stringify(updatedData)
     })
         .then(async response => {
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || 'Failed to update profile');
+            const isJson = response.headers.get('content-type')?.includes('application/json');
+            const data = isJson ? await response.json() : null;
+
+            if (!response.ok) {
+                throw new Error(data?.error || data?.message || 'Failed to update profile');
+            }
             alert('Profile updated successfully!');
             loadUserProfile();
         })
@@ -124,7 +133,6 @@ function updateUserProfile() {
 
 function updatePreferences() {
     const token = localStorage.getItem('jwt_token');
-
     const updatedData = {
         newsletter: document.getElementById('newsletter').checked,
         promotions: document.getElementById('promotions').checked,
@@ -177,17 +185,12 @@ function changePassword() {
 }
 
 function deleteAccount() {
-    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-        return;
-    }
-
+    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) return;
     const token = localStorage.getItem('jwt_token');
 
     fetch('http://localhost:8080/api/users/profile', {
         method: 'DELETE',
-        headers: {
-            'Authorization': 'Bearer ' + token
-        }
+        headers: { 'Authorization': 'Bearer ' + token }
     })
         .then(async response => {
             if (!response.ok) {
@@ -198,10 +201,7 @@ function deleteAccount() {
             localStorage.removeItem('jwt_token');
             window.location.href = 'index.html';
         })
-        .catch(error => {
-            console.error('Error:', error);
-            alert(error.message);
-        });
+        .catch(error => alert(error.message));
 }
 
 function uploadProfileImage(file) {
@@ -214,10 +214,20 @@ function uploadProfileImage(file) {
         headers: { 'Authorization': 'Bearer ' + token },
         body: formData
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) throw new Error('Upload failed');
+            return response.json();
+        })
         .then(data => {
             alert('Image uploaded successfully!');
-            document.getElementById('profileImagePreview').src = 'http://localhost:8080' + data.imageUrl;
+            // FIXED: Clean the URL for immediate preview update
+            if (data.imageUrl && document.getElementById('profileImagePreview')) {
+                const cleanPath = data.imageUrl.startsWith('/') ? data.imageUrl.substring(1) : data.imageUrl;
+                document.getElementById('profileImagePreview').src = 'http://localhost:8080/' + cleanPath;
+            }
         })
-        .catch(() => alert('Failed to upload image.'));
+        .catch(err => {
+            console.error('Error uploading image:', err);
+            alert('Failed to upload image.');
+        });
 }

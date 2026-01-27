@@ -29,12 +29,12 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
-        // Check if email already exists
+        // 1. Check if email already exists
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email address is already registered. Please login or use a different email.");
         }
 
-        // Handle Role Assignment from the request
+        // 2. Handle Role Assignment from the request
         Role userRole = Role.CUSTOMER;
         if (request.getRole() != null && !request.getRole().isEmpty()) {
             try {
@@ -44,6 +44,7 @@ public class AuthService {
             }
         }
 
+        // 3. Create and map the user entity
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
@@ -51,10 +52,13 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(userRole);
 
-        userRepository.save(user);
-        String token = jwtUtils.generateToken(user.getEmail());
+        // 4. FIX: Save the user and capture the saved instance to ensure data persistence
+        User savedUser = userRepository.save(user);
 
-        return new AuthResponse(token, user.getRole().name(), user.getId());
+        // 5. FIX: Generate token using the email from the savedUser instance
+        String token = jwtUtils.generateToken(savedUser.getEmail());
+
+        return new AuthResponse(token, savedUser.getRole().name(), savedUser.getId());
     }
 
     public AuthResponse login(AuthRequest request) {
@@ -67,7 +71,7 @@ public class AuthService {
         }
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found in system record"));
 
         String token = jwtUtils.generateToken(user.getEmail());
         return new AuthResponse(token, user.getRole().name(), user.getId());

@@ -1,7 +1,5 @@
 package ac.nsbm.bookshop_delivery_system.service;
 
-import ac.nsbm.bookshop_delivery_system.dto.ChangePasswordRequest;
-import ac.nsbm.bookshop_delivery_system.dto.RegisterRequest;
 import ac.nsbm.bookshop_delivery_system.dto.UserProfileDto;
 import ac.nsbm.bookshop_delivery_system.entity.Role;
 import ac.nsbm.bookshop_delivery_system.entity.User;
@@ -13,11 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.Optional;
+import java.nio.file.*;
 import java.util.UUID;
 
 @Service
@@ -25,39 +19,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    // Define where to save uploaded images
     private final String UPLOAD_DIR = "src/main/resources/static/images/profiles/";
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @Transactional
-    public User registerUser(RegisterRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already in use");
-        }
-
-        User user = new User();
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        try {
-            user.setRole(Role.valueOf(request.getRole().toUpperCase()));
-        } catch (Exception e) {
-            user.setRole(Role.CUSTOMER);
-        }
-
-        user.setNewsletter(false);
-        user.setPromotions(false);
-        user.setNotifications(true);
-
-        return userRepository.save(user);
     }
 
     public UserProfileDto getUserProfile(String email) {
@@ -71,7 +38,7 @@ public class UserService {
         dto.setPhone(user.getPhone());
         dto.setAddress(user.getAddress());
         dto.setBirthDate(user.getBirthDate());
-
+        dto.setProfileImage(user.getProfileImage());
         dto.setNewsletter(user.isNewsletter());
         dto.setPromotions(user.isPromotions());
         dto.setNotifications(user.isNotifications());
@@ -79,93 +46,81 @@ public class UserService {
 
         if (user.getRole() == Role.BOOKSELLER) {
             dto.setStoreName(user.getStoreName());
-            dto.setWebsite(user.getWebsite());
         } else if (user.getRole() == Role.DELIVERY_PERSON) {
             dto.setVehicleType(user.getVehicleType());
             dto.setLicensePlate(user.getLicensePlate());
             dto.setDeliveryArea(user.getDeliveryArea());
         }
-
         return dto;
     }
 
     @Transactional
-    public User updateUserProfile(String email, UserProfileDto profileDto) {
+    public User updateUserProfile(String email, UserProfileDto dto) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (profileDto.getFirstName() != null) user.setFirstName(profileDto.getFirstName());
-        if (profileDto.getLastName() != null) user.setLastName(profileDto.getLastName());
-        if (profileDto.getPhone() != null) user.setPhone(profileDto.getPhone());
-        if (profileDto.getAddress() != null) user.setAddress(profileDto.getAddress());
-        if (profileDto.getBirthDate() != null) user.setBirthDate(profileDto.getBirthDate());
+        if (dto.getFirstName() != null) user.setFirstName(dto.getFirstName());
+        if (dto.getLastName() != null) user.setLastName(dto.getLastName());
+        if (dto.getPhone() != null) user.setPhone(dto.getPhone());
+        if (dto.getAddress() != null) user.setAddress(dto.getAddress());
+        if (dto.getBirthDate() != null) user.setBirthDate(dto.getBirthDate());
 
-        if (profileDto.getNewsletter() != null) user.setNewsletter(profileDto.getNewsletter());
-        if (profileDto.getPromotions() != null) user.setPromotions(profileDto.getPromotions());
-        if (profileDto.getNotifications() != null) user.setNotifications(profileDto.getNotifications());
-        if (profileDto.getPreferredCategory() != null) user.setPreferredCategory(profileDto.getPreferredCategory());
+        // Update Preferences
+        if (dto.getNewsletter() != null) user.setNewsletter(dto.getNewsletter());
+        if (dto.getPromotions() != null) user.setPromotions(dto.getPromotions());
+        if (dto.getNotifications() != null) user.setNotifications(dto.getNotifications());
+        if (dto.getPreferredCategory() != null) user.setPreferredCategory(dto.getPreferredCategory());
 
+        // FIXED: Explicitly mapping delivery-specific fields from DTO to User Entity
         if (user.getRole() == Role.BOOKSELLER) {
-            if (profileDto.getStoreName() != null) user.setStoreName(profileDto.getStoreName());
-            if (profileDto.getWebsite() != null) user.setWebsite(profileDto.getWebsite());
+            if (dto.getStoreName() != null) user.setStoreName(dto.getStoreName());
         } else if (user.getRole() == Role.DELIVERY_PERSON) {
-            if (profileDto.getVehicleType() != null) user.setVehicleType(profileDto.getVehicleType());
-            if (profileDto.getLicensePlate() != null) user.setLicensePlate(profileDto.getLicensePlate());
-            if (profileDto.getDeliveryArea() != null) user.setDeliveryArea(profileDto.getDeliveryArea());
+            if (dto.getVehicleType() != null) user.setVehicleType(dto.getVehicleType());
+            if (dto.getLicensePlate() != null) user.setLicensePlate(dto.getLicensePlate());
+            if (dto.getDeliveryArea() != null) user.setDeliveryArea(dto.getDeliveryArea());
         }
 
         return userRepository.save(user);
     }
 
     @Transactional
-    public void changePassword(String email, ChangePasswordRequest request) {
+    public void changePassword(String email, String currentPassword, String newPassword) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new RuntimeException("Incorrect current password");
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new RuntimeException("Current password does not match");
         }
 
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 
-    // --- FIX: Added deleteProfile Method ---
     @Transactional
-    public void deleteProfile(String email) {
+    public void deleteUser(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userRepository.delete(user);
     }
 
-    // --- FIX: Added uploadProfileImage Method ---
+    @Transactional
     public String uploadProfileImage(String email, MultipartFile file) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         try {
-            // Ensure directory exists
             Path uploadPath = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
+            if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
 
-            // Create unique filename
             String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
             Path filePath = uploadPath.resolve(fileName);
-
-            // Save file
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Return the relative path or URL (adjust based on how you serve static files)
-            return "/images/profiles/" + fileName;
-
+            String imageUrl = "/images/profiles/" + fileName;
+            user.setProfileImage(imageUrl);
+            userRepository.save(user);
+            return imageUrl;
         } catch (IOException e) {
             throw new RuntimeException("Failed to upload image: " + e.getMessage());
         }
-    }
-
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
 }

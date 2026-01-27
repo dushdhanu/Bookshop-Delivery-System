@@ -1,49 +1,58 @@
+// File: .../static/frontend/bookshop/bookseller/js/api.js
+
 const API_BASE_URL = 'http://localhost:8080/api';
 
+/**
+ * Generates consistent headers including the JWT token from localStorage
+ */
 function getAuthHeaders() {
-    const token = localStorage.getItem('jwt_token');
-    return { 'Authorization': `Bearer ${token}` };
+    const token = localStorage.getItem('token');
+    return {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    };
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const addBookForm = document.getElementById('addBookForm');
-    if (addBookForm) {
-        addBookForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            addBook();
-        });
-    }
-});
-
-async function addBook() {
-    const form = document.getElementById('addBookForm');
-    const formData = new FormData(form);
-
-    formData.set('featured', document.getElementById('featured').checked);
-
-    const submitBtn = form.querySelector('.btn-primary');
-    submitBtn.textContent = 'Uploading...';
-    submitBtn.disabled = true;
-
+/**
+ * Fetches profile data from the backend and populates UI elements
+ */
+async function loadProfile() {
     try {
-        const response = await fetch(`${API_BASE_URL}/books`, {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: formData
+        const response = await fetch(`${API_BASE_URL}/users/profile`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
         });
 
-        if (response.ok) {
-            alert('Book added successfully!');
-            window.location.href = 'books.html';
-        } else {
-            const error = await response.text();
-            alert('Failed to add book: ' + error);
+        if (!response.ok) throw new Error('Failed to fetch profile');
+
+        const data = await response.json();
+
+        // Update Text labels in the sidebar/header
+        const storeLabel = document.getElementById('displayStoreName');
+        const emailLabel = document.getElementById('displayEmail');
+        if (storeLabel) storeLabel.textContent = data.storeName || 'My Store';
+        if (emailLabel) emailLabel.textContent = data.email;
+
+        // Populate Form Input fields
+        if (document.getElementById('storeName')) document.getElementById('storeName').value = data.storeName || '';
+        if (document.getElementById('ownerName')) {
+            document.getElementById('ownerName').value = `${data.firstName || ''} ${data.lastName || ''}`.trim();
         }
-    } catch (err) {
-        console.error(err);
-        alert('Network error.');
-    } finally {
-        submitBtn.textContent = 'Add Book';
-        submitBtn.disabled = false;
+        if (document.getElementById('email')) document.getElementById('email').value = data.email || '';
+        if (document.getElementById('phone')) document.getElementById('phone').value = data.phone || '';
+        if (document.getElementById('address')) document.getElementById('address').value = data.address || '';
+
+        // Handle Profile Image display
+        const initialsDiv = document.getElementById('profileInitials');
+        if (data.profileImage && initialsDiv) {
+            initialsDiv.style.backgroundImage = `url('${data.profileImage}')`;
+            initialsDiv.style.backgroundSize = 'cover';
+            initialsDiv.textContent = '';
+        }
+    } catch (error) {
+        console.error('Error in loadProfile:', error);
     }
 }

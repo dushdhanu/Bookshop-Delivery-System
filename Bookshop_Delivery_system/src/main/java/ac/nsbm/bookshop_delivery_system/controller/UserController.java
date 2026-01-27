@@ -15,7 +15,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
@@ -27,17 +26,19 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<UserProfileDto> getProfile(Authentication authentication) {
+        if (authentication == null) return ResponseEntity.status(401).build();
         String email = authentication.getName();
-        // FIX: Changed to match Service method 'getUserProfile'
         UserProfileDto userProfile = userService.getUserProfile(email);
         return ResponseEntity.ok(userProfile);
     }
 
     @PutMapping("/profile")
     public ResponseEntity<?> updateProfile(@RequestBody UserProfileDto userProfileDto, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body(Collections.singletonMap("error", "Unauthorized"));
+        }
         String email = authentication.getName();
         try {
-            // FIX: Changed to match Service method 'updateUserProfile'
             User updatedUser = userService.updateUserProfile(email, userProfileDto);
             return ResponseEntity.ok(updatedUser);
         } catch (RuntimeException e) {
@@ -45,35 +46,46 @@ public class UserController {
         }
     }
 
+    /**
+     * FIXED: Added explicit authentication check and correct DTO mapping for password change.
+     */
     @PutMapping("/password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body(Collections.singletonMap("error", "Unauthorized"));
+        }
         String email = authentication.getName();
         try {
-            // FIX: Pass the 'request' object directly, not separate strings
-            userService.changePassword(email, request);
+            // Passing individual fields or the request object to match your UserService implementation
+            userService.changePassword(email, request.getCurrentPassword(), request.getNewPassword());
             return ResponseEntity.ok(Collections.singletonMap("message", "Password updated successfully"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 
-    @DeleteMapping("/profile")
-    public ResponseEntity<?> deleteProfile(Authentication authentication) {
-        String email = authentication.getName();
-        try {
-            // FIX: Service now has this method
-            userService.deleteProfile(email);
-            return ResponseEntity.ok(Collections.singletonMap("message", "Account deleted successfully"));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Failed to delete account: " + e.getMessage()));
-        }
-    }
-
     @PostMapping("/profile/image")
     public ResponseEntity<Map<String, String>> uploadProfileImage(@RequestParam("file") MultipartFile file, Authentication authentication) {
+        if (authentication == null) return ResponseEntity.status(401).build();
         String email = authentication.getName();
-        // FIX: Service now has this method
         String imageUrl = userService.uploadProfileImage(email, file);
         return ResponseEntity.ok(Collections.singletonMap("imageUrl", imageUrl));
+    }
+
+    /**
+     * FIXED: Added explicit authentication check for account deletion.
+     */
+    @DeleteMapping("/profile")
+    public ResponseEntity<?> deleteAccount(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body(Collections.singletonMap("error", "Unauthorized"));
+        }
+        String email = authentication.getName();
+        try {
+            userService.deleteUser(email);
+            return ResponseEntity.ok(Collections.singletonMap("message", "Account deleted successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("error", e.getMessage()));
+        }
     }
 }

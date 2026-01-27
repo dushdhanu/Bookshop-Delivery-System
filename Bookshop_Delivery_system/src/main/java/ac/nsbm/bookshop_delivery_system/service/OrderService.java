@@ -63,7 +63,7 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    // 2. GET USER ORDERS (Fixes 'Cannot resolve method')
+    // 2. GET USER ORDERS (Fixes 'Cannot resolve method' in Controllers)
     public List<Order> getUserOrders(String email) {
         return orderRepository.findAllByEmail(email);
     }
@@ -85,14 +85,11 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    // 6. DELETE ORDER (Fixes 'Delete Order' Button)
+    // 6. DELETE ORDER (Restores stock if the order is canceled)
     @Transactional
     public void deleteOrder(String email, Long id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-
-        // Optional: Verify user owns the order
-        // if (!order.getEmail().equals(email)) throw new RuntimeException("Unauthorized");
 
         // RESTORE STOCK Logic
         if (order.getItems() != null) {

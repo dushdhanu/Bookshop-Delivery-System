@@ -3,10 +3,11 @@ package ac.nsbm.bookshop_delivery_system.dto;
 public class UserProfileDto {
     private String firstName;
     private String lastName;
-    private String email; // Added email
+    private String email;
     private String phone;
     private String address;
     private String birthDate;
+    private String profileImage;
 
     // Preferences
     private Boolean newsletter;
@@ -16,7 +17,7 @@ public class UserProfileDto {
 
     // For Bookseller
     private String storeName;
-    private String website;
+    // Website field removed
 
     // For Delivery Person
     private String vehicleType;
@@ -36,6 +37,8 @@ public class UserProfileDto {
     public void setAddress(String address) { this.address = address; }
     public String getBirthDate() { return birthDate; }
     public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
+    public String getProfileImage() { return profileImage; }
+    public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
 
     public Boolean getNewsletter() { return newsletter; }
     public void setNewsletter(Boolean newsletter) { this.newsletter = newsletter; }
@@ -48,8 +51,6 @@ public class UserProfileDto {
 
     public String getStoreName() { return storeName; }
     public void setStoreName(String storeName) { this.storeName = storeName; }
-    public String getWebsite() { return website; }
-    public void setWebsite(String website) { this.website = website; }
     public String getVehicleType() { return vehicleType; }
     public void setVehicleType(String vehicleType) { this.vehicleType = vehicleType; }
     public String getLicensePlate() { return licensePlate; }

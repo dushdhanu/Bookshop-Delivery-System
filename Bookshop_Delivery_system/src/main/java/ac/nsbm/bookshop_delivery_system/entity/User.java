@@ -10,7 +10,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Ensure these match the fields being set in AuthService.register()
     private String firstName;
     private String lastName;
 
@@ -35,7 +34,7 @@ public class User {
 
     // Bookseller specific fields
     private String storeName;
-    private String website;
+    // Website field removed
 
     // Delivery Person specific fields
     private String employeeId;
@@ -91,9 +90,6 @@ public class User {
 
     public String getStoreName() { return storeName; }
     public void setStoreName(String storeName) { this.storeName = storeName; }
-
-    public String getWebsite() { return website; }
-    public void setWebsite(String website) { this.website = website; }
 
     public String getEmployeeId() { return employeeId; }
     public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }

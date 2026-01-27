@@ -3,6 +3,7 @@ package ac.nsbm.bookshop_delivery_system.config;
 import ac.nsbm.bookshop_delivery_system.util.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,17 +34,20 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/images/profiles/**").permitAll() // Added to permit logo access
                         .requestMatchers(
                                 "/",
                                 "/index.html",
                                 "/favicon.ico",
-                                "/frontend/**", // Permitting all files within the frontend folder
-                                "/images/**",
+                                "/frontend/**",
                                 "/static/**",
                                 "/**.css",
                                 "/**.js"
                         ).permitAll()
+                        .requestMatchers("/api/users/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

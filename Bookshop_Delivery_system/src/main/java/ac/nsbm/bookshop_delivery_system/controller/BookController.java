@@ -3,9 +3,11 @@ package ac.nsbm.bookshop_delivery_system.controller;
 import ac.nsbm.bookshop_delivery_system.entity.Book;
 import ac.nsbm.bookshop_delivery_system.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @RestController
@@ -30,18 +32,22 @@ public class BookController {
     }
 
     /**
-     * FIXED: Added POST mapping to handle adding a book.
-     * It uses the Authentication object to identify the logged-in seller.
+     * UPDATED: Handles Multipart requests to accept both Book JSON and an Image File.
+     * Consumes multipart/form-data to allow file uploads.
      */
-    @PostMapping("/add")
-    public ResponseEntity<Book> addBook(@RequestBody Book book, Authentication authentication) {
-        // authentication.getName() retrieves the email/username from the security context
+    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Book> addBook(
+            @RequestPart("book") Book book,
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            Authentication authentication) {
+
+        // Retrieves the email/username of the logged-in seller from the security context
         String email = authentication.getName();
-        Book savedBook = bookService.saveBook(book, email);
+        Book savedBook = bookService.saveBook(book, email, file);
         return ResponseEntity.ok(savedBook);
     }
 
-    // Added Delete mapping for completeness
+    // Delete mapping for inventory management
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);

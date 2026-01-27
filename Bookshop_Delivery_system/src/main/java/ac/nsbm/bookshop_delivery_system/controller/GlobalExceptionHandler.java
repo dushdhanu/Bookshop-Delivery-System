@@ -14,13 +14,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException ex) {
-        // UPDATE: Print the stack trace to the server console for debugging
         ex.printStackTrace();
-
         Map<String, String> response = new HashMap<>();
-        response.put("error", "Operation Failed");
+        response.put("error", "Bad Request");
         response.put("message", ex.getMessage());
-        // Return 400 Bad Request for general runtime errors (like Email already exists)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
@@ -28,18 +25,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleBadCredentials(BadCredentialsException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("error", "Unauthorized");
-        response.put("message", "Invalid email or password");
+        response.put("message", "Invalid email or password. Please check your inputs.");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralException(Exception ex) {
-        // UPDATE: Print the stack trace for unexpected server errors
         ex.printStackTrace();
-
         Map<String, String> response = new HashMap<>();
         response.put("error", "Internal Server Error");
-        response.put("message", ex.getMessage());
+        response.put("message", "An unexpected error occurred: " + ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }

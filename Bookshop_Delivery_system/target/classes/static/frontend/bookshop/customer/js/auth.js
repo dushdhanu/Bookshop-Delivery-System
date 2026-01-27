@@ -76,7 +76,8 @@ async function handleLogin() {
                 else window.location.href = 'index.html';
             }, 1000);
         } else {
-            throw new Error(data.message || 'Invalid email or password');
+            // Updated to prioritize the message from GlobalExceptionHandler
+            throw new Error(data.message || 'Check your inputs and try again');
         }
     } catch (error) {
         showAlert(error.message, 'danger');
@@ -135,15 +136,14 @@ async function handleRegister() {
 
             showAlert('Account created successfully! Redirecting...', 'success');
 
-            // Updated redirection logic for registration to match roles
             setTimeout(() => {
                 if (data.role === 'ADMIN') window.location.href = '../admin/index.html';
                 else if (data.role === 'BOOKSELLER') window.location.href = '../bookseller/index.html';
                 else if (data.role === 'DELIVERY_PERSON') window.location.href = '../delivery person/index.html';
-                else window.location.href = 'index.html'; // Default for CUSTOMER
+                else window.location.href = 'index.html';
             }, 1000);
         } else {
-            throw new Error(data.message || 'Registration failed');
+            throw new Error(data.message || 'Registration failed. Check your details.');
         }
     } catch (error) {
         showAlert(error.message, 'danger');

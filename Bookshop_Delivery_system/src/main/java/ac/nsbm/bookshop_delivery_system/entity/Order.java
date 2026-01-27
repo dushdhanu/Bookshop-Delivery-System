@@ -11,7 +11,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // --- THIS WAS MISSING ---
+    // --- Added missing field for user identification ---
     private String email;
 
     private LocalDateTime orderDate;
@@ -25,7 +25,7 @@ public class Order {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    // --- FIX FOR setEmail ERROR ---
+    // --- FIX FOR setEmail/getEmail ERRORS ---
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 

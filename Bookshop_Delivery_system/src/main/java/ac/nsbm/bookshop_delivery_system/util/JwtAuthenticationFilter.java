@@ -1,3 +1,5 @@
+// File: src/main/java/ac/nsbm/bookshop_delivery_system/util/JwtAuthenticationFilter.java
+
 package ac.nsbm.bookshop_delivery_system.util;
 
 import ac.nsbm.bookshop_delivery_system.service.CustomUserDetailsService;
@@ -34,39 +36,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain chain
     ) throws ServletException, IOException {
 
-        // UPDATE: Skip filter for authentication endpoints
-        String path = request.getServletPath();
-        if (path.startsWith("/api/auth/")) {
+        final String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ") || authHeader.length() <= 7) {
             chain.doFilter(request, response);
             return;
         }
 
-        final String authorizationHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String email;
-
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        jwt = authorizationHeader.substring(7);
+        final String jwt = authHeader.substring(7);
         try {
-            email = jwtUtils.extractUsername(jwt);
+            final String userEmail = jwtUtils.extractUsername(jwt);
 
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
                 if (jwtUtils.validateToken(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
-
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
         } catch (Exception e) {
-            logger.error("Could not set user authentication in security context", e);
+            System.err.println("JWT Authentication Error: " + e.getMessage());
         }
 
         chain.doFilter(request, response);
