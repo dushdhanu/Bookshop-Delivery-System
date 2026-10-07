@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Orders - BookShop</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../components.css">
+    <link rel="stylesheet" href="../orders.css">
+    <link rel="stylesheet" href="../blue-theme.css">
+    <style>
+        /* Vertical order list */
+        .order-list-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .order-card-vertical {
+            background-color: #10235d;
+            border-radius: 5px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid #1e3a8a;
+        }
+        
+        .order-header-vertical {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .order-id-vertical {
+            font-size: 1.1rem;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        
+        .order-date-vertical {
+            color: #a0c0ff;
+            font-size: 0.9rem;
+        }
+        
+        .order-status-vertical {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        
+        .status-pending {
+            background-color: #3b82f6;
+            color: #ffffff;
+        }
+        
+        .status-in-transit {
+            background-color: #8b5cf6;
+            color: #ffffff;
+        }
+        
+        .status-delivered {
+            background-color: #10b981;
+            color: #ffffff;
+        }
+        
+        .order-details-vertical {
+            margin-bottom: 1rem;
+        }
+        
+        .detail-row-vertical {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-label-vertical {
+            color: #94a3b8;
+        }
+        
+        .detail-value-vertical {
+            color: #ffffff;
+            font-weight: 500;
+        }
+        
+        .order-actions-vertical {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Completed button style */
+        .btn-completed {
+            background-color: #3b82f6;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: default;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .order-header-vertical {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .detail-row-vertical {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+            
+            .order-actions-vertical {
+                flex-direction: column;
+            }
+        }
+        
+        /* Map section styles */
+        .map-section {
+            margin: 2rem 0;
+        }
+        
+        .map-container {
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .map-info {
+            display: flex;
+            justify-content: space-between;
+            color: #a0c0ff;
+            font-size: 0.9rem;
+        }
+        
+        .map-info p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Delivery Person Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">BookShop Delivery</h1>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="orders.html" class="nav-link active">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a href="notifications.html" class="nav-link">Notifications</a>
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Delivery Orders Content -->
+    <section class="delivery-orders">
+        <div class="container">
+            <div class="page-header">
+                <h1>Delivery Orders</h1>
+                <p>Manage and track your delivery assignments</p>
+            </div>
+
+            <!-- Order List - Changed to vertical layout -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Current Orders</h2>
+                </div>
+                <div class="card-body">
+                    <div class="order-list-vertical">
+                        <!-- Order 1 -->
+                        <div class="order-card-vertical">
+                            <div class="order-header-vertical">
+                                <div class="order-id-vertical">#ORD-2025-045</div>
+                                <div class="order-date-vertical">Dec 1, 2025</div>
+                                <div class="order-status-vertical status-in-transit">In Transit</div>
+                            </div>
+                            <div class="order-details-vertical">
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Customer:</span>
+                                    <span class="detail-value-vertical">John Smith</span>
+                                </div>
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Address:</span>
+                                    <span class="detail-value-vertical">123 Main St, City</span>
+                                </div>
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Items:</span>
+                                    <span class="detail-value-vertical">2 books</span>
+                                </div>
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Total:</span>
+                                    <span class="detail-value-vertical">$27.98</span>
+                                </div>
+                            </div>
+                            <div class="order-actions-vertical">
+                                <button class="btn btn-primary">Mark as Delivered</button>
+                                <button class="btn btn-secondary" onclick="viewCustomerLocationOnMap('123 Main St, City')">View Map</button>
+                            </div>
+                        </div>
+
+                        <!-- Order 2 -->
+                        <div class="order-card-vertical">
+                            <div class="order-header-vertical">
+                                <div class="order-id-vertical">#ORD-2025-042</div>
+                                <div class="order-date-vertical">Nov 30, 2025</div>
+                                <div class="order-status-vertical status-pending">Pending</div>
+                            </div>
+                            <div class="order-details-vertical">
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Customer:</span>
+                                    <span class="detail-value-vertical">Sarah Johnson</span>
+                                </div>
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Address:</span>
+                                    <span class="detail-value-vertical">456 Oak Ave, Town</span>
+                                </div>
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Items:</span>
+                                    <span class="detail-value-vertical">1 book</span>
+                                </div>
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Total:</span>
+                                    <span class="detail-value-vertical">$14.99</span>
+                                </div>
+                            </div>
+                            <div class="order-actions-vertical">
+                                <button class="btn btn-primary">Start Delivery</button>
+                                <button class="btn btn-secondary">Contact Customer</button>
+                            </div>
+                        </div>
+
+                        <!-- Order 3 -->
+                        <div class="order-card-vertical">
+                            <div class="order-header-vertical">
+                                <div class="order-id-vertical">#ORD-2025-038</div>
+                                <div class="order-date-vertical">Nov 28, 2025</div>
+                                <div class="order-status-vertical status-delivered">Delivered</div>
+                            </div>
+                            <div class="order-details-vertical">
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Customer:</span>
+                                    <span class="detail-value-vertical">Michael Brown</span>
+                                </div>
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Address:</span>
+                                    <span class="detail-value-vertical">789 Pine Rd, Village</span>
+                                </div>
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Items:</span>
+                                    <span class="detail-value-vertical">3 books</span>
+                                </div>
+                                <div class="detail-row-vertical">
+                                    <span class="detail-label-vertical">Total:</span>
+                                    <span class="detail-value-vertical">$39.47</span>
+                                </div>
+                            </div>
+                            <div class="order-actions-vertical">
+                                <button class="btn-completed">Completed</button>
+                                <button class="btn btn-secondary">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Google Map Section -->
+    <section class="map-section">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Delivery Route Map</h2>
+                    <p>Track your current delivery locations across Sri Lanka</p>
+                </div>
+                <div class="card-body">
+                    <div class="map-container">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4000000.0!2d80.771792!3d7.873054!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593cf65a1e9d%3A0xe13da4b400e8d0f0!2sSri%20Lanka!5e0!3m2!1sen!2sus!4v1620000000000!5m2!1sen!2sus" 
+                            width="100%" 
+                            height="450" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="map-info">
+                        <p>Current delivery zone: Colombo, Sri Lanka</p>
+                        <p>Total deliveries today: 12</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Delivery Portal</h3>
+                    <p>Manage your deliveries for BookShop</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Dashboard</a></li>
+                        <li><a href="orders.html">My Deliveries</a></li>
+                        <li><a href="profile.html">Profile</a></li>
+                        <li><a href="../index.html">Customer View</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Delivery Guidelines</a></li>
+                        <li><a href="#">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 BookShop. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
