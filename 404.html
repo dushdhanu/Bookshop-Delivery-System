@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - BookShop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="components.css">
+    <link rel="stylesheet" href="blue-theme.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    @@include('navbar.html')
+
+    <!-- 404 Page Content -->
+    <section class="error-page">
+        <div class="container">
+            <div class="error-content">
+                <div class="error-image">
+                    <div class="book-stack">
+                        <div class="book"></div>
+                        <div class="book"></div>
+                        <div class="book"></div>
+                    </div>
+                </div>
+                <h1 class="error-title">404</h1>
+                <h2 class="error-subtitle">Page Not Found</h2>
+                <p class="error-message">Oops! The page you're looking for seems to have gone missing, just like a book in a library.</p>
+                <div class="error-actions">
+                    <a href="index.html" class="btn btn-primary">Go Home</a>
+                    <a href="books.html" class="btn btn-secondary">Browse Books</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    @@include('footer.html')
+
+    <script src="main.js"></script>
+</body>
+</html>
