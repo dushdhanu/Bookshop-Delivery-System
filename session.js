@@ -51,6 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set active navigation link based on current page
     setActiveNavLink();
     
+    // Update navigation based on login status
+    updateNavigation();
+    
     // Profile page functionality
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
@@ -116,35 +119,54 @@ function setActiveNavLink() {
 }
 
 // User session management
-function checkUserSession() {
-    // In a real application, this would check if the user is logged in
-    // For demo purposes, we'll just return a mock status
-    return {
-        isLoggedIn: false,
-        user: null
-    };
+async function checkUserSession() {
+    try {
+        const res = await fetch('/api/profile');
+        const data = await res.json();
+        if (data.success && data.data) {
+            return { isLoggedIn: true, user: data.data };
+        }
+    } catch (e) {
+        console.error('Session check failed', e);
+    }
+    return { isLoggedIn: false, user: null };
 }
 
 // Update navigation based on user session
-function updateNavigation() {
-    const session = checkUserSession();
-    const loginLink = document.querySelector('a[href="login.html"]');
-    const registerLink = document.querySelector('a[href="register.html"]');
-    const profileLink = document.querySelector('a[href="profile.html"]');
-    const ordersLink = document.querySelector('a[href="orders.html"]');
+async function updateNavigation() {
+    const session = await checkUserSession();
+    
+    // Find links by text content so it works consistently across pages
+    const navLinks = Array.from(document.querySelectorAll('.nav-link'));
+    const loginLink = navLinks.find(link => link.textContent.trim() === 'Login' || link.textContent.trim() === 'Logout');
+    const registerLink = navLinks.find(link => link.textContent.trim() === 'Register' || link.textContent.includes('Welcome'));
     
     if (session.isLoggedIn) {
         // User is logged in
-        if (loginLink) loginLink.textContent = 'Logout';
-        if (registerLink) registerLink.style.display = 'none';
-        if (profileLink) profileLink.style.display = 'block';
-        if (ordersLink) ordersLink.style.display = 'block';
+        if (loginLink) {
+            loginLink.textContent = 'Logout';
+            loginLink.href = '#';
+            loginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+        }
+        if (registerLink) {
+            // Show welcome message instead of Register
+            registerLink.textContent = `Welcome ${session.user.first_name || 'User'}`;
+            registerLink.href = 'profile.html'; // Or wherever you want them to go
+        }
     } else {
         // User is not logged in
-        if (loginLink) loginLink.textContent = 'Login';
-        if (registerLink) registerLink.style.display = 'block';
-        if (profileLink) profileLink.style.display = 'none';
-        if (ordersLink) ordersLink.style.display = 'none';
+        if (loginLink) {
+            loginLink.textContent = 'Login';
+            // Determine relative path correctly for login
+            loginLink.href = window.location.pathname.includes('/customer/') ? 'login.html' : 'customer/login.html';
+        }
+        if (registerLink) {
+            registerLink.textContent = 'Register';
+            registerLink.href = window.location.pathname.includes('/customer/') ? 'register.html' : 'customer/register.html';
+        }
     }
 }
 
