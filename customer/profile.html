@@ -220,12 +220,14 @@
                             <form id="profileForm">
                                 <div class="profile-header">
                                     <div class="profile-image">
-                                        <div class="profile-image-placeholder">JD</div>
-                                        <button type="button" class="btn btn-secondary btn-sm">Change Photo</button>
+                                        <img id="profile-img-preview" src="" style="display:none; width: 80px; height: 80px; border-radius: 50%; border: 3px solid #3b82f6; margin: 0 auto 1rem; object-fit: cover;">
+                                        <div class="profile-image-placeholder" id="profile-initials">JD</div>
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('photoUpload').click()">Change Photo</button>
+                                        <input type="file" id="photoUpload" style="display:none" accept="image/*">
                                     </div>
                                     <div class="profile-details">
-                                        <h3>John Doe</h3>
-                                        <p class="profile-email">john.doe@example.com</p>
+                                        <h3 id="display-name">John Doe</h3>
+                                        <p class="profile-email" id="display-email">john.doe@example.com</p>
                                         <p class="profile-member-since">Member since: January 15, 2023</p>
                                     </div>
                                 </div>
@@ -423,5 +425,105 @@
 </footer>
 
     <script src="../session.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileForm = document.getElementById('profileForm');
+            const photoUpload = document.getElementById('photoUpload');
+            
+            let currentPhotoUrl = '';
+
+            // 1. Fetch initial data on load
+            fetch('/api/profile')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        const user = data.data;
+                        document.getElementById('firstName').value = user.first_name || '';
+                        document.getElementById('lastName').value = user.last_name || '';
+                        document.getElementById('email').value = user.email || '';
+                        document.getElementById('phone').value = user.phone || '';
+                        document.getElementById('birthDate').value = user.birth_date || '';
+                        if (user.profile_photo) {
+                            currentPhotoUrl = user.profile_photo;
+                            updateUIPhoto(user.profile_photo);
+                        }
+                        updateUIText(user.first_name, user.last_name, user.email);
+                    }
+                });
+
+            // 2. Handle Photo Selection (Upload immediately)
+            photoUpload.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const formData = new FormData();
+                formData.append('photo', file);
+
+                fetch('/api/profile/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        currentPhotoUrl = data.photoUrl;
+                        updateUIPhoto(currentPhotoUrl);
+                    } else {
+                        alert('Error uploading photo');
+                    }
+                })
+                .catch(err => console.error(err));
+            });
+
+            // 3. Handle Form Submit (Update Text Data)
+            profileForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const btn = profileForm.querySelector('button[type="submit"]');
+                const originalText = btn.textContent;
+                btn.textContent = 'Saving...';
+                
+                const data = {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    birthDate: document.getElementById('birthDate').value,
+                    profilePhoto: currentPhotoUrl
+                };
+
+                fetch('/api/profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(resData => {
+                    btn.textContent = 'Saved!';
+                    setTimeout(() => btn.textContent = originalText, 2000);
+                    if (resData.success) {
+                        updateUIText(data.firstName, data.lastName, data.email);
+                    }
+                })
+                .catch(err => console.error(err));
+            });
+
+            function updateUIText(firstName, lastName, email) {
+                document.getElementById('display-name').textContent = (firstName || '') + ' ' + (lastName || '');
+                document.getElementById('display-email').textContent = email || '';
+                if (!currentPhotoUrl) {
+                    const initials = (firstName ? firstName[0] : '') + (lastName ? lastName[0] : '');
+                    document.getElementById('profile-initials').textContent = initials.toUpperCase() || 'U';
+                }
+            }
+
+            function updateUIPhoto(url) {
+                const img = document.getElementById('profile-img-preview');
+                const placeholder = document.getElementById('profile-initials');
+                img.src = url;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
