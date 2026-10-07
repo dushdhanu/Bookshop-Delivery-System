@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Book - BookShop Admin</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../components.css">
+    <link rel="stylesheet" href="../blue-theme.css">
+    <style>
+        /* Vertical sidebar panel with medium logos */
+        .sidebar-panel-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .sidebar-item-vertical {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 5px;
+            background-color: #10235d;
+            text-decoration: none;
+            color: #a0c0ff;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .sidebar-item-vertical:hover{
+            background-color: #1a3a8a;
+            transform: translateX(5px);
+        }
+            
+        .sidebar-item-vertical.active {
+            background-color: #10235d;
+            color: #3b82f6;
+            border-color: #334155;
+        }
+        
+        .sidebar-icon-medium {
+            font-size: 1.2rem;
+            margin-right: 0.75rem;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">BookShop Admin</h1>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="books.html" class="nav-link">Books</a>
+                </li>
+                <li class="nav-item">
+                    <a href="add-book.html" class="nav-link active">Add Book</a>
+                </li>
+                <li class="nav-item">
+                    <a href="orders.html" class="nav-link">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">Profile</a>
+                </li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Add Book Page Content -->
+    <section class="add-book-page">
+        <div class="container">
+            <div class="page-header">
+                <h1>Add New Book</h1>
+                <p>Add a new book to the inventory</p>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Sidebar - Changed to vertical axis -->
+                <div class="sidebar-wrapper">
+                    <div class="sidebar">
+                        <h3 class="sidebar-title">Admin Panel</h3>
+                        <div class="sidebar-panel-vertical">
+                            <a href="index.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">📊</div>
+                                <span>Dashboard</span>
+                            </a>
+                            <a href="books.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">📚</div>
+                                <span>Book Management</span>
+                            </a>
+                            <a href="add-book.html" class="sidebar-item-vertical active">
+                                <div class="sidebar-icon-medium">➕</div>
+                                <span>Add New Book</span>
+                            </a>
+                            <a href="orders.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">📦</div>
+                                <span>Order Management</span>
+                            </a>
+                            <a href="profile.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">👤</div>
+                                <span>Admin Profile</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <div class="form-container">
+                        <form id="addBookForm">
+                            <div class="form-group">
+                                <label for="bookTitle" class="form-label">Book Title</label>
+                                <input type="text" id="bookTitle" name="bookTitle" class="form-input" placeholder="Enter book title" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="author" class="form-label">Author</label>
+                                <input type="text" id="author" name="author" class="form-input" placeholder="Enter author name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="isbn" class="form-label">ISBN</label>
+                                <input type="text" id="isbn" name="isbn" class="form-input" placeholder="Enter ISBN (optional)">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="category" class="form-label">Category</label>
+                                <select id="category" name="category" class="form-input" required>
+                                    <option value="">Select a category</option>
+                                    <option value="fiction">Fiction</option>
+                                    <option value="non-fiction">Non-Fiction</option>
+                                    <option value="science-fiction">Science Fiction</option>
+                                    <option value="mystery">Mystery & Thriller</option>
+                                    <option value="romance">Romance</option>
+                                    <option value="biography">Biography</option>
+                                    <option value="history">History</option>
+                                    <option value="self-help">Self-Help</option>
+                                </select>
+                            </div>
+                            
+                            <!-- New Book Type dropdown -->
+                            <div class="form-group">
+                                <label for="bookType" class="form-label">Book Type</label>
+                                <select id="bookType" name="bookType" class="form-input" required>
+                                    <option value="">Select a book type</option>
+                                    <option value="standard">Standard</option>
+                                    <option value="journal">Journal</option>
+                                    <option value="planner">Planner</option>
+                                    <option value="spiral">Spiral</option>
+                                </select>
+                            </div>
+                            
+                            <!-- New Book Size text input -->
+                            <div class="form-group">
+                                <label for="bookSize" class="form-label">Book Size</label>
+                                <input type="text" id="bookSize" name="bookSize" class="form-input" placeholder="e.g., A5, 6x9 inches">
+                            </div>
+                            
+                            <!-- New By Main Category dropdown -->
+                            <div class="form-group">
+                                <label for="mainCategory" class="form-label">By Main Category</label>
+                                <select id="mainCategory" name="mainCategory" class="form-input" required>
+                                    <option value="">Select a main category</option>
+                                    <option value="fiction">Fiction</option>
+                                    <option value="non-fiction">Non-Fiction</option>
+                                </select>
+                            </div>
+                            
+                            <!-- New By Book Format text input -->
+                            <div class="form-group">
+                                <label for="bookFormat" class="form-label">By Book Format</label>
+                                <input type="text" id="bookFormat" name="bookFormat" class="form-input" placeholder="e.g., Hardcover, Paperback, Comic book, Graphic novel">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="price" class="form-label">Price ($)</label>
+                                <input type="number" id="price" name="price" class="form-input" placeholder="0.00" step="0.01" min="0" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="stock" class="form-label">Stock Quantity</label>
+                                <input type="number" id="stock" name="stock" class="form-input" value="0" min="0" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="description" name="description" class="form-input" rows="5" placeholder="Enter book description"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="bookImage" class="form-label">Book Cover Image</label>
+                                <input type="file" id="bookImage" name="bookImage" class="form-input">
+                                <div class="image-preview">
+                                    <div class="book-image-placeholder-large">Upload Image</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="form-checkbox">
+                                    <input type="checkbox" id="featured" name="featured">
+                                    <label for="featured">Featured Book</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="form-checkbox">
+                                    <input type="checkbox" id="active" name="active" checked>
+                                    <label for="active">Active (Visible to customers)</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Add Book</button>
+                                <a href="books.html" class="btn btn-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BookShop Admin</h3>
+                    <p>Administration panel for BookShop online bookstore</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Dashboard</a></li>
+                        <li><a href="books.html">Books</a></li>
+                        <li><a href="add-book.html">Add Book</a></li>
+                        <li><a href="orders.html">Orders</a></li>
+                        <li><a href="profile.html">Profile</a></li>
+                        <li><a href="../index.html">Customer View</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">System Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 BookShop. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../api.js"></script>
+</body>
+</html>

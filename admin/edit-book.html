@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Book - BookShop Admin</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../components.css">
+    <link rel="stylesheet" href="../blue-theme.css">
+</head>
+<body>
+    <!-- Admin Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">BookShop Admin</h1>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="books.html" class="nav-link">Books</a>
+                </li>
+                <li class="nav-item">
+                    <a href="orders.html" class="nav-link">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">Profile</a>
+                </li>
+               
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Edit Book Page Content -->
+    <section class="edit-book-page">
+        <div class="container">
+            <div class="page-header">
+                <h1>Edit Book</h1>
+                <p>Update book information</p>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Sidebar -->
+                <div class="sidebar-wrapper">
+                    <aside class="sidebar">
+                        <h3 class="sidebar-title">Admin Panel</h3>
+                        <ul class="sidebar-list">
+                            <li class="sidebar-item">
+                                <a href="index.html" class="sidebar-link">Dashboard</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="books.html" class="sidebar-link">Manage Books</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="add-book.html" class="sidebar-link">Add New Book</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="orders.html" class="sidebar-link">Orders</a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="profile.html" class="sidebar-link">Admin Profile</a>
+                            </li>
+                        </ul>
+                    </aside>
+                </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <div class="form-container">
+                        <form id="editBookForm">
+                            <div class="form-group">
+                                <label for="bookTitle" class="form-label">Book Title</label>
+                                <input type="text" id="bookTitle" name="bookTitle" class="form-input" value="The Great Gatsby" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="author" class="form-label">Author</label>
+                                <input type="text" id="author" name="author" class="form-input" value="F. Scott Fitzgerald" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="isbn" class="form-label">ISBN</label>
+                                <input type="text" id="isbn" name="isbn" class="form-input" value="978-0-7432-7356-5">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="category" class="form-label">Category</label>
+                                <select id="category" name="category" class="form-input" required>
+                                    <option value="">Select a category</option>
+                                    <option value="fiction" selected>Fiction</option>
+                                    <option value="non-fiction">Non-Fiction</option>
+                                    <option value="science-fiction">Science Fiction</option>
+                                    <option value="mystery">Mystery & Thriller</option>
+                                    <option value="romance">Romance</option>
+                                    <option value="biography">Biography</option>
+                                    <option value="history">History</option>
+                                    <option value="self-help">Self-Help</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="price" class="form-label">Price ($)</label>
+                                <input type="number" id="price" name="price" class="form-input" value="12.99" step="0.01" min="0" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="stock" class="form-label">Stock Quantity</label>
+                                <input type="number" id="stock" name="stock" class="form-input" value="25" min="0" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="description" name="description" class="form-input" rows="5">A classic American novel set in the Jazz Age, exploring themes of wealth, love, and the American Dream through the eyes of the mysterious Jay Gatsby.</textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="bookImage" class="form-label">Book Cover Image</label>
+                                <input type="file" id="bookImage" name="bookImage" class="form-input">
+                                <div class="image-preview">
+                                    <div class="book-image-placeholder-large"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="form-checkbox">
+                                    <input type="checkbox" id="featured" name="featured">
+                                    <label for="featured">Featured Book</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <div class="form-checkbox">
+                                    <input type="checkbox" id="active" name="active" checked>
+                                    <label for="active">Active (Visible to customers)</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Update Book</button>
+                                <a href="books.html" class="btn btn-secondary">Cancel</a>
+                                <button type="button" class="btn btn-danger" id="deleteBtn">Delete Book</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 BookShop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../api.js"></script>
+</body>
+</html>
