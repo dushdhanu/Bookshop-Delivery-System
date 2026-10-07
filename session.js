@@ -134,12 +134,16 @@ async function checkUserSession() {
 
 // Update navigation based on user session
 async function updateNavigation() {
+    console.log("Navbar update script is running...");
     const session = await checkUserSession();
+    console.log("Session Check Result:", session);
     
     // Find links by text content so it works consistently across pages
     const navLinks = Array.from(document.querySelectorAll('.nav-link'));
     const loginLink = navLinks.find(link => link.textContent.trim() === 'Login' || link.textContent.trim() === 'Logout');
     const registerLink = navLinks.find(link => link.textContent.trim() === 'Register' || link.textContent.includes('Welcome'));
+    
+    console.log("Found loginLink:", !!loginLink, "registerLink:", !!registerLink);
     
     if (session.isLoggedIn) {
         // User is logged in
@@ -171,11 +175,15 @@ async function updateNavigation() {
 }
 
 // Logout function
-function logout() {
-    // In a real application, this would clear the user session
-    console.log('User logged out');
-    updateNavigation();
-    window.location.href = 'index.html';
+async function logout() {
+    try {
+        await fetch('/api/logout', { method: 'POST' });
+        console.log('User logged out');
+        updateNavigation();
+        window.location.href = window.location.pathname.includes('/customer/') ? '../index.html' : 'index.html';
+    } catch (e) {
+        console.error('Logout failed', e);
+    }
 }
 
 // Update profile function

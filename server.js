@@ -90,17 +90,29 @@ app.post('/api/profile', (req, res) => {
     });
 });
 
+// Mock session state
+let currentLoggedInUserId = 1; // Start logged in as user 1 for demo
+
 // Get profile
 app.get('/api/profile', (req, res) => {
-    db.get("SELECT * FROM users WHERE id = 1", [], (err, row) => {
+    if (!currentLoggedInUserId) {
+        return res.json({ success: true, data: null });
+    }
+    db.get("SELECT * FROM users WHERE id = ?", [currentLoggedInUserId], (err, row) => {
         if (err) return res.status(500).json({error: err.message});
-        if (row) {
-            res.json({ success: true, data: row });
-        } else {
-            // Default empty state
-            res.json({ success: true, data: null });
-        }
+        res.json({ success: true, data: row || null });
     });
+});
+
+// Mock login/logout
+app.post('/api/logout', (req, res) => {
+    currentLoggedInUserId = null;
+    res.json({ success: true });
+});
+
+app.post('/api/login', (req, res) => {
+    currentLoggedInUserId = 1;
+    res.json({ success: true });
 });
 
 // Photo upload endpoint
