@@ -588,16 +588,16 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Find the closest order-card-vertical and remove it
-                const orderCard = btn.closest('.order-card-vertical');
-                if (orderCard) {
-                    orderCard.style.transition = 'opacity 0.3s ease';
-                    orderCard.style.opacity = '0';
-                    setTimeout(() => {
-                        orderCard.remove();
+                    const orderCard = btn.closest('.order-card-vertical');
+                    if (orderCard) {
+                        orderCard.style.transition = 'opacity 0.3s ease';
+                        orderCard.style.opacity = '0';
+                        setTimeout(() => {
+                            orderCard.remove();
+                        }, 300);
+                    }
                 }
-            }), 300);
-                }
-            }
+            });
         }
 
         function leaveFeedback(btn, orderId) {
