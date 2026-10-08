@@ -148,18 +148,44 @@ async function updateNavigation() {
     if (session.isLoggedIn) {
         // User is logged in
         if (registerLink) {
-            // Hide register link completely when logged in to combine buttons
+            // Hide register link completely when logged in
             registerLink.parentElement.style.display = 'none';
         }
         if (loginLink) {
-            loginLink.innerHTML = `Welcome ${session.user.first_name || 'User'} | <b>Logout</b>`;
+            loginLink.textContent = 'Logout';
             loginLink.href = '#';
-            loginLink.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            loginLink.style.backgroundColor = '#ef4444';
+            loginLink.style.color = '#ffffff';
             loginLink.style.borderRadius = '5px';
+            loginLink.style.padding = '0.5rem 1.5rem';
+            loginLink.style.fontWeight = 'bold';
             loginLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 logout();
             });
+        }
+
+        // Inject Welcome banner below navbar
+        let welcomeBanner = document.getElementById('welcome-banner');
+        if (!welcomeBanner) {
+            welcomeBanner = document.createElement('div');
+            welcomeBanner.id = 'welcome-banner';
+            welcomeBanner.style.backgroundColor = '#10235d';
+            welcomeBanner.style.color = '#a0c0ff';
+            welcomeBanner.style.padding = '0.75rem 2rem';
+            welcomeBanner.style.textAlign = 'right';
+            welcomeBanner.style.fontWeight = '500';
+            welcomeBanner.style.borderBottom = '1px solid #1e3a8a';
+            welcomeBanner.style.fontSize = '1.05rem';
+            
+            const nav = document.querySelector('nav.navbar');
+            if (nav) {
+                nav.parentNode.insertBefore(welcomeBanner, nav.nextSibling);
+            }
+        }
+        if (welcomeBanner) {
+            welcomeBanner.textContent = `Welcome, ${session.user.first_name || 'User'}!`;
+            welcomeBanner.style.display = 'block';
         }
     } else {
         // User is not logged in
@@ -170,9 +196,18 @@ async function updateNavigation() {
         }
         if (loginLink) {
             loginLink.textContent = 'Login';
-            loginLink.style.backgroundColor = 'transparent';
+            loginLink.style.backgroundColor = '';
+            loginLink.style.color = '';
+            loginLink.style.borderRadius = '';
+            loginLink.style.padding = '';
+            loginLink.style.fontWeight = '';
             // Determine relative path correctly for login
             loginLink.href = window.location.pathname.includes('/customer/') ? 'login.html' : 'customer/login.html';
+        }
+        
+        let welcomeBanner = document.getElementById('welcome-banner');
+        if (welcomeBanner) {
+            welcomeBanner.style.display = 'none';
         }
     }
 }
