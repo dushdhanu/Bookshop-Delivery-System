@@ -327,32 +327,25 @@ function updatePreferences() {
 // Delete account function
 function deleteAccount() {
     Swal.fire({
-                title: 'Confirmation',
-                text: 'Are you sure you want to delete your account? This action cannot be undone.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3b82f6',
-                cancelButtonColor: '#ef4444',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // In a real application, this would send a request to delete the account
-        console.log('Deleting account');
-        
-        // Show loading state
-        const deleteBtn = document.getElementById('deleteAccountBtn');
-        const originalText = deleteBtn.textContent;
-        deleteBtn.textContent = 'Deleting...';
-        deleteBtn.disabled = true;
-        
-        // Simulate API call delay
-        setTimeout(() => {
-            // Show success message
-            showAlert('Account deleted successfully. You have been logged out.', 'success');
+        title: 'Confirmation',
+        text: 'Are you sure you want to delete your account? This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            console.log('Deleting account');
+            const deleteBtn = document.getElementById('deleteAccountBtn');
+            const originalText = deleteBtn.textContent;
+            deleteBtn.textContent = 'Deleting...';
+            deleteBtn.disabled = true;
             
-            // In a real application, you would log the user out
-            // logout();
-                }
-            }), 1500);
-    }
+            setTimeout(() => {
+                showAlert('Account deleted successfully. You have been logged out.', 'success');
+                // logout();
+            }, 1500);
+        }
+    });
 }
