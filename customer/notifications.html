@@ -378,13 +378,20 @@
                     if (actionText === 'View Order' || actionText === 'Track Order') {
                         window.location.href = 'orders.html';
                     } else if (actionText === 'Leave Feedback') {
-                        // PROMPT_REPLACED_WAITING_MANUAL_FIX 
-        const feedback = null; // Swal prompt needs manual async/then wiring for 'Please enter your feedback:'
-                        if (feedback && feedback.trim() !== '') {
-                            alert('Thank you for your feedback! Your feedback has been recorded.');
-                            // Optionally hide the button after feedback
-                            this.style.display = 'none';
-                        }
+                        Swal.fire({
+                            title: 'Please enter your feedback:',
+                            input: 'textarea',
+                            showCancelButton: true,
+                            confirmButtonText: 'Submit Feedback',
+                            confirmButtonColor: '#3b82f6',
+                            cancelButtonColor: '#ef4444'
+                        }).then((result) => {
+                            const feedback = result.value;
+                            if (feedback && feedback.trim() !== '') {
+                                alert('Thank you for your feedback! Your feedback has been recorded.');
+                                this.style.display = 'none';
+                            }
+                        });
                     } else if (actionText === 'View Books' || actionText === 'Shop Now') {
                         window.location.href = 'books.html';
                     } else if (actionText === 'Learn More') {

@@ -601,45 +601,54 @@
         }
 
         function leaveFeedback(btn, orderId) {
-            // PROMPT_REPLACED_WAITING_MANUAL_FIX 
-        const feedback = null; // Swal prompt needs manual async/then wiring for 'Please enter your feedback for order ' + orderId + ':'
-            if (feedback && feedback.trim() !== '') {
-                // Look for existing feedback section
-                const orderCard = btn.closest('.order-card-vertical');
-                let feedbackSection = orderCard.querySelector('.feedback-section');
-                
-                if (!feedbackSection) {
-                    // Create one if it doesn't exist
-                    feedbackSection = document.createElement('div');
-                    feedbackSection.className = 'feedback-section';
-                    feedbackSection.style.marginTop = '1.5rem';
-                    feedbackSection.style.paddingTop = '1.5rem';
-                    feedbackSection.style.borderTop = '1px solid #334155';
+            Swal.fire({
+                title: 'Leave Feedback',
+                text: 'Please enter your feedback for order ' + orderId + ':',
+                input: 'textarea',
+                showCancelButton: true,
+                confirmButtonText: 'Submit Feedback',
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444'
+            }).then((result) => {
+                const feedback = result.value;
+                if (feedback && feedback.trim() !== '') {
+                    // Look for existing feedback section
+                    const orderCard = btn.closest('.order-card-vertical');
+                    let feedbackSection = orderCard.querySelector('.feedback-section');
                     
-                    const header = document.createElement('h4');
-                    header.style.color = '#ffffff';
-                    header.style.marginBottom = '1rem';
-                    header.textContent = 'Your Feedback';
+                    if (!feedbackSection) {
+                        // Create one if it doesn't exist
+                        feedbackSection = document.createElement('div');
+                        feedbackSection.className = 'feedback-section';
+                        feedbackSection.style.marginTop = '1.5rem';
+                        feedbackSection.style.paddingTop = '1.5rem';
+                        feedbackSection.style.borderTop = '1px solid #334155';
+                        
+                        const header = document.createElement('h4');
+                        header.style.color = '#ffffff';
+                        header.style.marginBottom = '1rem';
+                        header.textContent = 'Your Feedback';
+                        
+                        const content = document.createElement('div');
+                        content.className = 'feedback-content';
+                        content.innerHTML = `
+                            <p style="color: #94a3b8; margin: 0;"></p>
+                            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                                <span style="color: #3b82f6;">Rating: ★★★★★</span>
+                                <span style="color: #94a3b8;">${new Date().toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})}</span>
+                            </div>
+                        `;
+                        
+                        feedbackSection.appendChild(header);
+                        feedbackSection.appendChild(content);
+                        orderCard.querySelector('.order-body-vertical').appendChild(feedbackSection);
+                    }
                     
-                    const content = document.createElement('div');
-                    content.className = 'feedback-content';
-                    content.innerHTML = `
-                        <p style="color: #94a3b8; margin: 0;"></p>
-                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
-                            <span style="color: #3b82f6;">Rating: ★★★★★</span>
-                            <span style="color: #94a3b8;">${new Date().toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})}</span>
-                        </div>
-                    `;
-                    
-                    feedbackSection.appendChild(header);
-                    feedbackSection.appendChild(content);
-                    orderCard.querySelector('.order-body-vertical').appendChild(feedbackSection);
+                    // Update feedback text
+                    const p = feedbackSection.querySelector('p');
+                    p.textContent = '"' + feedback + '"';
                 }
-                
-                // Update feedback text
-                const p = feedbackSection.querySelector('p');
-                p.textContent = '"' + feedback + '"';
-            }
+            });
         }
 
         function viewMap(address) {
