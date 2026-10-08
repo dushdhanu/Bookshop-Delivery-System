@@ -80,17 +80,8 @@ function markOrderAsDelivered(orderNumber, orderElement) {
     console.log(`Marking order ${orderNumber} as delivered`);
     
     // Show confirmation
-    Swal.fire({
-                title: 'Confirmation',
-                text: `Mark order ${orderNumber} as delivered?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3b82f6',
-                cancelButtonColor: '#ef4444',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Show loading state
+    if (confirm(`Mark order ${orderNumber} as delivered?`)) {
+        // Show loading state
         const button = orderElement.querySelector('.btn-primary');
         const originalText = button.textContent;
         button.textContent = 'Processing...';
@@ -103,8 +94,7 @@ function markOrderAsDelivered(orderNumber, orderElement) {
             if (orderStatus) {
                 orderStatus.className = 'order-status status-delivered';
                 orderStatus.innerHTML = '<span>Delivered</span>';
-                }
-            })
+            }
             
             // Remove the "Mark as Delivered" button
             button.remove();
@@ -130,20 +120,9 @@ function deleteOrder(orderNumber) {
     console.log(`Deleting order ${orderNumber}`);
     
     // Show confirmation
-    Swal.fire({
-                title: 'Confirmation',
-                text: `Are you sure you want to delete order ${orderNumber}? This action cannot be undone.`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3b82f6',
-                cancelButtonColor: '#ef4444',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Remove the order card from the DOM
-        const orderCard = document.querySelector(`.order-card-vertical .order-id:contains('${orderNumber
-                }
-            })')`)?.closest('.order-card-vertical');
+    if (confirm(`Are you sure you want to delete order ${orderNumber}? This action cannot be undone.`)) {
+        // Remove the order card from the DOM
+        const orderCard = document.querySelector(`.order-card-vertical .order-id:contains('${orderNumber}')`)?.closest('.order-card-vertical');
         if (orderCard) {
             orderCard.remove();
             showAlert(`Order ${orderNumber} has been deleted.`, 'success');
@@ -185,23 +164,12 @@ function viewCustomerLocationOnMap(address) {
     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
     
     // Show confirmation dialog before opening map
-    Swal.fire({
-                title: 'Confirmation',
-                text: `Open map for address: ${address}? This will open Google Maps in a new tab.`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3b82f6',
-                cancelButtonColor: '#ef4444',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Open the map in a new tab
+    if (confirm(`Open map for address: ${address}? This will open Google Maps in a new tab.`)) {
+        // Open the map in a new tab
         window.open(mapsUrl, '_blank');
         
         // Show success message
-        showAlert(`Opening map for address: ${address
-                }
-            })`, 'success');
+        showAlert(`Opening map for address: ${address}`, 'success');
     }
     
     // For demonstration, we'll also log that the function was called

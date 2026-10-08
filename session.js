@@ -82,19 +82,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const cancelBtn = document.getElementById('cancelBtn');
     if (cancelBtn) {
         cancelBtn.addEventListener('click', function() {
-            Swal.fire({
-                title: 'Confirmation',
-                text: 'Are you sure you want to cancel? Any unsaved changes will be lost.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3b82f6',
-                cancelButtonColor: '#ef4444',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.reload();
-                }
-            })
+            if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+                window.location.reload();
+            }
         });
     }
     
@@ -326,26 +316,23 @@ function updatePreferences() {
 
 // Delete account function
 function deleteAccount() {
-    Swal.fire({
-        title: 'Confirmation',
-        text: 'Are you sure you want to delete your account? This action cannot be undone.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3b82f6',
-        cancelButtonColor: '#ef4444',
-        confirmButtonText: 'Yes'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            console.log('Deleting account');
-            const deleteBtn = document.getElementById('deleteAccountBtn');
-            const originalText = deleteBtn.textContent;
-            deleteBtn.textContent = 'Deleting...';
-            deleteBtn.disabled = true;
+    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        // In a real application, this would send a request to delete the account
+        console.log('Deleting account');
+        
+        // Show loading state
+        const deleteBtn = document.getElementById('deleteAccountBtn');
+        const originalText = deleteBtn.textContent;
+        deleteBtn.textContent = 'Deleting...';
+        deleteBtn.disabled = true;
+        
+        // Simulate API call delay
+        setTimeout(() => {
+            // Show success message
+            showAlert('Account deleted successfully. You have been logged out.', 'success');
             
-            setTimeout(() => {
-                showAlert('Account deleted successfully. You have been logged out.', 'success');
-                // logout();
-            }, 1500);
-        }
-    });
+            // In a real application, you would log the user out
+            // logout();
+        }, 1500);
+    }
 }

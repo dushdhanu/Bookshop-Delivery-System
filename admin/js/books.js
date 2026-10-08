@@ -67,20 +67,9 @@ function filterByCategory(category) {
 
 // Delete book
 function deleteBook(row, bookTitle) {
-    Swal.fire({
-                title: 'Confirmation',
-                text: `Are you sure you want to delete "${bookTitle}"?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3b82f6',
-                cancelButtonColor: '#ef4444',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // In a real application, this would send a delete request to the server
-        console.log(`Deleting book: ${bookTitle
-                }
-            })`);
+    if (confirm(`Are you sure you want to delete "${bookTitle}"?`)) {
+        // In a real application, this would send a delete request to the server
+        console.log(`Deleting book: ${bookTitle}`);
         
         // Show loading state
         const originalText = row.cells[7].innerHTML;

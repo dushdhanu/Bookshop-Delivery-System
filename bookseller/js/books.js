@@ -66,20 +66,9 @@ function editBook(bookTitle) {
 
 // Delete book
 function deleteBook(bookTitle, bookElement) {
-    Swal.fire({
-                title: 'Confirmation',
-                text: `Are you sure you want to delete "${bookTitle}"? This action cannot be undone.`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3b82f6',
-                cancelButtonColor: '#ef4444',
-                confirmButtonText: 'Yes'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // In a real application, this would delete the book from the database
-        console.log(`Deleting "${bookTitle
-                }
-            })"`);
+    if (confirm(`Are you sure you want to delete "${bookTitle}"? This action cannot be undone.`)) {
+        // In a real application, this would delete the book from the database
+        console.log(`Deleting "${bookTitle}"`);
         
         // Show loading state
         const deleteButton = bookElement.querySelector('.btn-danger');
