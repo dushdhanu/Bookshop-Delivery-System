@@ -215,8 +215,9 @@
                         <div class="card-header" style="border-bottom: 1px solid #1e3a8a; padding-bottom: 1rem; margin-bottom: 1rem;">
                             <h2 class="card-title" style="margin: 0; color: #ffffff;">📍 My Addresses</h2>
                         </div>
-                        <div class="card-body" style="flex: 1; display: flex; justify-content: center; align-items: center;">
-                            <div style="text-align: center; padding: 3rem; color: #94a3b8;"><div style="font-size: 3rem; margin-bottom: 1rem;">🏠</div><h3 style="color: #ffffff; margin-bottom: 0.5rem;">No Saved Addresses</h3><p style="margin-bottom: 1.5rem;">You have not saved any delivery addresses yet.</p><button class="btn btn-primary">Add New Address</button></div>
+                        <div class="card-body" style="flex: 1; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                            <div id="address-empty-state" style="text-align: center; padding: 3rem; color: #94a3b8;"><div style="font-size: 3rem; margin-bottom: 1rem;">🏠</div><h3 style="color: #ffffff; margin-bottom: 0.5rem;">No Saved Addresses</h3><p style="margin-bottom: 1.5rem;">You have not saved any delivery addresses yet.</p><button class="btn btn-primary" onclick="addNewAddress()">Add New Address</button></div>
+                            <div id="addresses-list" style="width: 100%; max-width: 600px;"></div>
                         </div>
                     </div>
                 </div>
