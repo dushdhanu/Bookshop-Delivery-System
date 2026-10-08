@@ -23,9 +23,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const editCancelBtn = document.getElementById('cancelBtn');
     if (editCancelBtn) {
         editCancelBtn.addEventListener('click', function() {
-            if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
-                window.location.href = 'books.html';
-            }
+            Swal.fire({
+                title: 'Confirmation',
+                text: 'Are you sure you want to cancel? Any unsaved changes will be lost.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'books.html';
+                }
+            })
         });
     }
     
@@ -33,9 +43,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const addCancelBtn = document.getElementById('cancelBtn');
     if (addCancelBtn && !editBookForm) {
         addCancelBtn.addEventListener('click', function() {
-            if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
-                window.location.href = 'books.html';
-            }
+            Swal.fire({
+                title: 'Confirmation',
+                text: 'Are you sure you want to cancel? Any unsaved changes will be lost.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = 'books.html';
+                }
+            })
         });
     }
     
@@ -154,8 +174,17 @@ function addBook() {
 
 // Delete book function
 function deleteBook() {
-    if (confirm('Are you sure you want to delete this book? This action cannot be undone.')) {
-        // In a real application, you would send a delete request to your server
+    Swal.fire({
+                title: 'Confirmation',
+                text: 'Are you sure you want to delete this book? This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // In a real application, you would send a delete request to your server
         console.log('Deleting book');
         
         // Show loading state
@@ -175,7 +204,8 @@ function deleteBook() {
             
             // In a real app, you would redirect to the books list
             // window.location.href = 'books.html';
-        }, 1000);
+                }
+            }), 1000);
     }
 }
 

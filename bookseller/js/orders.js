@@ -69,9 +69,20 @@ function viewOrderDetails(orderNumber) {
 
 // Mark order as shipped
 function markAsShipped(orderNumber, orderElement) {
-    if (confirm(`Mark order ${orderNumber} as shipped?`)) {
-        // In a real application, this would send a request to update the order status
-        console.log(`Marking order ${orderNumber} as shipped`);
+    Swal.fire({
+                title: 'Confirmation',
+                text: `Mark order ${orderNumber} as shipped?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // In a real application, this would send a request to update the order status
+        console.log(`Marking order ${orderNumber
+                }
+            }) as shipped`);
         
         // Show loading state
         const shipButton = orderElement.querySelector('.btn-primary');
@@ -103,9 +114,20 @@ function cancelOrder(orderNumber) {
     console.log(`Cancelling order ${orderNumber}`);
     
     // Show confirmation
-    if (confirm(`Are you sure you want to cancel order ${orderNumber}?`)) {
-        // Update order status visually
-        const orderStatus = document.querySelector(`[data-order="${orderNumber}"] .order-status`);
+    Swal.fire({
+                title: 'Confirmation',
+                text: `Are you sure you want to cancel order ${orderNumber}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Update order status visually
+        const orderStatus = document.querySelector(`[data-order="${orderNumber
+                }
+            })"] .order-status`);
         if (orderStatus) {
             orderStatus.className = 'order-status status-cancelled';
             orderStatus.innerHTML = '<span>Cancelled</span>';
@@ -121,9 +143,20 @@ function deleteOrder(orderNumber) {
     console.log(`Deleting order ${orderNumber}`);
     
     // Show confirmation
-    if (confirm(`Are you sure you want to delete order ${orderNumber}? This action cannot be undone.`)) {
-        // Remove the order card from the DOM
-        const orderCard = document.querySelector(`.order-card-vertical .order-id:contains('${orderNumber}')`)?.closest('.order-card-vertical');
+    Swal.fire({
+                title: 'Confirmation',
+                text: `Are you sure you want to delete order ${orderNumber}? This action cannot be undone.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Remove the order card from the DOM
+        const orderCard = document.querySelector(`.order-card-vertical .order-id:contains('${orderNumber
+                }
+            })')`)?.closest('.order-card-vertical');
         if (orderCard) {
             orderCard.remove();
             showAlert(`Order ${orderNumber} has been deleted.`, 'success');

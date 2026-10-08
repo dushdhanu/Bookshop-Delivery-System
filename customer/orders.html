@@ -222,6 +222,41 @@
             }
         }
     </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    /* Custom SweetAlert2 Theme to match BookShop */
+    .swal2-popup {
+        background-color: #1a1a2e !important;
+        color: #ffffff !important;
+        border: 1px solid #2e5a8a !important;
+        border-radius: 10px !important;
+    }
+    .swal2-title, .swal2-html-container {
+        color: #ffffff !important;
+    }
+    .swal2-input, .swal2-textarea {
+        background-color: #10235d !important;
+        color: #ffffff !important;
+        border: 1px solid #3b82f6 !important;
+    }
+    .swal2-confirm {
+        background-color: #3b82f6 !important;
+    }
+    .swal2-cancel {
+        background-color: #475569 !important;
+    }
+</style>
+<script>
+    // Global alert override
+    window.alert = function(msg) {
+        Swal.fire({
+            text: msg,
+            confirmButtonColor: '#3b82f6',
+            background: '#1a1a2e',
+            color: '#ffffff'
+        });
+    };
+</script>
 </head>
 <body>
     
@@ -542,21 +577,32 @@
     <script src="../session.js?v=3"></script>
     <script>
         function deleteOrder(btn, orderId) {
-            if (confirm('Are you sure you want to delete order ' + orderId + '?')) {
-                // Find the closest order-card-vertical and remove it
+            Swal.fire({
+                title: 'Confirmation',
+                text: 'Are you sure you want to delete order ' + orderId + '?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Find the closest order-card-vertical and remove it
                 const orderCard = btn.closest('.order-card-vertical');
                 if (orderCard) {
                     orderCard.style.transition = 'opacity 0.3s ease';
                     orderCard.style.opacity = '0';
                     setTimeout(() => {
                         orderCard.remove();
-                    }, 300);
+                }
+            }), 300);
                 }
             }
         }
 
         function leaveFeedback(btn, orderId) {
-            const feedback = prompt('Please enter your feedback for order ' + orderId + ':');
+            // PROMPT_REPLACED_WAITING_MANUAL_FIX 
+        const feedback = null; // Swal prompt needs manual async/then wiring for 'Please enter your feedback for order ' + orderId + ':'
             if (feedback && feedback.trim() !== '') {
                 // Look for existing feedback section
                 const orderCard = btn.closest('.order-card-vertical');

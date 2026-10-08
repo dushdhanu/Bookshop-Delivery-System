@@ -88,6 +88,41 @@
             margin-left: auto;
         }
     </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    /* Custom SweetAlert2 Theme to match BookShop */
+    .swal2-popup {
+        background-color: #1a1a2e !important;
+        color: #ffffff !important;
+        border: 1px solid #2e5a8a !important;
+        border-radius: 10px !important;
+    }
+    .swal2-title, .swal2-html-container {
+        color: #ffffff !important;
+    }
+    .swal2-input, .swal2-textarea {
+        background-color: #10235d !important;
+        color: #ffffff !important;
+        border: 1px solid #3b82f6 !important;
+    }
+    .swal2-confirm {
+        background-color: #3b82f6 !important;
+    }
+    .swal2-cancel {
+        background-color: #475569 !important;
+    }
+</style>
+<script>
+    // Global alert override
+    window.alert = function(msg) {
+        Swal.fire({
+            text: msg,
+            confirmButtonColor: '#3b82f6',
+            background: '#1a1a2e',
+            color: '#ffffff'
+        });
+    };
+</script>
 </head>
 <body>
     <!-- Navigation Bar -->

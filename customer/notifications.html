@@ -88,6 +88,41 @@
             margin-left: auto;
         }
     </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    /* Custom SweetAlert2 Theme to match BookShop */
+    .swal2-popup {
+        background-color: #1a1a2e !important;
+        color: #ffffff !important;
+        border: 1px solid #2e5a8a !important;
+        border-radius: 10px !important;
+    }
+    .swal2-title, .swal2-html-container {
+        color: #ffffff !important;
+    }
+    .swal2-input, .swal2-textarea {
+        background-color: #10235d !important;
+        color: #ffffff !important;
+        border: 1px solid #3b82f6 !important;
+    }
+    .swal2-confirm {
+        background-color: #3b82f6 !important;
+    }
+    .swal2-cancel {
+        background-color: #475569 !important;
+    }
+</style>
+<script>
+    // Global alert override
+    window.alert = function(msg) {
+        Swal.fire({
+            text: msg,
+            confirmButtonColor: '#3b82f6',
+            background: '#1a1a2e',
+            color: '#ffffff'
+        });
+    };
+</script>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -311,12 +346,22 @@
                     const cards = document.querySelectorAll('.notification-card');
                     if (cards.length === 0) return;
                     
-                    if (confirm('Mark all notifications as read?')) {
-                        cards.forEach(card => {
+                    Swal.fire({
+                title: 'Confirmation',
+                text: 'Mark all notifications as read?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3b82f6',
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    cards.forEach(card => {
                             card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
                             card.style.opacity = '0';
                             card.style.transform = 'scale(0.95)';
-                        });
+                }
+            }));
                         
                         setTimeout(() => {
                             const list = document.querySelector('.notification-list');
@@ -333,7 +378,8 @@
                     if (actionText === 'View Order' || actionText === 'Track Order') {
                         window.location.href = 'orders.html';
                     } else if (actionText === 'Leave Feedback') {
-                        const feedback = prompt('Please enter your feedback:');
+                        // PROMPT_REPLACED_WAITING_MANUAL_FIX 
+        const feedback = null; // Swal prompt needs manual async/then wiring for 'Please enter your feedback:'
                         if (feedback && feedback.trim() !== '') {
                             alert('Thank you for your feedback! Your feedback has been recorded.');
                             // Optionally hide the button after feedback
