@@ -140,36 +140,39 @@ async function updateNavigation() {
     
     // Find links by text content so it works consistently across pages
     const navLinks = Array.from(document.querySelectorAll('.nav-link'));
-    const loginLink = navLinks.find(link => link.textContent.trim() === 'Login' || link.textContent.trim() === 'Logout');
+    const loginLink = navLinks.find(link => link.textContent.trim() === 'Login' || link.textContent.includes('Logout'));
     const registerLink = navLinks.find(link => link.textContent.trim() === 'Register' || link.textContent.includes('Welcome'));
     
     console.log("Found loginLink:", !!loginLink, "registerLink:", !!registerLink);
     
     if (session.isLoggedIn) {
         // User is logged in
+        if (registerLink) {
+            // Hide register link completely when logged in to combine buttons
+            registerLink.parentElement.style.display = 'none';
+        }
         if (loginLink) {
-            loginLink.textContent = 'Logout';
+            loginLink.innerHTML = `Welcome ${session.user.first_name || 'User'} | <b>Logout</b>`;
             loginLink.href = '#';
+            loginLink.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+            loginLink.style.borderRadius = '5px';
             loginLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 logout();
             });
         }
-        if (registerLink) {
-            // Show welcome message instead of Register
-            registerLink.textContent = `Welcome ${session.user.first_name || 'User'}`;
-            registerLink.href = 'profile.html'; // Or wherever you want them to go
-        }
     } else {
         // User is not logged in
-        if (loginLink) {
-            loginLink.textContent = 'Login';
-            // Determine relative path correctly for login
-            loginLink.href = window.location.pathname.includes('/customer/') ? 'login.html' : 'customer/login.html';
-        }
         if (registerLink) {
+            registerLink.parentElement.style.display = 'block';
             registerLink.textContent = 'Register';
             registerLink.href = window.location.pathname.includes('/customer/') ? 'register.html' : 'customer/register.html';
+        }
+        if (loginLink) {
+            loginLink.textContent = 'Login';
+            loginLink.style.backgroundColor = 'transparent';
+            // Determine relative path correctly for login
+            loginLink.href = window.location.pathname.includes('/customer/') ? 'login.html' : 'customer/login.html';
         }
     }
 }

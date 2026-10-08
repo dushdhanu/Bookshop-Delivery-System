@@ -43,19 +43,17 @@ const db = new sqlite3.Database('./bookshop.db', (err) => {
         console.log('Connected to the SQLite database.');
         
         // Initialize simple Users table
-        db.run(`DROP TABLE IF EXISTS users`, () => {
-            db.run(`CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                first_name TEXT,
-                last_name TEXT,
-                email TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL,
-                role TEXT NOT NULL,
-                phone TEXT,
-                birth_date TEXT,
-                profile_photo TEXT
-            )`);
-        });
+        db.run(`CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            first_name TEXT,
+            last_name TEXT,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            role TEXT NOT NULL,
+            phone TEXT,
+            birth_date TEXT,
+            profile_photo TEXT
+        )`);
     }
 });
 
