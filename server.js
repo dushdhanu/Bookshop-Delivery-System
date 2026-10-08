@@ -53,7 +53,16 @@ const db = new sqlite3.Database('./bookshop.db', (err) => {
             phone TEXT,
             birth_date TEXT,
             profile_photo TEXT
-        )`);
+        )`, (err) => {
+            if (!err) {
+                // Ensure the mock user exists so the frontend sees them as logged in
+                db.get("SELECT id FROM users WHERE id = 1", (err, row) => {
+                    if (!err && !row) {
+                        db.run("INSERT INTO users (id, first_name, last_name, email, password, role, phone, birth_date) VALUES (1, 'chaminda', 'Dissanayake', 'chamind3@example.com', 'password', 'customer', '(123) 456-7890', '01/01/1990')");
+                    }
+                });
+            }
+        });
     }
 });
 
