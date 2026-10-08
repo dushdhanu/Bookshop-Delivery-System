@@ -80,7 +80,17 @@ function markOrderAsDelivered(orderNumber, orderElement) {
     console.log(`Marking order ${orderNumber} as delivered`);
     
     // Show confirmation
-    if (confirm(`Mark order ${orderNumber} as delivered?`)) {
+    Swal.fire({
+        title: 'Confirmation',
+        text: `Mark order ${orderNumber} as delivered?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
         // Show loading state
         const button = orderElement.querySelector('.btn-primary');
         const originalText = button.textContent;
@@ -102,7 +112,9 @@ function markOrderAsDelivered(orderNumber, orderElement) {
             // Show success message
             showAlert(`Order ${orderNumber} marked as delivered successfully!`, 'success');
         }, 1000);
-    }
+    
+        }
+    })
 }
 
 // View order details
@@ -120,7 +132,17 @@ function deleteOrder(orderNumber) {
     console.log(`Deleting order ${orderNumber}`);
     
     // Show confirmation
-    if (confirm(`Are you sure you want to delete order ${orderNumber}? This action cannot be undone.`)) {
+    Swal.fire({
+        title: 'Confirmation',
+        text: `Are you sure you want to delete order ${orderNumber}? This action cannot be undone.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
         // Remove the order card from the DOM
         const orderCard = document.querySelector(`.order-card-vertical .order-id:contains('${orderNumber}')`)?.closest('.order-card-vertical');
         if (orderCard) {
@@ -137,7 +159,9 @@ function deleteOrder(orderNumber) {
                 }
             });
         }
-    }
+    
+        }
+    })
 }
 
 // Leave feedback for an order
@@ -164,13 +188,25 @@ function viewCustomerLocationOnMap(address) {
     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
     
     // Show confirmation dialog before opening map
-    if (confirm(`Open map for address: ${address}? This will open Google Maps in a new tab.`)) {
+    Swal.fire({
+        title: 'Confirmation',
+        text: `Open map for address: ${address}? This will open Google Maps in a new tab.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
         // Open the map in a new tab
         window.open(mapsUrl, '_blank');
         
         // Show success message
         showAlert(`Opening map for address: ${address}`, 'success');
-    }
+    
+        }
+    })
     
     // For demonstration, we'll also log that the function was called
     console.log(`Opening map view for address: ${address}`);

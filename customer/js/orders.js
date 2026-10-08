@@ -96,7 +96,17 @@ function cancelOrder(orderNumber) {
     console.log(`Cancelling order ${orderNumber}`);
     
     // Show confirmation
-    if (confirm(`Are you sure you want to cancel order ${orderNumber}?`)) {
+    Swal.fire({
+        title: 'Confirmation',
+        text: `Are you sure you want to cancel order ${orderNumber}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
         // Update order status visually
         const orderStatus = document.querySelector(`[data-order="${orderNumber}"] .order-status`);
         if (orderStatus) {
@@ -105,7 +115,9 @@ function cancelOrder(orderNumber) {
         }
         
         showAlert(`Order ${orderNumber} has been cancelled.`, 'success');
-    }
+    
+        }
+    })
 }
 
 // Delete an order
@@ -114,7 +126,17 @@ function deleteOrder(orderNumber) {
     console.log(`Deleting order ${orderNumber}`);
     
     // Show confirmation
-    if (confirm(`Are you sure you want to delete order ${orderNumber}? This action cannot be undone.`)) {
+    Swal.fire({
+        title: 'Confirmation',
+        text: `Are you sure you want to delete order ${orderNumber}? This action cannot be undone.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
         // Remove the order card from the DOM
         const orderCard = document.querySelector(`.order-card-vertical .order-id:contains('${orderNumber}')`)?.closest('.order-card-vertical');
         if (orderCard) {
@@ -131,7 +153,9 @@ function deleteOrder(orderNumber) {
                 }
             });
         }
-    }
+    
+        }
+    })
 }
 
 // Leave feedback for an order

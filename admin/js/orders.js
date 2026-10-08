@@ -130,7 +130,17 @@ function deleteOrder(row, orderId) {
     console.log(`Deleting order: ${orderId}`);
     
     // Show confirmation
-    if (confirm(`Are you sure you want to delete order ${orderId}? This action cannot be undone.`)) {
+    Swal.fire({
+        title: 'Confirmation',
+        text: `Are you sure you want to delete order ${orderId}? This action cannot be undone.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: 'Yes'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
         // Show loading state
         const originalText = row.cells[6].innerHTML;
         row.cells[6].innerHTML = '<span>Deleting...</span>';
@@ -143,7 +153,9 @@ function deleteOrder(row, orderId) {
             // Show success message
             showAlert(`Order ${orderId} deleted successfully!`, 'success');
         }, 1000);
-    }
+    
+        }
+    })
 }
 
 // Leave feedback for an order
