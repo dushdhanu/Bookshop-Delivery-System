@@ -424,6 +424,7 @@
                                 <div class="order-actions">
                                     <button class="btn btn-secondary">Leave Feedback</button>
                                     <button class="btn btn-danger">Delete Order</button>
+                                    <button class="btn btn-secondary">View Map</button>
                                 </div>
                             </div>
                         </div>
@@ -469,6 +470,7 @@
                                 <div class="order-actions">
                                     <button class="btn btn-secondary">Leave Feedback</button>
                                     <button class="btn btn-danger">Delete Order</button>
+                                    <button class="btn btn-secondary">View Map</button>
                                 </div>
                             </div>
                         </div>
@@ -538,5 +540,106 @@
         </div>
     </footer>
     <script src="../session.js?v=3"></script>
+    <script>
+        function deleteOrder(btn, orderId) {
+            if (confirm('Are you sure you want to delete order ' + orderId + '?')) {
+                // Find the closest order-card-vertical and remove it
+                const orderCard = btn.closest('.order-card-vertical');
+                if (orderCard) {
+                    orderCard.style.transition = 'opacity 0.3s ease';
+                    orderCard.style.opacity = '0';
+                    setTimeout(() => {
+                        orderCard.remove();
+                    }, 300);
+                }
+            }
+        }
+
+        function leaveFeedback(btn, orderId) {
+            const feedback = prompt('Please enter your feedback for order ' + orderId + ':');
+            if (feedback && feedback.trim() !== '') {
+                // Look for existing feedback section
+                const orderCard = btn.closest('.order-card-vertical');
+                let feedbackSection = orderCard.querySelector('.feedback-section');
+                
+                if (!feedbackSection) {
+                    // Create one if it doesn't exist
+                    feedbackSection = document.createElement('div');
+                    feedbackSection.className = 'feedback-section';
+                    feedbackSection.style.marginTop = '1.5rem';
+                    feedbackSection.style.paddingTop = '1.5rem';
+                    feedbackSection.style.borderTop = '1px solid #334155';
+                    
+                    const header = document.createElement('h4');
+                    header.style.color = '#ffffff';
+                    header.style.marginBottom = '1rem';
+                    header.textContent = 'Your Feedback';
+                    
+                    const content = document.createElement('div');
+                    content.className = 'feedback-content';
+                    content.innerHTML = `
+                        <p style="color: #94a3b8; margin: 0;"></p>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                            <span style="color: #3b82f6;">Rating: ★★★★★</span>
+                            <span style="color: #94a3b8;">${new Date().toLocaleDateString('en-US', {month: 'long', day: 'numeric', year: 'numeric'})}</span>
+                        </div>
+                    `;
+                    
+                    feedbackSection.appendChild(header);
+                    feedbackSection.appendChild(content);
+                    orderCard.querySelector('.order-body-vertical').appendChild(feedbackSection);
+                }
+                
+                // Update feedback text
+                const p = feedbackSection.querySelector('p');
+                p.textContent = '"' + feedback + '"';
+            }
+        }
+
+        function viewMap(address) {
+            // Open Google Maps in a new tab with the address
+            const encodedAddress = encodeURIComponent(address);
+            window.open('https://www.google.com/maps/search/?api=1&query=' + encodedAddress, '_blank');
+        }
+        
+        // Fix existing map function reference in case it's used elsewhere
+        function viewCustomerLocationOnMap(address) {
+            viewMap(address);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Attach event listeners to all Leave Feedback buttons
+            document.querySelectorAll('.btn-secondary').forEach(btn => {
+                if (btn.textContent.trim() === 'Leave Feedback') {
+                    btn.addEventListener('click', function() {
+                        const orderCard = this.closest('.order-card-vertical');
+                        const orderId = orderCard.querySelector('.order-id').textContent.trim();
+                        leaveFeedback(this, orderId);
+                    });
+                }
+            });
+
+            // Attach event listeners to all Delete Order buttons
+            document.querySelectorAll('.btn-danger').forEach(btn => {
+                if (btn.textContent.trim() === 'Delete Order') {
+                    btn.addEventListener('click', function() {
+                        const orderCard = this.closest('.order-card-vertical');
+                        const orderId = orderCard.querySelector('.order-id').textContent.trim();
+                        deleteOrder(this, orderId);
+                    });
+                }
+            });
+
+            // Attach event listeners to all View Map buttons
+            document.querySelectorAll('.btn-secondary').forEach(btn => {
+                if (btn.textContent.trim() === 'View Map') {
+                    btn.removeAttribute('onclick');
+                    btn.addEventListener('click', function() {
+                        viewMap('123 Book St, Library City');
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
