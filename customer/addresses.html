@@ -387,5 +387,53 @@
         });
     </script>
     <script src="../session.js?v=3"></script>
+
+    <script>
+        function addNewAddress() {
+            const address = prompt("Enter your new delivery address:");
+            if (address && address.trim() !== "") {
+                const emptyState = document.getElementById('address-empty-state');
+                const list = document.getElementById('addresses-list');
+                
+                if (emptyState) emptyState.style.display = 'none';
+                
+                const addressCard = document.createElement('div');
+                addressCard.style.backgroundColor = '#10235d';
+                addressCard.style.border = '1px solid #1e3a8a';
+                addressCard.style.borderRadius = '5px';
+                addressCard.style.padding = '1.5rem';
+                addressCard.style.marginBottom = '1rem';
+                addressCard.style.display = 'flex';
+                addressCard.style.justifyContent = 'space-between';
+                addressCard.style.alignItems = 'center';
+                
+                addressCard.innerHTML = `
+                    <div>
+                        <h4 style="color: #ffffff; margin-top: 0; margin-bottom: 0.5rem;">Delivery Address</h4>
+                        <p style="color: #94a3b8; margin: 0;">${address}</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-sm btn-secondary" onclick="alert('Address set as default!')">Set Default</button>
+                        <button class="btn btn-sm btn-danger" onclick="this.parentElement.parentElement.remove(); if(document.getElementById('addresses-list').children.length === 1) { document.getElementById('addAnotherBtn').remove(); document.getElementById('address-empty-state').style.display='block'; }">Delete</button>
+                    </div>
+                `;
+                
+                let addAnotherBtn = document.getElementById('addAnotherBtn');
+                if (!addAnotherBtn) {
+                    addAnotherBtn = document.createElement('button');
+                    addAnotherBtn.id = 'addAnotherBtn';
+                    addAnotherBtn.className = 'btn btn-primary';
+                    addAnotherBtn.textContent = '+ Add Another Address';
+                    addAnotherBtn.style.marginTop = '1rem';
+                    addAnotherBtn.onclick = addNewAddress;
+                }
+                
+                list.insertBefore(addressCard, addAnotherBtn);
+                list.appendChild(addAnotherBtn);
+                
+                alert("Address added successfully!");
+            }
+        }
+    </script>
 </body>
 </html>
