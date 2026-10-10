@@ -133,10 +133,9 @@ function setActiveNavLink() {
 // User session management
 async function checkUserSession() {
     try {
-        const res = await fetch('/api/profile');
-        const data = await res.json();
-        if (data.success && data.data) {
-            return { isLoggedIn: true, user: data.data };
+        const localUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (localUser && localUser.email) {
+            return { isLoggedIn: true, user: localUser };
         }
     } catch (e) {
         console.error('Session check failed', e);
