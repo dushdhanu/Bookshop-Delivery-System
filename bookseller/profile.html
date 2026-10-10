@@ -588,8 +588,69 @@
                     }, 500);
                 });
             }
+
+            // Preferences Form Logic
+            const preferencesForm = document.getElementById('preferencesForm');
+            if (preferencesForm) {
+                // Populate existing preferences if any
+                const userPrefs = localUser.preferences || {};
+                const checkboxes = preferencesForm.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(cb => {
+                    if (userPrefs[cb.id] !== undefined) {
+                        cb.checked = userPrefs[cb.id];
+                    }
+                });
+                
+                const selects = preferencesForm.querySelectorAll('select');
+                selects.forEach(sel => {
+                    if (userPrefs[sel.id]) {
+                        sel.value = userPrefs[sel.id];
+                    }
+                });
+                
+                const inputs = preferencesForm.querySelectorAll('input[type="text"]');
+                inputs.forEach(inp => {
+                    if (userPrefs[inp.id]) {
+                        inp.value = userPrefs[inp.id];
+                    }
+                });
+
+                preferencesForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const btn = preferencesForm.querySelector('button[type="submit"]');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Saving...';
+                    
+                    const newPrefs = {};
+                    
+                    preferencesForm.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                        newPrefs[cb.id] = cb.checked;
+                    });
+                    preferencesForm.querySelectorAll('select').forEach(sel => {
+                        newPrefs[sel.id] = sel.value;
+                    });
+                    preferencesForm.querySelectorAll('input[type="text"]').forEach(inp => {
+                        newPrefs[inp.id] = inp.value;
+                    });
+                    
+                    localUser.preferences = newPrefs;
+                    localStorage.setItem('currentUser', JSON.stringify(localUser));
+                    
+                    setTimeout(() => {
+                        btn.textContent = 'Saved!';
+                        setTimeout(() => btn.textContent = originalText, 2000);
+                        
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ text: 'Preferences updated successfully!', icon: 'success', background: '#1a1a2e', color: '#ffffff', confirmButtonColor: '#3b82f6' });
+                        } else {
+                            alert('Preferences updated successfully!');
+                        }
+                    }, 500);
+                });
+            }
         });
     </script>
+
 
 </body>
 </html>
