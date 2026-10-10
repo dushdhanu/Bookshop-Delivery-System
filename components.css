@@ -457,3 +457,51 @@ textarea.form-input {
     align-items: center;
     justify-content: center;
 }
+
+
+/* Profile Header Global Styles */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: #1a1a2e;
+    border-radius: 5px;
+    border: 1px solid #1e3a8a;
+}
+
+.profile-image {
+    text-align: center;
+}
+
+.profile-image-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #10235d;
+    border: 3px solid #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #a0c0ff;
+    margin: 0 auto 1rem;
+}
+
+.profile-details h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #ffffff;
+}
+
+.profile-email {
+    color: #a0c0ff;
+    margin-bottom: 0.25rem;
+}
+
+.profile-member-since {
+    font-size: 0.875rem;
+    color: #64748b;
+}
