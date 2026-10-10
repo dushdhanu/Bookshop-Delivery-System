@@ -463,7 +463,7 @@
                 if (phoneInput && localUser.phone) phoneInput.value = localUser.phone;
                 if (storeNameInput && localUser.store_name) storeNameInput.value = localUser.store_name;
                 
-                if (profileNameDisplay) profileNameDisplay.textContent = localUser.store_name || fullName;
+                if (profileNameDisplay) profileNameDisplay.textContent = fullName || localUser.store_name;
                 if (profileEmailDisplay) profileEmailDisplay.textContent = localUser.email;
             }
 
@@ -485,7 +485,7 @@
                     
                     localStorage.setItem('currentUser', JSON.stringify(localUser));
                     
-                    if (profileNameDisplay) profileNameDisplay.textContent = localUser.store_name || ownerNameInput.value;
+                    if (profileNameDisplay) profileNameDisplay.textContent = ownerNameInput.value || localUser.store_name;
                     if (profileEmailDisplay) profileEmailDisplay.textContent = localUser.email;
 
                     setTimeout(() => {
