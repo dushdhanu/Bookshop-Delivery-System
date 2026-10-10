@@ -584,16 +584,7 @@
                                 });
                             }
                         });
-                    } else if (action === 'View Feedback') {
-                        Swal.fire({
-                            title: 'Customer Feedback',
-                            text: 'The customer rated this order 5 stars: "Great books, fast delivery! Thank you!"',
-                            icon: 'info',
-                            confirmButtonColor: '#3b82f6',
-                            background: '#1a1a2e',
-                            color: '#ffffff'
-                        });
-                    } else if (action === 'Update Tracking') {
+                    } else if (action === 'View Feedback') { window.location.href = 'feedback.html'; } else if (action === 'Update Tracking') {
                         Swal.fire({
                             title: 'Update Tracking',
                             input: 'text',
