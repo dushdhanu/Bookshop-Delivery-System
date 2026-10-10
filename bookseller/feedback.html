@@ -321,6 +321,47 @@
             </div>
         </div>
     </footer>
+    <script>
+        document.addEventListener('click', function(e) {
+            let target = e.target;
+            if (target.tagName === 'BUTTON' && target.textContent.trim() === 'Respond') {
+                const tr = target.closest('.feedback-card');
+                let orderId = 'this feedback';
+                
+                if (tr) {
+                    const idEl = tr.querySelector('.feedback-id');
+                    if (idEl) orderId = idEl.textContent.trim();
+                }
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Respond to ' + orderId,
+                        input: 'textarea',
+                        inputLabel: 'Your Response',
+                        inputPlaceholder: 'Type your response to the customer here...',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3b82f6',
+                        cancelButtonColor: '#475569',
+                        confirmButtonText: 'Send Response'
+                    }).then((result) => {
+                        if (result.isConfirmed && result.value) {
+                            target.textContent = 'Responded';
+                            target.classList.replace('btn-secondary', 'btn-primary');
+                            target.disabled = true;
+                            
+                            Swal.fire({
+                                text: 'Response sent successfully!',
+                                icon: 'success',
+                                background: '#1a1a2e',
+                                color: '#ffffff',
+                                confirmButtonColor: '#3b82f6'
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    </script>
     <script src="../session.js?v=3"></script>
 </body>
 </html>
