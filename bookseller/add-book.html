@@ -292,7 +292,53 @@
         </div>
     </footer>
 
-    <script src="../api.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const addBookForm = document.getElementById('addBookForm');
+            if (addBookForm) {
+                addBookForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const title = document.getElementById('bookTitle').value;
+                    const author = document.getElementById('author').value;
+                    const isbn = document.getElementById('isbn').value || 'N/A';
+                    const price = document.getElementById('price').value;
+                    const stock = document.getElementById('stock').value;
+                    
+                    const newBook = { title, author, isbn, price, stock };
+                    
+                    let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
+                    myBooks.push(newBook);
+                    localStorage.setItem('myBooks', JSON.stringify(myBooks));
+                    
+                    const btn = addBookForm.querySelector('button[type="submit"]');
+                    const origText = btn.textContent;
+                    btn.textContent = 'Adding...';
+                    
+                    setTimeout(() => {
+                        btn.textContent = origText;
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                text: 'Book added successfully!',
+                                icon: 'success',
+                                background: '#1a1a2e',
+                                color: '#ffffff',
+                                confirmButtonColor: '#3b82f6'
+                            }).then(() => {
+                                window.location.href = 'books.html';
+                            });
+                        } else {
+                            alert('Book added successfully!');
+                            window.location.href = 'books.html';
+                        }
+                    }, 500);
+                });
+            }
+        });
+    </script>
     <script src="../session.js?v=3"></script>
 </body>
+
 </html>
