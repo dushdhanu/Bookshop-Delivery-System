@@ -232,5 +232,63 @@
     </footer>
 
         <script src="../session.js?v=3"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileForm = document.getElementById('profileForm');
+            const firstNameInput = document.getElementById('firstName');
+            const lastNameInput = document.getElementById('lastName');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            
+            const profileNameDisplay = document.querySelector('.profile-details h3');
+            const profileEmailDisplay = document.querySelector('.profile-details .profile-email');
+
+            // Load data from localStorage
+            let localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+            
+            if (localUser.email) {
+                if (firstNameInput) firstNameInput.value = localUser.first_name || '';
+                if (lastNameInput) lastNameInput.value = localUser.last_name || '';
+                if (emailInput) emailInput.value = localUser.email;
+                if (phoneInput && localUser.phone) phoneInput.value = localUser.phone;
+                
+                const fullName = ((localUser.first_name || '') + ' ' + (localUser.last_name || '')).trim();
+                if (profileNameDisplay) profileNameDisplay.textContent = fullName || 'Delivery Person';
+                if (profileEmailDisplay) profileEmailDisplay.textContent = localUser.email;
+            }
+
+            // Save data
+            if (profileForm) {
+                profileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const btn = profileForm.querySelector('button[type="submit"]');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Saving...';
+                    
+                    localUser.first_name = firstNameInput.value;
+                    localUser.last_name = lastNameInput.value;
+                    localUser.email = emailInput.value;
+                    localUser.phone = phoneInput.value;
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(localUser));
+                    
+                    const fullName = ((localUser.first_name || '') + ' ' + (localUser.last_name || '')).trim();
+                    if (profileNameDisplay) profileNameDisplay.textContent = fullName || 'Delivery Person';
+                    if (profileEmailDisplay) profileEmailDisplay.textContent = localUser.email;
+
+                    setTimeout(() => {
+                        btn.textContent = 'Saved!';
+                        setTimeout(() => btn.textContent = originalText, 2000);
+                        if (typeof showAlert !== 'undefined') {
+                            showAlert('Profile updated successfully!', 'success');
+                        } else if (typeof Swal !== 'undefined') {
+                            Swal.fire({ text: 'Profile updated successfully!', icon: 'success' });
+                        }
+                    }, 500);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
