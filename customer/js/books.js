@@ -1,14 +1,10 @@
 // Customer Books Page JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Add to cart functionality
-    const addToCartButtons = document.querySelectorAll('.btn-secondary');
-    
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            if (this.textContent.trim() !== 'Add to Cart') return;
-            
-            const bookCard = this.closest('.book-card');
+    // Use event delegation for Add to Cart buttons
+    document.body.addEventListener('click', function(e) {
+        if (e.target.matches('.btn-secondary') && e.target.textContent.trim() === 'Add to Cart') {
+            const bookCard = e.target.closest('.book-card');
             if (!bookCard) return;
             
             const bookTitle = bookCard.querySelector('h3').textContent;
@@ -25,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Add to cart functionality
             addToCart(bookDetails);
-        });
+        }
     });
     
     // Search functionality
