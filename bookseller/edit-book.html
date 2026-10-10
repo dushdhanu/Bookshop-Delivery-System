@@ -212,7 +212,7 @@
                     
                     if (originalBook) {
                         let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
-                        const index = myBooks.findIndex(b => b.title === originalBook.title && b.author === originalBook.author);
+                        const index = myBooks.findIndex(b => b.title?.trim().toLowerCase() === originalBook.title?.trim().toLowerCase() && b.author?.trim().toLowerCase() === originalBook.author?.trim().toLowerCase());
                         
                         const newTitle = document.getElementById('bookTitle')?.value || originalBook.title;
                         const newAuthor = document.getElementById('author')?.value || originalBook.author;
@@ -287,7 +287,7 @@
                             if (result.isConfirmed) {
                                 if (originalBook) {
                                     let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
-                                    myBooks = myBooks.filter(b => !(b.title === originalBook.title && b.author === originalBook.author));
+                                    myBooks = myBooks.filter(b => !(b.title?.trim().toLowerCase() === originalBook.title?.trim().toLowerCase() && b.author?.trim().toLowerCase() === originalBook.author?.trim().toLowerCase()));
                                     localStorage.setItem('myBooks', JSON.stringify(myBooks));
                                 }
                                 Swal.fire({
@@ -305,7 +305,7 @@
                         if (confirm('Are you sure you want to delete this book?')) {
                             if (originalBook) {
                                 let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
-                                myBooks = myBooks.filter(b => !(b.title === originalBook.title && b.author === originalBook.author));
+                                myBooks = myBooks.filter(b => !(b.title?.trim().toLowerCase() === originalBook.title?.trim().toLowerCase() && b.author?.trim().toLowerCase() === originalBook.author?.trim().toLowerCase()));
                                 localStorage.setItem('myBooks', JSON.stringify(myBooks));
                             }
                             alert('Book deleted successfully!');
