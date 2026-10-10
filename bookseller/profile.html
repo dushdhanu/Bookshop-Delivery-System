@@ -441,5 +441,65 @@
     </footer>
 
         <script src="../session.js?v=3"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const storeForm = document.getElementById('storeForm');
+            const ownerNameInput = document.getElementById('ownerName');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const storeNameInput = document.getElementById('storeName');
+            
+            const profileNameDisplay = document.querySelector('.profile-details h3');
+            const profileEmailDisplay = document.querySelector('.profile-details .profile-email');
+
+            // Load data from localStorage
+            let localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+            
+            if (localUser.email) {
+                const fullName = (localUser.first_name + ' ' + (localUser.last_name || '')).trim();
+                if (ownerNameInput) ownerNameInput.value = fullName;
+                if (emailInput) emailInput.value = localUser.email;
+                if (phoneInput && localUser.phone) phoneInput.value = localUser.phone;
+                if (storeNameInput && localUser.store_name) storeNameInput.value = localUser.store_name;
+                
+                if (profileNameDisplay) profileNameDisplay.textContent = localUser.store_name || fullName;
+                if (profileEmailDisplay) profileEmailDisplay.textContent = localUser.email;
+            }
+
+            // Save data
+            if (storeForm) {
+                storeForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const btn = storeForm.querySelector('button[type="submit"]');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Saving...';
+                    
+                    const nameParts = (ownerNameInput.value || '').split(' ');
+                    
+                    localUser.first_name = nameParts[0] || '';
+                    localUser.last_name = nameParts.slice(1).join(' ');
+                    localUser.email = emailInput.value;
+                    localUser.phone = phoneInput.value;
+                    localUser.store_name = storeNameInput.value;
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(localUser));
+                    
+                    if (profileNameDisplay) profileNameDisplay.textContent = localUser.store_name || ownerNameInput.value;
+                    if (profileEmailDisplay) profileEmailDisplay.textContent = localUser.email;
+
+                    setTimeout(() => {
+                        btn.textContent = 'Saved!';
+                        setTimeout(() => btn.textContent = originalText, 2000);
+                        if (typeof showAlert !== 'undefined') {
+                            showAlert('Profile updated successfully!', 'success');
+                        } else if (typeof Swal !== 'undefined') {
+                            Swal.fire({ text: 'Profile updated successfully!', icon: 'success' });
+                        }
+                    }, 500);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
