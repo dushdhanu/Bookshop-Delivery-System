@@ -193,28 +193,28 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            let originalBook = null;
             const bookToEditStr = localStorage.getItem('bookToEdit');
             if (bookToEditStr) {
                 try {
-                    const book = JSON.parse(bookToEditStr);
+                    originalBook = JSON.parse(bookToEditStr);
                     const titleEl = document.getElementById('bookTitle');
-                    if (titleEl) titleEl.value = book.title;
+                    if (titleEl) titleEl.value = originalBook.title;
                     
                     const authorEl = document.getElementById('author');
-                    if (authorEl) authorEl.value = book.author;
+                    if (authorEl) authorEl.value = originalBook.author;
                     
                     const isbnEl = document.getElementById('isbn');
-                    if (isbnEl) isbnEl.value = book.isbn || '';
+                    if (isbnEl) isbnEl.value = originalBook.isbn || '';
                     
                     const priceEl = document.getElementById('price');
-                    if (priceEl && book.price) {
-                        let p = book.price.toString().replace('
-</html>, '').trim();
+                    if (priceEl && originalBook.price) {
+                        let p = originalBook.price.toString().replace('$', '').trim();
                         priceEl.value = p;
                     }
                     
                     const stockEl = document.getElementById('stock');
-                    if (stockEl) stockEl.value = book.stock || 0;
+                    if (stockEl) stockEl.value = originalBook.stock || 0;
                 } catch(e) {}
             }
             
@@ -222,6 +222,33 @@
             if (editBookForm) {
                 editBookForm.addEventListener('submit', (e) => {
                     e.preventDefault();
+                    
+                    if (originalBook) {
+                        let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
+                        const index = myBooks.findIndex(b => b.title === originalBook.title && b.author === originalBook.author);
+                        
+                        const newTitle = document.getElementById('bookTitle')?.value || originalBook.title;
+                        const newAuthor = document.getElementById('author')?.value || originalBook.author;
+                        const newIsbn = document.getElementById('isbn')?.value || originalBook.isbn;
+                        const newPrice = document.getElementById('price')?.value || originalBook.price;
+                        const newStock = document.getElementById('stock')?.value || originalBook.stock;
+                        
+                        const updatedBook = {
+                            title: newTitle,
+                            author: newAuthor,
+                            isbn: newIsbn,
+                            price: newPrice,
+                            stock: parseInt(newStock) || 0
+                        };
+                        
+                        if (index !== -1) {
+                            myBooks[index] = updatedBook;
+                        } else {
+                            // fallback if not found, just push it (though it should be found)
+                            myBooks.push(updatedBook);
+                        }
+                        localStorage.setItem('myBooks', JSON.stringify(myBooks));
+                    }
                     
                     const btn = editBookForm.querySelector('button[type="submit"]');
                     const origText = btn.textContent;
@@ -263,6 +290,11 @@
                             confirmButtonText: 'Yes, Delete it'
                         }).then((result) => {
                             if (result.isConfirmed) {
+                                if (originalBook) {
+                                    let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
+                                    myBooks = myBooks.filter(b => !(b.title === originalBook.title && b.author === originalBook.author));
+                                    localStorage.setItem('myBooks', JSON.stringify(myBooks));
+                                }
                                 Swal.fire({
                                     text: 'Book deleted successfully!',
                                     icon: 'success',
@@ -276,6 +308,11 @@
                         });
                     } else {
                         if (confirm('Are you sure you want to delete this book?')) {
+                            if (originalBook) {
+                                let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
+                                myBooks = myBooks.filter(b => !(b.title === originalBook.title && b.author === originalBook.author));
+                                localStorage.setItem('myBooks', JSON.stringify(myBooks));
+                            }
                             alert('Book deleted successfully!');
                             window.location.href = 'books.html';
                         }
