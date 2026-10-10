@@ -231,7 +231,7 @@ async function logout() {
         await fetch('/api/logout', { method: 'POST' }).catch(e => console.error(e));
         console.log('User logged out');
         updateNavigation();
-        window.location.href = window.location.pathname.includes('/customer/') ? '../index.html' : 'index.html';
+        window.location.href = '/customer/index.html';
     } catch (e) {
         console.error('Logout failed', e);
     }
