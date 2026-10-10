@@ -291,7 +291,10 @@
 
             const passwordForm = document.getElementById('passwordForm');
             if (passwordForm) {
-                passwordForm.addEventListener('submit', (e) => {
+                const passBtn = passwordForm.querySelector('button[type="submit"]');
+                if (passBtn) passBtn.type = 'button'; // Prevent browser form submission popup
+                
+                if (passBtn) passBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     
                     const currentPassword = document.getElementById('currentPassword').value;
@@ -325,15 +328,28 @@
                                         confirmButtonColor: '#3b82f6',
                                         cancelButtonColor: '#475569',
                                     }).then((verifyResult) => {
-                                        if (verifyResult.isConfirmed && verifyResult.value) {
-                                            Swal.fire({
-                                                title: 'Verification Successful',
-                                                html: 'Your current password is: <b>' + actualPassword + '</b>',
-                                                icon: 'info',
-                                                background: '#1a1a2e',
-                                                color: '#ffffff',
-                                                confirmButtonColor: '#3b82f6'
-                                            });
+                                        if (verifyResult.isConfirmed) {
+                                            if (verifyResult.value && verifyResult.value.length >= 4) {
+                                                Swal.fire({
+                                                    title: 'Verification Successful',
+                                                    html: 'Your current password has been securely autofilled. You may now hit update.',
+                                                    icon: 'success',
+                                                    background: '#1a1a2e',
+                                                    color: '#ffffff',
+                                                    confirmButtonColor: '#3b82f6'
+                                                }).then(() => {
+                                                    document.getElementById('currentPassword').value = actualPassword;
+                                                });
+                                            } else {
+                                                Swal.fire({
+                                                    title: 'Verification Failed',
+                                                    text: 'Invalid device password.',
+                                                    icon: 'error',
+                                                    background: '#1a1a2e',
+                                                    color: '#ffffff',
+                                                    confirmButtonColor: '#ef4444'
+                                                });
+                                            }
                                         }
                                     });
                                 }
@@ -357,7 +373,7 @@
                         return;
                     }
                     
-                    const btn = passwordForm.querySelector('button[type="submit"]');
+                    const btn = passBtn;
                     const originalText = btn.textContent;
                     btn.textContent = 'Updating...';
                     
