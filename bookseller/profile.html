@@ -499,7 +499,58 @@
                     }, 500);
                 });
             }
+
+            const passwordForm = document.getElementById('passwordForm');
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const currentPassword = document.getElementById('currentPassword').value;
+                    const newPassword = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    
+                    const actualPassword = localUser.password || 'password'; // Mock default password
+                    
+                    if (currentPassword !== actualPassword) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ text: 'Current password is incorrect.', icon: 'error', background: '#1a1a2e', color: '#ffffff', confirmButtonColor: '#3b82f6' });
+                        } else {
+                            alert('Current password is incorrect.');
+                        }
+                        return;
+                    }
+                    
+                    if (newPassword !== confirmPassword) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ text: 'New passwords do not match.', icon: 'error', background: '#1a1a2e', color: '#ffffff', confirmButtonColor: '#3b82f6' });
+                        } else {
+                            alert('New passwords do not match.');
+                        }
+                        return;
+                    }
+                    
+                    const btn = passwordForm.querySelector('button[type="submit"]');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Updating...';
+                    
+                    localUser.password = newPassword;
+                    localStorage.setItem('currentUser', JSON.stringify(localUser));
+                    
+                    setTimeout(() => {
+                        btn.textContent = 'Updated!';
+                        setTimeout(() => btn.textContent = originalText, 2000);
+                        passwordForm.reset();
+                        
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ text: 'Password updated successfully!', icon: 'success', background: '#1a1a2e', color: '#ffffff', confirmButtonColor: '#3b82f6' });
+                        } else {
+                            alert('Password updated successfully!');
+                        }
+                    }, 500);
+                });
+            }
         });
     </script>
+
 </body>
 </html>
