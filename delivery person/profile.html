@@ -402,6 +402,15 @@
                         return;
                     }
                     
+                    if (newPassword === actualPassword) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ text: 'New password cannot be the same as the current password.', icon: 'error', background: '#1a1a2e', color: '#ffffff', confirmButtonColor: '#3b82f6' });
+                        } else {
+                            alert('New password cannot be the same as the current password.');
+                        }
+                        return;
+                    }
+                    
                     if (newPassword !== confirmPassword) {
                         if (typeof Swal !== 'undefined') {
                             Swal.fire({ text: 'New passwords do not match.', icon: 'error', background: '#1a1a2e', color: '#ffffff', confirmButtonColor: '#3b82f6' });
