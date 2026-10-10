@@ -62,6 +62,10 @@ function handleLogin() {
     submitButton.textContent = 'Logging in...';
     submitButton.disabled = true;
     
+    // Get role if available
+    const roleEl = document.getElementById('role');
+    const userRole = roleEl ? roleEl.value : 'customer';
+
     // Simulate API call delay
     setTimeout(() => {
         // Save to localStorage
@@ -70,7 +74,8 @@ function handleLogin() {
             first_name: email.split('@')[0], // Extract first part of email as name
             last_name: '',
             phone: '',
-            birth_date: ''
+            birth_date: '',
+            role: userRole
         }));
         
         // Reset button
@@ -80,8 +85,14 @@ function handleLogin() {
         // Show success message
         showAlert('Login successful! Redirecting...', 'success');
         
-        // In a real app, you would redirect to another page
-        window.location.href = 'profile.html';
+        // Redirect based on role
+        if (userRole === 'bookseller') {
+            window.location.href = '../bookseller/index.html';
+        } else if (userRole === 'delivery') {
+            window.location.href = '../delivery person/index.html';
+        } else {
+            window.location.href = 'profile.html';
+        }
     }, 1500);
 }
 
@@ -122,6 +133,10 @@ function handleRegister() {
     submitButton.textContent = 'Creating Account...';
     submitButton.disabled = true;
     
+    // Get role if available
+    const roleEl = document.getElementById('role');
+    const userRole = roleEl ? roleEl.value : 'customer';
+
     // Simulate API call delay
     setTimeout(() => {
         // Save to localStorage
@@ -131,7 +146,8 @@ function handleRegister() {
             first_name: nameParts[0] || '',
             last_name: nameParts.slice(1).join(' ') || '',
             phone: '',
-            birth_date: ''
+            birth_date: '',
+            role: userRole
         }));
 
         // Reset button
