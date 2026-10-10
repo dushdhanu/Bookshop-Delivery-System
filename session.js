@@ -154,6 +154,8 @@ async function updateNavigation() {
     const navLinks = Array.from(document.querySelectorAll('.nav-link'));
     const loginLink = navLinks.find(link => link.textContent.trim() === 'Login' || link.textContent.includes('Logout'));
     const registerLink = navLinks.find(link => link.textContent.trim() === 'Register' || link.textContent.includes('Welcome'));
+    const ordersLink = navLinks.find(link => link.textContent.trim() === 'Orders');
+    const profileLink = navLinks.find(link => link.textContent.trim() === 'Profile');
     
     console.log("Found loginLink:", !!loginLink, "registerLink:", !!registerLink);
     
