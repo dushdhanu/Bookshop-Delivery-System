@@ -174,10 +174,33 @@ async function updateNavigation() {
             loginLink.style.borderRadius = '5px';
             loginLink.style.padding = '0.5rem 1.5rem';
             loginLink.style.fontWeight = 'bold';
-            loginLink.addEventListener('click', (e) => {
+            
+            // Safe binding to prevent multiple event listener attachments
+            loginLink.onclick = (e) => {
                 e.preventDefault();
                 logout();
-            });
+            };
+        } else {
+            const navMenu = document.querySelector('.nav-menu');
+            if (navMenu) {
+                const li = document.createElement('li');
+                li.className = 'nav-item';
+                const a = document.createElement('a');
+                a.className = 'nav-link';
+                a.textContent = 'Logout';
+                a.href = '#';
+                a.style.backgroundColor = '#ef4444';
+                a.style.color = '#ffffff';
+                a.style.borderRadius = '5px';
+                a.style.padding = '0.5rem 1.5rem';
+                a.style.fontWeight = 'bold';
+                a.onclick = (e) => {
+                    e.preventDefault();
+                    logout();
+                };
+                li.appendChild(a);
+                navMenu.appendChild(li);
+            }
         }
 
         // Inject Welcome banner below navbar
