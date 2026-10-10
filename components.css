@@ -424,4 +424,36 @@ textarea.form-input {
     .action-buttons {
         flex-direction: column;
     }
+}/* Vertical Sidebar Styles added for consistency */
+.sidebar-panel-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.sidebar-item-vertical {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 5px;
+    background-color: #10235d;
+    text-decoration: none;
+    color: #a0c0ff;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+.sidebar-item-vertical:hover{
+    background-color: #3b82f6;
+}
+.sidebar-item-vertical.active {
+    background-color: #10235d;
+    border-color: #334155;
+}
+.sidebar-icon-medium {
+    font-size: 1.2rem;
+    margin-right: 0.75rem;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
