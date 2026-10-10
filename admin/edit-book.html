@@ -274,6 +274,14 @@
                 });
             }
             
+            
+            const cancelBtn = document.getElementById('cancelBtn');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => {
+                    window.location.href = 'books.html';
+                });
+            }
+            
             // Delete button logic
             const deleteBtn = document.getElementById('deleteBtn');
             if (deleteBtn) {
