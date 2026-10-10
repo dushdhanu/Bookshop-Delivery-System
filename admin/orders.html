@@ -453,6 +453,65 @@
             </div>
         </div>
     </footer>
+    <script>
+        document.addEventListener('click', function(e) {
+            let target = e.target;
+            if (target.tagName === 'BUTTON' && target.closest('.table-actions')) {
+                const action = target.textContent.trim();
+                const tr = target.closest('tr');
+                let orderId = 'this order';
+                
+                if (tr) {
+                    const idEl = tr.querySelector('td:first-child');
+                    if (idEl) orderId = idEl.textContent.trim();
+                }
+
+                if (typeof Swal !== 'undefined') {
+                    if (action === 'View') {
+                        Swal.fire({
+                            title: 'Order Details: ' + orderId,
+                            html: '<div style="text-align: left;"><p><strong>Status:</strong> Validated</p><p><strong>Payment:</strong> Cleared</p><p><strong>Items:</strong> Checked and accounted for.</p></div>',
+                            icon: 'info',
+                            confirmButtonColor: '#3b82f6',
+                            background: '#1a1a2e',
+                            color: '#ffffff'
+                        });
+                    } else if (action === 'Update') {
+                        Swal.fire({
+                            title: 'Update Order',
+                            input: 'select',
+                            inputOptions: {
+                                'pending': 'Pending',
+                                'processing': 'Processing',
+                                'shipped': 'Shipped',
+                                'delivered': 'Delivered',
+                                'cancelled': 'Cancelled'
+                            },
+                            inputPlaceholder: 'Select new status',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3b82f6',
+                            cancelButtonColor: '#475569'
+                        }).then((result) => {
+                            if (result.isConfirmed && result.value) {
+                                const statusEl = tr.querySelector('.status-badge');
+                                if (statusEl) {
+                                    statusEl.textContent = result.value.charAt(0).toUpperCase() + result.value.slice(1);
+                                    statusEl.className = 'status-badge status-' + result.value;
+                                }
+                                Swal.fire({
+                                    text: 'Order status updated successfully!',
+                                    icon: 'success',
+                                    background: '#1a1a2e',
+                                    color: '#ffffff',
+                                    confirmButtonColor: '#3b82f6'
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    </script>
     <script src="../session.js?v=3"></script>
 </body>
 </html>
