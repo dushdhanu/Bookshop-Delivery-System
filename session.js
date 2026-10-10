@@ -161,6 +161,8 @@ async function updateNavigation() {
     
     if (session.isLoggedIn) {
         // User is logged in
+        if (ordersLink) ordersLink.parentElement.style.display = 'block';
+        if (profileLink) profileLink.parentElement.style.display = 'block';
         if (registerLink) {
             // Hide register link completely when logged in
             registerLink.parentElement.style.display = 'none';
@@ -203,6 +205,8 @@ async function updateNavigation() {
         }
     } else {
         // User is not logged in
+        if (ordersLink) ordersLink.parentElement.style.display = 'none';
+        if (profileLink) profileLink.parentElement.style.display = 'none';
         if (registerLink) {
             registerLink.parentElement.style.display = 'block';
             registerLink.textContent = 'Register';
