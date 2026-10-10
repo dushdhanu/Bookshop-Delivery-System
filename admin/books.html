@@ -445,6 +445,34 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('click', function(e) {
+            let target = e.target;
+            if (target.tagName !== 'A' && target.closest('a')) {
+                target = target.closest('a');
+            }
+            
+            if (target && target.tagName === 'A' && target.href && target.href.includes('edit-book.html')) {
+                const tr = target.closest('tr');
+                if (tr) {
+                    const tds = tr.querySelectorAll('td');
+                    if (tds.length >= 6) {
+                        const title = tds[1].innerText.trim();
+                        const author = tds[2].innerText.trim();
+                        const isbn = tds[3].innerText.trim();
+                        let price = tds[4].innerText.trim();
+                        if (price.startsWith('
+</html>)) price = price.substring(1);
+                        const stock = tds[5].innerText.trim();
+                        
+                        const bookToEdit = { title, author, isbn, price, stock: parseInt(stock) || 0 };
+                        localStorage.setItem('bookToEdit', JSON.stringify(bookToEdit));
+                    }
+                }
+            }
+        });
+    </script>
     <script src="../session.js?v=3"></script>
 </body>
 </html>

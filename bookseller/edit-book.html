@@ -195,7 +195,14 @@
                     
                     const priceEl = document.getElementById('price');
                     if (priceEl && book.price) {
-                        let p = book.price.toString().replace('
+                        let p = book.price.toString().replace('$', '').trim();
+                        priceEl.value = p;
+                    }
+                    
+                    const stockEl = document.getElementById('stock');
+                    if (stockEl) stockEl.value = book.stock || 0;
+                } catch(e) {}
+            }
             const editBookForm = document.getElementById('editBookForm');
             if (editBookForm) {
                 editBookForm.addEventListener('submit', (e) => {
