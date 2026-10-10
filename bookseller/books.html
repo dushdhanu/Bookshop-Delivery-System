@@ -447,6 +447,27 @@
     <script>
         document.addEventListener('click', function(e) {
             let target = e.target;
+            
+            // Intercept Remove button
+            if (target.tagName === 'BUTTON' && target.textContent.trim() === 'Remove' && target.classList.contains('btn-danger')) {
+                const tr = target.closest('tr');
+                if (tr) {
+                    const tds = tr.querySelectorAll('td');
+                    if (tds.length >= 6) {
+                        const title = tds[1].innerText.trim();
+                        const author = tds[2].innerText.trim();
+                        
+                        let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
+                        myBooks = myBooks.filter(b => !(b.title?.trim().toLowerCase() === title.toLowerCase() && b.author?.trim().toLowerCase() === author.toLowerCase()));
+                        localStorage.setItem('myBooks', JSON.stringify(myBooks));
+                        
+                        let deletedBooks = JSON.parse(localStorage.getItem('deletedBooks')) || [];
+                        deletedBooks.push({title, author});
+                        localStorage.setItem('deletedBooks', JSON.stringify(deletedBooks));
+                    }
+                }
+            }
+            
             if (target.tagName !== 'A' && target.closest('a')) {
                 target = target.closest('a');
             }
@@ -471,39 +492,56 @@
         });
         
         document.addEventListener('DOMContentLoaded', () => {
-            const myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
-            if (myBooks.length > 0) {
-                const tbody = document.querySelector('.data-table-enhanced tbody');
-                if (tbody) {
-                    myBooks.forEach(book => {
-                        const tr = document.createElement('tr');
-                        
-                        let stockClass = 'status-in-stock';
-                        if (book.stock <= 0) stockClass = 'status-out-stock';
-                        else if (book.stock < 10) stockClass = 'status-low-stock';
-                        
-                        tr.innerHTML = `
-                            <td>
-                                <div class="cover-preview">📚</div>
-                            </td>
-                            <td>${book.title}</td>
-                            <td>${book.author}</td>
-                            <td>${book.isbn}</td>
-                            <td>$${book.price}</td>
-                            <td>
-                                <span class="status-badge ${stockClass}">${book.stock}</span>
-                            </td>
-                            <td>⭐ New</td>
-                            <td>
-                                <div class="table-actions">
-                                    <a href="edit-book.html" class="btn btn-sm btn-secondary">Edit</a>
-                                    <button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove();">Remove</button>
-                                </div>
-                            </td>
-                        `;
-                        tbody.insertBefore(tr, tbody.firstChild);
+            const tbody = document.querySelector('.data-table-enhanced tbody');
+            
+            // Filter out deleted hardcoded books
+            if (tbody) {
+                let deletedBooks = JSON.parse(localStorage.getItem('deletedBooks')) || [];
+                if (deletedBooks.length > 0) {
+                    const trs = tbody.querySelectorAll('tr');
+                    trs.forEach(tr => {
+                        const tds = tr.querySelectorAll('td');
+                        if (tds.length >= 6) {
+                            const title = tds[1].innerText.trim().toLowerCase();
+                            const author = tds[2].innerText.trim().toLowerCase();
+                            if (deletedBooks.some(db => db.title?.trim().toLowerCase() === title && db.author?.trim().toLowerCase() === author)) {
+                                tr.remove();
+                            }
+                        }
                     });
                 }
+            }
+            
+            const myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
+            if (myBooks.length > 0 && tbody) {
+                myBooks.forEach(book => {
+                    const tr = document.createElement('tr');
+                    
+                    let stockClass = 'status-in-stock';
+                    if (book.stock <= 0) stockClass = 'status-out-stock';
+                    else if (book.stock < 10) stockClass = 'status-low-stock';
+                    
+                    tr.innerHTML = `
+                        <td>
+                            <div class="cover-preview">📚</div>
+                        </td>
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>${book.isbn}</td>
+                        <td>$${book.price}</td>
+                        <td>
+                            <span class="status-badge ${stockClass}">${book.stock}</span>
+                        </td>
+                        <td>⭐ New</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="edit-book.html" class="btn btn-sm btn-secondary">Edit</a>
+                                <button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove();">Remove</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.insertBefore(tr, tbody.firstChild);
+                });
             }
         });
     </script>
