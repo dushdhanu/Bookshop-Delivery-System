@@ -451,7 +451,7 @@
             let target = e.target;
             
             // Intercept Remove button
-            if (target.tagName === 'BUTTON' && target.textContent.trim() === 'Remove' && target.classList.contains('btn-danger')) {
+            if (target.tagName === 'BUTTON' && target.textContent.trim() === 'Remove' || target.classList.contains('btn-remove-book') && target.classList.contains('btn-danger')) {
                 const tr = target.closest('tr');
                 if (tr) {
                     const tds = tr.querySelectorAll('td');
@@ -502,59 +502,160 @@
             }
         });
         
+        
         document.addEventListener('DOMContentLoaded', () => {
             const tbody = document.querySelector('.data-table-enhanced tbody');
+            if (!tbody) return;
             
-            // Filter out deleted hardcoded books
-            if (tbody) {
-                let deletedBooks = JSON.parse(localStorage.getItem('deletedBooks')) || [];
-                if (deletedBooks.length > 0) {
-                    const trs = tbody.querySelectorAll('tr');
-                    trs.forEach(tr => {
-                        const tds = tr.querySelectorAll('td');
-                        if (tds.length >= 6) {
-                            const title = tds[1].innerText.trim().toLowerCase();
-                            const author = tds[2].innerText.trim().toLowerCase();
-                            if (deletedBooks.some(db => db.title?.trim().toLowerCase() === title && db.author?.trim().toLowerCase() === author)) {
-                                tr.remove();
-                            }
-                        }
-                    });
+            // 1. Extract hardcoded books from HTML
+            const hardcodedBooks = [];
+            const trs = Array.from(tbody.querySelectorAll('tr'));
+            trs.forEach(tr => {
+                const tds = tr.querySelectorAll('td');
+                if (tds.length >= 6) {
+                    const title = tds[1].innerText.trim();
+                    const author = tds[2].innerText.trim();
+                    const isbn = tds[3].innerText.trim();
+                    let price = tds[4].innerText.trim();
+                    if (price.startsWith('
+    <script src="../session.js?v=3"></script>
+</body>
+</html>)) price = price.substring(1);
+                    const stock = parseInt(tds[5].innerText.trim()) || 0;
+                    const rating = tds[6].innerText.trim();
+                    hardcodedBooks.push({ title, author, isbn, price, stock, rating, isHardcoded: true });
                 }
-            }
+            });
             
+            // 2. Generate 20 extra mock books
+            const generatedBooks = [
+                {title: 'The Hobbit', author: 'J.R.R. Tolkien', isbn: '978-0-547-92822-7', price: '15.99', stock: 45, rating: '⭐ 4.9'},
+                {title: 'Fahrenheit 451', author: 'Ray Bradbury', isbn: '978-1-4516-7331-9', price: '11.99', stock: 12, rating: '⭐ 4.6'},
+                {title: 'Brave New World', author: 'Aldous Huxley', isbn: '978-0-06-085052-4', price: '14.50', stock: 0, rating: '⭐ 4.7'},
+                {title: 'The Lord of the Rings', author: 'J.R.R. Tolkien', isbn: '978-0-618-64015-7', price: '25.99', stock: 8, rating: '⭐ 4.9'},
+                {title: 'Animal Farm', author: 'George Orwell', isbn: '978-0-451-52634-2', price: '9.99', stock: 32, rating: '⭐ 4.5'},
+                {title: 'Catch-22', author: 'Joseph Heller', isbn: '978-0-684-83339-2', price: '16.99', stock: 5, rating: '⭐ 4.4'},
+                {title: 'The Grapes of Wrath', author: 'John Steinbeck', isbn: '978-0-14-303943-3', price: '13.99', stock: 18, rating: '⭐ 4.3'},
+                {title: 'Slaughterhouse-Five', author: 'Kurt Vonnegut', isbn: '978-0-385-33384-9', price: '12.50', stock: 2, rating: '⭐ 4.6'},
+                {title: 'The Alchemist', author: 'Paulo Coelho', isbn: '978-0-06-112241-5', price: '14.00', stock: 100, rating: '⭐ 4.8'},
+                {title: 'Sapiens', author: 'Yuval Noah Harari', isbn: '978-0-06-231609-7', price: '22.99', stock: 14, rating: '⭐ 4.8'},
+                {title: 'Educated', author: 'Tara Westover', isbn: '978-0-399-59050-4', price: '18.00', stock: 7, rating: '⭐ 4.7'},
+                {title: 'Becoming', author: 'Michelle Obama', isbn: '978-1-5247-6313-8', price: '19.99', stock: 21, rating: '⭐ 4.8'},
+                {title: 'Thinking, Fast and Slow', author: 'Daniel Kahneman', isbn: '978-0-374-53355-7', price: '17.50', stock: 3, rating: '⭐ 4.6'},
+                {title: 'Atomic Habits', author: 'James Clear', isbn: '978-0-7352-1129-2', price: '16.00', stock: 50, rating: '⭐ 4.9'},
+                {title: 'Dune', author: 'Frank Herbert', isbn: '978-0-441-17271-9', price: '10.99', stock: 15, rating: '⭐ 4.7'},
+                {title: 'The Martian', author: 'Andy Weir', isbn: '978-0-8041-3902-1', price: '15.00', stock: 6, rating: '⭐ 4.8'},
+                {title: 'Project Hail Mary', author: 'Andy Weir', isbn: '978-0-593-13520-4', price: '20.99', stock: 11, rating: '⭐ 4.9'},
+                {title: 'Neuromancer', author: 'William Gibson', isbn: '978-0-441-56959-5', price: '9.99', stock: 0, rating: '⭐ 4.5'},
+                {title: 'Snow Crash', author: 'Neal Stephenson', isbn: '978-0-553-38095-8', price: '14.99', stock: 4, rating: '⭐ 4.4'},
+                {title: 'Foundation', author: 'Isaac Asimov', isbn: '978-0-553-29335-7', price: '8.99', stock: 25, rating: '⭐ 4.6'}
+            ];
+            
+            // 3. Get user-added books
             const myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
-            if (myBooks.length > 0 && tbody) {
-                myBooks.forEach(book => {
-                    const tr = document.createElement('tr');
-                    
-                    let stockClass = 'status-in-stock';
-                    if (book.stock <= 0) stockClass = 'status-out-stock';
-                    else if (book.stock < 10) stockClass = 'status-low-stock';
-                    
-                    tr.innerHTML = `
-                        <td>
-                            <div class="cover-preview">📚</div>
-                        </td>
-                        <td>${book.title}</td>
-                        <td>${book.author}</td>
-                        <td>${book.isbn}</td>
-                        <td>$${book.price}</td>
-                        <td>
-                            <span class="status-badge ${stockClass}">${book.stock}</span>
-                        </td>
-                        <td>⭐ New</td>
-                        <td>
-                            <div class="table-actions">
-                                <a href="edit-book.html" class="btn btn-sm btn-secondary">Edit</a>
-                                <button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove();">Remove</button>
-                            </div>
-                        </td>
-                    `;
-                    tbody.insertBefore(tr, tbody.firstChild);
+            
+            // Combine all books
+            let allBooks = [...myBooks, ...hardcodedBooks, ...generatedBooks];
+            
+            // 4. Filter out deleted books
+            const deletedBooks = JSON.parse(localStorage.getItem('deletedBooks')) || [];
+            if (deletedBooks.length > 0) {
+                allBooks = allBooks.filter(b => {
+                    return !deletedBooks.some(db => 
+                        db.title?.trim().toLowerCase() === b.title?.trim().toLowerCase() && 
+                        db.author?.trim().toLowerCase() === b.author?.trim().toLowerCase()
+                    );
                 });
             }
+            
+            // 5. Pagination logic
+            let currentPage = 1;
+            const itemsPerPage = 5;
+            let totalPages = Math.ceil(allBooks.length / itemsPerPage) || 1;
+            
+            // Setup pagination UI
+            const paginationContainer = document.querySelector('.pagination');
+            if (paginationContainer) {
+                paginationContainer.innerHTML = `
+                    <button class="btn btn-secondary btn-prev">Previous</button>
+                    <span class="page-numbers"></span>
+                    <button class="btn btn-secondary btn-next">Next</button>
+                `;
+                
+                const pageNumbers = paginationContainer.querySelector('.page-numbers');
+                
+                const renderPagination = () => {
+                    pageNumbers.innerHTML = '';
+                    for (let i = 1; i <= totalPages; i++) {
+                        const btn = document.createElement('button');
+                        btn.className = `btn ${i === currentPage ? 'btn-primary' : 'btn-secondary'} btn-page`;
+                        btn.textContent = i;
+                        btn.onclick = () => {
+                            currentPage = i;
+                            renderPage();
+                        };
+                        pageNumbers.appendChild(btn);
+                    }
+                    
+                    paginationContainer.querySelector('.btn-prev').disabled = currentPage === 1;
+                    paginationContainer.querySelector('.btn-next').disabled = currentPage === totalPages;
+                };
+                
+                paginationContainer.querySelector('.btn-prev').onclick = () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderPage();
+                    }
+                };
+                
+                paginationContainer.querySelector('.btn-next').onclick = () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderPage();
+                    }
+                };
+                
+                const renderPage = () => {
+                    renderPagination();
+                    tbody.innerHTML = '';
+                    
+                    const startIndex = (currentPage - 1) * itemsPerPage;
+                    const pageBooks = allBooks.slice(startIndex, startIndex + itemsPerPage);
+                    
+                    pageBooks.forEach(book => {
+                        const tr = document.createElement('tr');
+                        
+                        let stockClass = 'status-in-stock';
+                        if (book.stock <= 0) stockClass = 'status-out-stock';
+                        else if (book.stock < 10) stockClass = 'status-low-stock';
+                        
+                        tr.innerHTML = `
+                            <td>
+                                <div class="cover-preview">📚</div>
+                            </td>
+                            <td>${book.title}</td>
+                            <td>${book.author}</td>
+                            <td>${book.isbn || 'N/A'}</td>
+                            <td>${book.price}</td>
+                            <td>
+                                <span class="status-badge ${stockClass}">${book.stock}</span>
+                            </td>
+                            <td>${book.rating || '⭐ New'}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <a href="edit-book.html" class="btn btn-sm btn-secondary">Edit</a>
+                                    <button class="btn btn-sm btn-danger btn-remove-book">Remove</button>
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                };
+                
+                renderPage();
+            }
         });
+
     </script>
     <script src="../session.js?v=3"></script>
 </body>
