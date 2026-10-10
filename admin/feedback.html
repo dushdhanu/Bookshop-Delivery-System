@@ -326,6 +326,149 @@
             </div>
         </div>
     </footer>
-    <script src="../session.js?v=3"></script>
+    
+    <script>
+        document.addEventListener('click', function(e) {
+            let target = e.target;
+            
+            // Handle "Respond" button
+            if (target.tagName === 'BUTTON' && target.textContent.trim() === 'Respond') {
+                const tr = target.closest('.feedback-card');
+                let orderId = 'this feedback';
+                
+                if (tr) {
+                    const idEl = tr.querySelector('.feedback-id');
+                    if (idEl) orderId = idEl.textContent.trim();
+                }
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Respond to ' + orderId,
+                        input: 'textarea',
+                        inputLabel: 'Your Response',
+                        inputPlaceholder: 'Type your response to the customer here...',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3b82f6',
+                        cancelButtonColor: '#475569',
+                        confirmButtonText: 'Send Response',
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'You need to write something!'
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed && result.value) {
+                            const responseText = result.value;
+                            
+                            // Display the response inline
+                            const body = tr.querySelector('.feedback-body');
+                            const responseDiv = document.createElement('div');
+                            responseDiv.className = 'bookseller-response';
+                            responseDiv.style.backgroundColor = '#10235d';
+                            responseDiv.style.padding = '1rem';
+                            responseDiv.style.marginTop = '1rem';
+                            responseDiv.style.borderRadius = '5px';
+                            responseDiv.style.borderLeft = '4px solid #3b82f6';
+                            responseDiv.innerHTML = '<strong>Your Response:</strong><p style="margin-top:0.5rem;color:#a0c0ff;" class="response-text">' + responseText + '</p>';
+                            
+                            // Insert before meta or actions
+                            const meta = body.querySelector('.feedback-meta');
+                            if(meta) {
+                                body.insertBefore(responseDiv, meta);
+                            } else {
+                                body.appendChild(responseDiv);
+                            }
+                            
+                            // Update actions
+                            const actions = body.querySelector('.feedback-actions');
+                            if(actions) {
+                                actions.innerHTML = '<button class="btn btn-secondary btn-edit-response">Edit Response</button> <button class="btn btn-danger btn-delete-response">Delete</button>';
+                            }
+                            
+                            Swal.fire({
+                                text: 'Response sent successfully!',
+                                icon: 'success',
+                                background: '#1a1a2e',
+                                color: '#ffffff',
+                                confirmButtonColor: '#3b82f6'
+                            });
+                        }
+                    });
+                }
+            }
+            
+            // Handle "Edit Response" button
+            if (target.tagName === 'BUTTON' && target.classList.contains('btn-edit-response')) {
+                const tr = target.closest('.feedback-card');
+                const responseDiv = tr.querySelector('.bookseller-response');
+                const responseTextEl = responseDiv.querySelector('.response-text');
+                const currentText = responseTextEl ? responseTextEl.textContent : '';
+                
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Edit Response',
+                        input: 'textarea',
+                        inputValue: currentText,
+                        showCancelButton: true,
+                        confirmButtonColor: '#3b82f6',
+                        cancelButtonColor: '#475569',
+                        confirmButtonText: 'Update',
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'You need to write something!'
+                            }
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed && result.value) {
+                            if(responseTextEl) responseTextEl.textContent = result.value;
+                            Swal.fire({
+                                text: 'Response updated!',
+                                icon: 'success',
+                                background: '#1a1a2e',
+                                color: '#ffffff',
+                                confirmButtonColor: '#3b82f6'
+                            });
+                        }
+                    });
+                }
+            }
+            
+            // Handle "Delete Response" button
+            if (target.tagName === 'BUTTON' && target.classList.contains('btn-delete-response')) {
+                const tr = target.closest('.feedback-card');
+                
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Delete Response?',
+                        text: 'Are you sure you want to delete this response?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#e3342f',
+                        cancelButtonColor: '#475569',
+                        confirmButtonText: 'Yes, delete it'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const responseDiv = tr.querySelector('.bookseller-response');
+                            if (responseDiv) responseDiv.remove();
+                            
+                            const actions = tr.querySelector('.feedback-actions');
+                            if(actions) {
+                                actions.innerHTML = '<button class="btn btn-secondary">Respond</button>';
+                            }
+                            
+                            Swal.fire({
+                                text: 'Response deleted.',
+                                icon: 'success',
+                                background: '#1a1a2e',
+                                color: '#ffffff',
+                                confirmButtonColor: '#3b82f6'
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+<script src="../session.js?v=3"></script>
 </body>
 </html>

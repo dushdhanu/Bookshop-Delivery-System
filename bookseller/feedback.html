@@ -321,6 +321,8 @@
             </div>
         </div>
     </footer>
+    
+    
     <script>
         document.addEventListener('click', function(e) {
             let target = e.target;
@@ -344,7 +346,12 @@
                         showCancelButton: true,
                         confirmButtonColor: '#3b82f6',
                         cancelButtonColor: '#475569',
-                        confirmButtonText: 'Send Response'
+                        confirmButtonText: 'Send Response',
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'You need to write something!'
+                            }
+                        }
                     }).then((result) => {
                         if (result.isConfirmed && result.value) {
                             const responseText = result.value;
@@ -358,18 +365,21 @@
                             responseDiv.style.marginTop = '1rem';
                             responseDiv.style.borderRadius = '5px';
                             responseDiv.style.borderLeft = '4px solid #3b82f6';
-                            responseDiv.innerHTML = \`<strong>Your Response:</strong><p style="margin-top:0.5rem;color:#a0c0ff;" class="response-text">\${responseText}</p>\`;
+                            responseDiv.innerHTML = '<strong>Your Response:</strong><p style="margin-top:0.5rem;color:#a0c0ff;" class="response-text">' + responseText + '</p>';
                             
                             // Insert before meta or actions
                             const meta = body.querySelector('.feedback-meta');
-                            body.insertBefore(responseDiv, meta);
+                            if(meta) {
+                                body.insertBefore(responseDiv, meta);
+                            } else {
+                                body.appendChild(responseDiv);
+                            }
                             
                             // Update actions
                             const actions = body.querySelector('.feedback-actions');
-                            actions.innerHTML = \`
-                                <button class="btn btn-secondary btn-edit-response">Edit Response</button>
-                                <button class="btn btn-danger btn-delete-response">Delete</button>
-                            \`;
+                            if(actions) {
+                                actions.innerHTML = '<button class="btn btn-secondary btn-edit-response">Edit Response</button> <button class="btn btn-danger btn-delete-response">Delete</button>';
+                            }
                             
                             Swal.fire({
                                 text: 'Response sent successfully!',
@@ -388,7 +398,7 @@
                 const tr = target.closest('.feedback-card');
                 const responseDiv = tr.querySelector('.bookseller-response');
                 const responseTextEl = responseDiv.querySelector('.response-text');
-                const currentText = responseTextEl.textContent;
+                const currentText = responseTextEl ? responseTextEl.textContent : '';
                 
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({
@@ -398,10 +408,15 @@
                         showCancelButton: true,
                         confirmButtonColor: '#3b82f6',
                         cancelButtonColor: '#475569',
-                        confirmButtonText: 'Update'
+                        confirmButtonText: 'Update',
+                        inputValidator: (value) => {
+                            if (!value) {
+                                return 'You need to write something!'
+                            }
+                        }
                     }).then((result) => {
                         if (result.isConfirmed && result.value) {
-                            responseTextEl.textContent = result.value;
+                            if(responseTextEl) responseTextEl.textContent = result.value;
                             Swal.fire({
                                 text: 'Response updated!',
                                 icon: 'success',
@@ -433,7 +448,9 @@
                             if (responseDiv) responseDiv.remove();
                             
                             const actions = tr.querySelector('.feedback-actions');
-                            actions.innerHTML = \`<button class="btn btn-secondary">Respond</button>\`;
+                            if(actions) {
+                                actions.innerHTML = '<button class="btn btn-secondary">Respond</button>';
+                            }
                             
                             Swal.fire({
                                 text: 'Response deleted.',
@@ -448,6 +465,6 @@
             }
         });
     </script>
-    <script src="../session.js?v=3"></script>
+<script src="../session.js?v=3"></script>
 </body>
 </html>
