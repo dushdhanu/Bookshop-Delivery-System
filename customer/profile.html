@@ -464,13 +464,27 @@
             const profileForm = document.getElementById('profileForm');
             const photoUpload = document.getElementById('photoUpload');
             
-            let currentPhotoUrl = '';
+                        let currentPhotoUrl = '';
 
             // 1. Fetch initial data on load
+            const localUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (localUser) {
+                document.getElementById('firstName').value = localUser.first_name || '';
+                document.getElementById('lastName').value = localUser.last_name || '';
+                document.getElementById('email').value = localUser.email || '';
+                document.getElementById('phone').value = localUser.phone || '';
+                document.getElementById('birthDate').value = localUser.birth_date || '';
+                if (localUser.profile_photo) {
+                    currentPhotoUrl = localUser.profile_photo;
+                    updateUIPhoto(localUser.profile_photo);
+                }
+                updateUIText(localUser.first_name, localUser.last_name, localUser.email);
+            }
+
             fetch('/api/profile')
                 .then(res => res.json())
                 .then(data => {
-                    if (data.success && data.data) {
+                    if (data.success && data.data && !localUser) {
                         const user = data.data;
                         document.getElementById('firstName').value = user.first_name || '';
                         document.getElementById('lastName').value = user.last_name || '';
@@ -483,7 +497,8 @@
                         }
                         updateUIText(user.first_name, user.last_name, user.email);
                     }
-                });
+                })
+                .catch(err => console.log('API not available, using local storage.'));
 
             // 2. Handle Photo Selection (Upload immediately)
             photoUpload.addEventListener('change', (e) => {
@@ -524,6 +539,16 @@
                     birthDate: document.getElementById('birthDate').value,
                     profilePhoto: currentPhotoUrl
                 };
+
+                // Save to localStorage
+                localStorage.setItem('currentUser', JSON.stringify({
+                    email: data.email,
+                    first_name: data.firstName,
+                    last_name: data.lastName,
+                    phone: data.phone,
+                    birth_date: data.birthDate,
+                    profile_photo: data.profilePhoto
+                }));
 
                 fetch('/api/profile', {
                     method: 'POST',

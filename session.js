@@ -227,7 +227,8 @@ async function updateNavigation() {
 // Logout function
 async function logout() {
     try {
-        await fetch('/api/logout', { method: 'POST' });
+        localStorage.removeItem('currentUser');
+        await fetch('/api/logout', { method: 'POST' }).catch(e => console.error(e));
         console.log('User logged out');
         updateNavigation();
         window.location.href = window.location.pathname.includes('/customer/') ? '../index.html' : 'index.html';

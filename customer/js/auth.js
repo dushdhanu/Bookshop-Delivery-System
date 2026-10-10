@@ -64,6 +64,15 @@ function handleLogin() {
     
     // Simulate API call delay
     setTimeout(() => {
+        // Save to localStorage
+        localStorage.setItem('currentUser', JSON.stringify({
+            email: email,
+            first_name: email.split('@')[0], // Extract first part of email as name
+            last_name: '',
+            phone: '',
+            birth_date: ''
+        }));
+        
         // Reset button
         submitButton.textContent = originalText;
         submitButton.disabled = false;
@@ -115,6 +124,16 @@ function handleRegister() {
     
     // Simulate API call delay
     setTimeout(() => {
+        // Save to localStorage
+        let nameParts = name.split(' ');
+        localStorage.setItem('currentUser', JSON.stringify({
+            email: email,
+            first_name: nameParts[0] || '',
+            last_name: nameParts.slice(1).join(' ') || '',
+            phone: '',
+            birth_date: ''
+        }));
+
         // Reset button
         submitButton.textContent = originalText;
         submitButton.disabled = false;
