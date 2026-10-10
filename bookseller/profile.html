@@ -513,9 +513,48 @@
                     
                     if (currentPassword !== actualPassword) {
                         if (typeof Swal !== 'undefined') {
-                            Swal.fire({ text: 'Current password is incorrect.', icon: 'error', background: '#1a1a2e', color: '#ffffff', confirmButtonColor: '#3b82f6' });
+                            Swal.fire({ 
+                                text: 'Current password is incorrect.', 
+                                icon: 'error', 
+                                background: '#1a1a2e', 
+                                color: '#ffffff', 
+                                showCancelButton: true,
+                                confirmButtonColor: '#3b82f6',
+                                cancelButtonColor: '#475569',
+                                confirmButtonText: 'Try Again',
+                                cancelButtonText: 'Forgot Password?'
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.cancel) {
+                                    Swal.fire({
+                                        title: 'Verify Identity',
+                                        text: 'Enter device password to reveal your current password:',
+                                        input: 'password',
+                                        showCancelButton: true,
+                                        confirmButtonText: 'Verify',
+                                        background: '#1a1a2e',
+                                        color: '#ffffff',
+                                        confirmButtonColor: '#3b82f6',
+                                        cancelButtonColor: '#475569',
+                                    }).then((verifyResult) => {
+                                        if (verifyResult.isConfirmed && verifyResult.value) {
+                                            Swal.fire({
+                                                title: 'Verification Successful',
+                                                html: 'Your current password is: <b>' + actualPassword + '</b>',
+                                                icon: 'info',
+                                                background: '#1a1a2e',
+                                                color: '#ffffff',
+                                                confirmButtonColor: '#3b82f6'
+                                            });
+                                        }
+                                    });
+                                }
+                            });
                         } else {
-                            alert('Current password is incorrect.');
+                            const forgot = confirm('Current password is incorrect. Click OK to recover using device password.');
+                            if (forgot) {
+                                const dp = prompt('Enter device password:');
+                                if (dp) alert('Your current password is: ' + actualPassword);
+                            }
                         }
                         return;
                     }
