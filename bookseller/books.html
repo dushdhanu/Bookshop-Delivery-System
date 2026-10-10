@@ -445,7 +445,6 @@
     </footer>
     
     <script>
-
         document.addEventListener('click', function(e) {
             let target = e.target;
             if (target.tagName !== 'A' && target.closest('a')) {
@@ -461,48 +460,7 @@
                         const author = tds[2].innerText.trim();
                         const isbn = tds[3].innerText.trim();
                         let price = tds[4].innerText.trim();
-                        if (price.startsWith('
-            const myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
-            if (myBooks.length > 0) {
-                const tbody = document.querySelector('.data-table-enhanced tbody');
-                if (tbody) {
-                    myBooks.forEach(book => {
-                        const tr = document.createElement('tr');
-                        
-                        let stockClass = 'status-in-stock';
-                        if (book.stock <= 0) stockClass = 'status-out-stock';
-                        else if (book.stock < 10) stockClass = 'status-low-stock';
-                        
-                        tr.innerHTML = `
-                            <td>
-                                <div class="cover-preview">📚</div>
-                            </td>
-                            <td>${book.title}</td>
-                            <td>${book.author}</td>
-                            <td>${book.isbn}</td>
-                            <td>${book.price}</td>
-                            <td>
-                                <span class="status-badge ${stockClass}">${book.stock}</span>
-                            </td>
-                            <td>⭐ New</td>
-                            <td>
-                                <div class="table-actions">
-                                    <a href="edit-book.html" class="btn btn-sm btn-secondary">Edit</a>
-                                    <button class="btn btn-sm btn-danger" onclick="this.closest('tr').remove();">Remove</button>
-                                </div>
-                            </td>
-                        `;
-                        tbody.insertBefore(tr, tbody.firstChild);
-                    });
-                }
-            }
-        });
-    </script>
-    <script src="../session.js?v=3"></script>
-</body>
-
-</html>
-)) price = price.substring(1);
+                        if (price.startsWith('$')) price = price.substring(1);
                         const stock = tds[5].innerText.trim();
                         
                         const bookToEdit = { title, author, isbn, price, stock: parseInt(stock) || 0 };
@@ -531,7 +489,7 @@
                             <td>${book.title}</td>
                             <td>${book.author}</td>
                             <td>${book.isbn}</td>
-                            <td>${book.price}</td>
+                            <td>$${book.price}</td>
                             <td>
                                 <span class="status-badge ${stockClass}">${book.stock}</span>
                             </td>
