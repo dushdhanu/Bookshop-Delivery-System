@@ -309,6 +309,15 @@
                     let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
                     myBooks.push(newBook);
                     localStorage.setItem('myBooks', JSON.stringify(myBooks));
+                    let sysNotifs = JSON.parse(localStorage.getItem('systemNotifications')) || [];
+                    sysNotifs.unshift({
+                        title: 'New Book Added',
+                        content: 'Book "' + title + '" was successfully added to your inventory.',
+                        type: 'Inventory',
+                        time: 'Just now'
+                    });
+                    localStorage.setItem('systemNotifications', JSON.stringify(sysNotifs));
+
                     
                     const btn = addBookForm.querySelector('button[type="submit"]');
                     const origText = btn.textContent;

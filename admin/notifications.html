@@ -336,6 +336,29 @@
     </footer>
     <script>
 
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const list = document.querySelector('.notification-list');
+            if (list) {
+                const sysNotifs = JSON.parse(localStorage.getItem('systemNotifications')) || [];
+                sysNotifs.reverse().forEach(n => {
+                    const div = document.createElement('div');
+                    div.className = 'notification-card system-added';
+                    div.innerHTML = `
+                        <div class="notification-header">
+                            <h3 class="notification-title">${n.title}</h3>
+                            <span class="notification-date">${n.time}</span>
+                        </div>
+                        <p class="notification-content">${n.content}</p>
+                        <div class="notification-actions">
+                            <span class="notification-badge badge-warning">${n.type}</span>
+                        </div>
+                    `;
+                    list.insertBefore(div, list.firstChild);
+                });
+            }
+        });
+
         document.addEventListener('click', function(e) {
             let target = e.target;
             

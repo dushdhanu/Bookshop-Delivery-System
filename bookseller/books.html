@@ -464,6 +464,15 @@
                         let deletedBooks = JSON.parse(localStorage.getItem('deletedBooks')) || [];
                         deletedBooks.push({title, author});
                         localStorage.setItem('deletedBooks', JSON.stringify(deletedBooks));
+                        let sysNotifs = JSON.parse(localStorage.getItem('systemNotifications')) || [];
+                        sysNotifs.unshift({
+                            title: 'Book Removed',
+                            content: 'Book "' + title + '" was removed from your inventory.',
+                            type: 'Inventory',
+                            time: 'Just now'
+                        });
+                        localStorage.setItem('systemNotifications', JSON.stringify(sysNotifs));
+
                     }
                 }
             }

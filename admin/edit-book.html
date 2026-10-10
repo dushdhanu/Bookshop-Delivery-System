@@ -257,6 +257,15 @@
                             myBooks.push(updatedBook);
                         }
                         localStorage.setItem('myBooks', JSON.stringify(myBooks));
+                    let sysNotifs = JSON.parse(localStorage.getItem('systemNotifications')) || [];
+                    sysNotifs.unshift({
+                        title: 'Book Updated',
+                        content: 'Details for "' + bookTitle + '" have been successfully updated.',
+                        type: 'Inventory',
+                        time: 'Just now'
+                    });
+                    localStorage.setItem('systemNotifications', JSON.stringify(sysNotifs));
+
                     }
                     
                     const btn = editBookForm.querySelector('button[type="submit"]');
