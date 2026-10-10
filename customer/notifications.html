@@ -360,8 +360,7 @@
                             card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
                             card.style.opacity = '0';
                             card.style.transform = 'scale(0.95)';
-                }
-            }));
+                        });
                         
                         setTimeout(() => {
                             const list = document.querySelector('.notification-list');
@@ -369,7 +368,8 @@
                         }, 400);
                     }
                 });
-            }
+            });
+        }
 
             // Button actions
             document.querySelectorAll('.notification-actions button').forEach(btn => {

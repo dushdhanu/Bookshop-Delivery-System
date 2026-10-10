@@ -5,12 +5,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const addToCartButtons = document.querySelectorAll('.btn-secondary');
     
     addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
+        button.addEventListener('click', function(e) {
+            if (this.textContent.trim() !== 'Add to Cart') return;
+            
             const bookCard = this.closest('.book-card');
+            if (!bookCard) return;
+            
             const bookTitle = bookCard.querySelector('h3').textContent;
+            const authorEl = bookCard.querySelector('.author');
+            const priceEl = bookCard.querySelector('.price');
+            const imgEl = bookCard.querySelector('.book-image');
+            
+            const bookDetails = {
+                title: bookTitle,
+                author: authorEl ? authorEl.textContent : '',
+                price: priceEl ? priceEl.textContent : '',
+                image: imgEl ? imgEl.getAttribute('src') : ''
+            };
             
             // Add to cart functionality
-            addToCart(bookTitle);
+            addToCart(bookDetails);
         });
     });
     
@@ -40,29 +54,36 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Add book to cart
-function addToCart(bookTitle) {
-    // In a real application, this would add the book to a shopping cart
-    // For now, we'll just show an alert
+function addToCart(bookDetails) {
+    // Save to local storage for wishlist
+    const bookTitle = typeof bookDetails === 'string' ? bookDetails : bookDetails.title;
     
-    // Create alert element
-    const alertDiv = document.createElement('div');
-    alertDiv.className = 'alert alert-success';
-    alertDiv.textContent = `"${bookTitle}" has been added to your cart!`;
-    
-    // Insert at the top of the container
-    const container = document.querySelector('.container');
-    if (container) {
-        container.insertBefore(alertDiv, container.firstChild);
-    }
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
+    if (typeof bookDetails === 'object') {
+        let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+        // Check if already in wishlist by title
+        if (!wishlist.some(item => item.title === bookDetails.title)) {
+            wishlist.push(bookDetails);
+            localStorage.setItem('wishlist', JSON.stringify(wishlist));
         }
-    }, 3000);
-    
-    console.log(`Added "${bookTitle}" to cart`);
+    }
+
+    // Check if Swal is available
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: 'Added to Wishlist!',
+            text: `"${bookTitle}" has been added to your wishlist.`,
+            icon: 'success',
+            background: '#1a1a2e',
+            color: '#ffffff',
+            confirmButtonColor: '#3b82f6',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+        });
+    } else {
+        alert(`Added "${bookTitle}" to your wishlist!`);
+    }
+    console.log(`Added "${bookTitle}" to wishlist`);
 }
 
 // Perform search

@@ -250,9 +250,70 @@
                         <div class="card-header" style="border-bottom: 1px solid #1e3a8a; padding-bottom: 1rem; margin-bottom: 1rem;">
                             <h2 class="card-title" style="margin: 0; color: #ffffff;">❤️ My Wishlist</h2>
                         </div>
-                        <div class="card-body" style="flex: 1; display: flex; justify-content: center; align-items: center;">
-                            <div style="text-align: center; padding: 3rem; color: #94a3b8;"><div style="font-size: 3rem; margin-bottom: 1rem;">📚</div><h3 style="color: #ffffff; margin-bottom: 0.5rem;">Your Wishlist is Empty</h3><p style="margin-bottom: 1.5rem;">Save your favorite books here to buy them later.</p><button class="btn btn-primary" onclick="window.location.href='books.html'">Browse Books</button></div>
+                        <div class="card-body" id="wishlist-container" style="flex: 1; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 20px;">
+                            <div id="empty-state" style="text-align: center; padding: 3rem; color: #94a3b8; width: 100%;">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
+                                <h3 style="color: #ffffff; margin-bottom: 0.5rem;">Your Wishlist is Empty</h3>
+                                <p style="margin-bottom: 1.5rem;">Save your favorite books here to buy them later.</p>
+                                <button class="btn btn-primary" onclick="window.location.href='books.html'">Browse Books</button>
+                            </div>
                         </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const wishlistContainer = document.getElementById('wishlist-container');
+                                const emptyState = document.getElementById('empty-state');
+                                
+                                function renderWishlist() {
+                                    let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+                                    
+                                    // Remove all book cards but keep the empty state
+                                    const existingCards = wishlistContainer.querySelectorAll('.book-card');
+                                    existingCards.forEach(card => card.remove());
+
+                                    if (wishlist.length === 0) {
+                                        emptyState.style.display = 'block';
+                                        wishlistContainer.style.justifyContent = 'center';
+                                    } else {
+                                        emptyState.style.display = 'none';
+                                        wishlistContainer.style.justifyContent = 'flex-start';
+                                        
+                                        wishlist.forEach((book, index) => {
+                                            const card = document.createElement('div');
+                                            card.className = 'book-card';
+                                            card.style.width = '200px';
+                                            card.style.backgroundColor = '#1a1a2e';
+                                            card.style.padding = '15px';
+                                            card.style.borderRadius = '8px';
+                                            card.style.textAlign = 'center';
+                                            card.style.border = '1px solid #1e3a8a';
+                                            
+                                            card.innerHTML = `
+                                                <img src="${book.image}" alt="${book.title}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 4px; margin-bottom: 10px;">
+                                                <h3 style="color: #ffffff; font-size: 1.1rem; margin-bottom: 5px;">${book.title}</h3>
+                                                <p style="color: #94a3b8; margin-bottom: 5px; font-size: 0.9rem;">${book.author}</p>
+                                                <p style="color: #3b82f6; font-weight: bold; margin-bottom: 15px;">${book.price}</p>
+                                                <button class="btn btn-secondary remove-btn" data-index="${index}" style="width: 100%; padding: 8px;">Remove</button>
+                                            `;
+                                            wishlistContainer.appendChild(card);
+                                        });
+
+                                        // Attach remove listeners
+                                        document.querySelectorAll('.remove-btn').forEach(btn => {
+                                            btn.addEventListener('click', function() {
+                                                const idx = parseInt(this.getAttribute('data-index'));
+                                                let currentWishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+                                                currentWishlist.splice(idx, 1);
+                                                localStorage.setItem('wishlist', JSON.stringify(currentWishlist));
+                                                renderWishlist(); // Re-render
+                                            });
+                                        });
+                                    }
+                                }
+                                
+                                renderWishlist();
+                            });
+                        </script>
                     </div>
                 </div>
             </div>
