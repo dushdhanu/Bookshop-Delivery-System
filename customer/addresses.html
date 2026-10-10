@@ -424,25 +424,30 @@
     <script src="../session.js?v=3"></script>
 
     <script>
-        function addNewAddress() {
-            Swal.fire({
-                title: "Enter your new delivery address:",
-                input: "text",
-                showCancelButton: true,
-                confirmButtonText: "Save",
-                confirmButtonColor: "#3b82f6",
-                cancelButtonColor: "#ef4444"
-            }).then((result) => {
-                const address = result.value;
-                if (address && address.trim() !== "") {
-                    const emptyState = document.getElementById('address-empty-state');
-                    const list = document.getElementById('addresses-list');
-                    
-                    if (emptyState) emptyState.style.display = 'none';
-                    
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAddresses();
+        });
+
+        function renderAddresses() {
+            let addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+            let defaultIndex = parseInt(localStorage.getItem('defaultAddressIndex') || '0');
+            
+            const emptyState = document.getElementById('address-empty-state');
+            const list = document.getElementById('addresses-list');
+            
+            // Clear existing list except the empty state
+            list.innerHTML = '';
+
+            if (addresses.length === 0) {
+                if (emptyState) emptyState.style.display = 'block';
+            } else {
+                if (emptyState) emptyState.style.display = 'none';
+                
+                addresses.forEach((address, index) => {
+                    const isDefault = index === defaultIndex;
                     const addressCard = document.createElement('div');
                     addressCard.style.backgroundColor = '#10235d';
-                    addressCard.style.border = '1px solid #1e3a8a';
+                    addressCard.style.border = isDefault ? '2px solid #3b82f6' : '1px solid #1e3a8a';
                     addressCard.style.borderRadius = '5px';
                     addressCard.style.padding = '1.5rem';
                     addressCard.style.marginBottom = '1rem';
@@ -452,31 +457,125 @@
                     
                     addressCard.innerHTML = `
                         <div>
-                            <h4 style="color: #ffffff; margin-top: 0; margin-bottom: 0.5rem;">Delivery Address</h4>
+                            <h4 style="color: #ffffff; margin-top: 0; margin-bottom: 0.5rem;">
+                                Delivery Address ${isDefault ? '<span class="badge badge-success" style="font-size:0.7em; padding:2px 6px; background:#3b82f6; border-radius:4px; margin-left:5px;">Default</span>' : ''}
+                            </h4>
                             <p style="color: #94a3b8; margin: 0;">${address}</p>
                         </div>
                         <div style="display: flex; gap: 0.5rem;">
-                            <button class="btn btn-sm btn-secondary" onclick="alert('Address set as default!')">Set Default</button>
-                            <button class="btn btn-sm btn-danger" onclick="this.parentElement.parentElement.remove(); if(document.getElementById('addresses-list').children.length === 1) { document.getElementById('addAnotherBtn').remove(); document.getElementById('address-empty-state').style.display='block'; }">Delete</button>
+                            ${!isDefault ? `<button class="btn btn-sm btn-secondary" onclick="setDefaultAddress(${index})">Set Default</button>` : ''}
+                            <button class="btn btn-sm" style="background-color: #ef4444; color: white;" onclick="deleteAddress(${index})">Delete</button>
                         </div>
                     `;
-                    
-                    let addAnotherBtn = document.getElementById('addAnotherBtn');
-                    if (!addAnotherBtn) {
-                        addAnotherBtn = document.createElement('button');
-                        addAnotherBtn.id = 'addAnotherBtn';
-                        addAnotherBtn.className = 'btn btn-primary';
-                        addAnotherBtn.textContent = '+ Add Another Address';
-                        addAnotherBtn.style.marginTop = '1rem';
-                        addAnotherBtn.onclick = addNewAddress;
+                    list.appendChild(addressCard);
+                });
+                
+                const addAnotherBtn = document.createElement('button');
+                addAnotherBtn.id = 'addAnotherBtn';
+                addAnotherBtn.className = 'btn btn-primary';
+                addAnotherBtn.textContent = '+ Add Another Address';
+                addAnotherBtn.style.marginTop = '1rem';
+                addAnotherBtn.onclick = addNewAddress;
+                list.appendChild(addAnotherBtn);
+            }
+        }
+
+        function addNewAddress() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: "Enter your new delivery address:",
+                    input: "text",
+                    showCancelButton: true,
+                    confirmButtonText: "Save",
+                    confirmButtonColor: "#3b82f6",
+                    cancelButtonColor: "#ef4444",
+                    background: '#1a1a2e',
+                    color: '#ffffff'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const address = result.value;
+                        if (address && address.trim() !== "") {
+                            let addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+                            addresses.push(address.trim());
+                            localStorage.setItem('addresses', JSON.stringify(addresses));
+                            
+                            // If it's the first address, make it default
+                            if (addresses.length === 1) {
+                                localStorage.setItem('defaultAddressIndex', '0');
+                            }
+                            
+                            renderAddresses();
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Address added successfully!',
+                                icon: 'success',
+                                background: '#1a1a2e',
+                                color: '#ffffff',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        }
                     }
-                    
-                    list.insertBefore(addressCard, addAnotherBtn);
-                    list.appendChild(addAnotherBtn);
-                    
+                });
+            } else {
+                const address = prompt("Enter your new delivery address:");
+                if (address && address.trim() !== "") {
+                    let addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+                    addresses.push(address.trim());
+                    localStorage.setItem('addresses', JSON.stringify(addresses));
+                    if (addresses.length === 1) localStorage.setItem('defaultAddressIndex', '0');
+                    renderAddresses();
                     alert("Address added successfully!");
                 }
-            });
+            }
+        }
+
+        function deleteAddress(index) {
+            let addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+            addresses.splice(index, 1);
+            localStorage.setItem('addresses', JSON.stringify(addresses));
+            
+            let defaultIndex = parseInt(localStorage.getItem('defaultAddressIndex') || '0');
+            if (index === defaultIndex) {
+                localStorage.setItem('defaultAddressIndex', '0');
+            } else if (index < defaultIndex) {
+                localStorage.setItem('defaultAddressIndex', (defaultIndex - 1).toString());
+            }
+            
+            renderAddresses();
+            
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Address has been deleted.',
+                    icon: 'success',
+                    background: '#1a1a2e',
+                    color: '#ffffff',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                alert('Address has been deleted.');
+            }
+        }
+
+        function setDefaultAddress(index) {
+            localStorage.setItem('defaultAddressIndex', index.toString());
+            renderAddresses();
+            
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Updated!',
+                    text: 'Address set as default.',
+                    icon: 'success',
+                    background: '#1a1a2e',
+                    color: '#ffffff',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                alert('Address set as default.');
+            }
         }
     </script>
 </body>
