@@ -164,11 +164,11 @@
                         </div>
                         <div class="card-body">
                             <div class="category-tags">
-                                <div class="tag active">All Notifications</div>
-                                <div class="tag">New Deliveries</div>
-                                <div class="tag">In Progress</div>
-                                <div class="tag">Completed</div>
-                                <div class="tag">Account</div>
+                                <div class="tag active" data-category="all" onclick="filterNotifications('all')">All Notifications</div>
+                                <div class="tag" data-category="new" onclick="filterNotifications('new')">New Deliveries</div>
+                                <div class="tag" data-category="progress" onclick="filterNotifications('progress')">In Progress</div>
+                                <div class="tag" data-category="completed" onclick="filterNotifications('completed')">Completed</div>
+                                <div class="tag" data-category="account" onclick="filterNotifications('account')">Account</div>
                             </div>
                         </div>
                     </div>
@@ -177,12 +177,12 @@
                     <div class="card">
                         <div class="card-header">
                             <h2 class="card-title">Recent Notifications</h2>
-                            <button class="btn btn-secondary mark-as-read">Mark All as Read</button>
+                            <button class="btn btn-secondary mark-as-read" onclick="markAllAsRead()">Mark All as Read</button>
                         </div>
                         <div class="card-body">
                             <div class="notification-list">
                                 <!-- Notification 1 -->
-                                <div class="notification-card">
+                                <div class="notification-card" data-category="new">
                                     <div class="notification-header">
                                         <h3 class="notification-title">New Delivery Assignment</h3>
                                         <span class="notification-date">30 minutes ago</span>
@@ -193,13 +193,13 @@
                                     </p>
                                     <div class="notification-actions">
                                         <span class="notification-badge badge-success">New Assignment</span>
-                                        <button class="btn btn-sm btn-secondary">View Details</button>
-                                        <button class="btn btn-sm btn-primary">Start Delivery</button>
+                                        <button class="btn btn-sm btn-secondary" onclick="viewNotificationDetails('ORD-8923')">View Details</button>
+                                        <button class="btn btn-sm btn-primary" onclick="startDeliveryFromNotification('ORD-8923', this)">Start Delivery</button>
                                     </div>
                                 </div>
                                 
                                 <!-- Notification 2 -->
-                                <div class="notification-card">
+                                <div class="notification-card" data-category="progress">
                                     <div class="notification-header">
                                         <h3 class="notification-title">Delivery Route Updated</h3>
                                         <span class="notification-date">2 hours ago</span>
@@ -210,12 +210,12 @@
                                     </p>
                                     <div class="notification-actions">
                                         <span class="notification-badge badge-info">Route Update</span>
-                                        <button class="btn btn-sm btn-secondary">View Route</button>
+                                        <button class="btn btn-sm btn-secondary" onclick="viewRouteDetails('ORD-8721')">View Route</button>
                                     </div>
                                 </div>
                                 
                                 <!-- Notification 3 -->
-                                <div class="notification-card">
+                                <div class="notification-card" data-category="completed">
                                     <div class="notification-header">
                                         <h3 class="notification-title">Delivery Completed Successfully</h3>
                                         <span class="notification-date">4 hours ago</span>
@@ -226,12 +226,12 @@
                                     </p>
                                     <div class="notification-actions">
                                         <span class="notification-badge badge-success">Completed</span>
-                                        <button class="btn btn-sm btn-secondary">View Receipt</button>
+                                        <button class="btn btn-sm btn-secondary" onclick="viewReceiptDetails('ORD-8619')">View Receipt</button>
                                     </div>
                                 </div>
                                 
                                 <!-- Notification 4 -->
-                                <div class="notification-card">
+                                <div class="notification-card" data-category="new">
                                     <div class="notification-header">
                                         <h3 class="notification-title">Urgent Delivery Request</h3>
                                         <span class="notification-date">1 day ago</span>
@@ -242,12 +242,13 @@
                                     </p>
                                     <div class="notification-actions">
                                         <span class="notification-badge badge-warning">Urgent</span>
-                                        <button class="btn btn-sm btn-secondary">View Details</button>
+                                        <button class="btn btn-sm btn-secondary" onclick="viewNotificationDetails('ORD-8567')">View Details</button>
+                                        <button class="btn btn-sm btn-primary" onclick="startDeliveryFromNotification('ORD-8567', this)">Start Delivery</button>
                                     </div>
                                 </div>
                                 
                                 <!-- Notification 5 -->
-                                <div class="notification-card">
+                                <div class="notification-card" data-category="account">
                                     <div class="notification-header">
                                         <h3 class="notification-title">Weekly Performance Report</h3>
                                         <span class="notification-date">2 days ago</span>
@@ -258,7 +259,7 @@
                                     </p>
                                     <div class="notification-actions">
                                         <span class="notification-badge badge-info">Performance</span>
-                                        <button class="btn btn-sm btn-secondary">View Report</button>
+                                        <button class="btn btn-sm btn-secondary" onclick="viewPerformanceReport()">View Report</button>
                                     </div>
                                 </div>
                             </div>
@@ -327,6 +328,7 @@
             </div>
         </div>
     </footer>
+    <script src="js/notifications.js"></script>
     <script src="../session.js?v=3"></script>
 </body>
 </html>
