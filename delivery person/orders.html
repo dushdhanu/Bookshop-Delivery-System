@@ -125,6 +125,80 @@
             }
         }
         
+        /* Preset pill buttons in modal */
+        .preset-pill {
+            background: #1e293b;
+            border: 1px solid #3b82f6;
+            color: #93c5fd;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preset-pill:hover {
+            background: #3b82f6;
+            color: #ffffff;
+        }
+        /* Filter tabs & Search toolbar */
+        .orders-toolbar {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #1e3a8a;
+        }
+        .order-filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-tab {
+            background-color: #10235d;
+            border: 1px solid #1e3a8a;
+            color: #a0c0ff;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .filter-tab:hover {
+            background-color: #1e3a8a;
+            color: #ffffff;
+        }
+        .filter-tab.active {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .order-search-box {
+            position: relative;
+            min-width: 260px;
+            flex: 1;
+            max-width: 360px;
+        }
+        .order-search-input {
+            width: 100%;
+            padding: 0.55rem 2.2rem 0.55rem 0.9rem;
+            background-color: #0c1a45;
+            border: 1px solid #1e3a8a;
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 0.9rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .order-search-input:focus {
+            border-color: #3b82f6;
+        }
+
         /* Map section styles */
         .map-section {
             margin: 2rem 0;
@@ -221,6 +295,20 @@
                     <h2 class="card-title">Current Orders</h2>
                 </div>
                 <div class="card-body">
+                    <!-- Orders Toolbar with Search & Filter Tabs -->
+                    <div class="orders-toolbar">
+                        <div class="order-filter-tabs">
+                            <button type="button" class="filter-tab active" data-filter="all">All Orders (<span id="count-all">3</span>)</button>
+                            <button type="button" class="filter-tab" data-filter="pending">Pending (<span id="count-pending">1</span>)</button>
+                            <button type="button" class="filter-tab" data-filter="in-transit">In Transit (<span id="count-in-transit">1</span>)</button>
+                            <button type="button" class="filter-tab" data-filter="delivered">Delivered (<span id="count-delivered">1</span>)</button>
+                        </div>
+                        <div class="order-search-box">
+                            <input type="text" id="orderSearchInput" placeholder="Search orders, customers, address..." class="order-search-input">
+                            <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none;">🔍</span>
+                        </div>
+                    </div>
+
                     <div class="order-list-vertical">
                         <!-- Order 1 -->
                         <div class="order-card-vertical">
@@ -248,7 +336,9 @@
                                 </div>
                             </div>
                             <div class="order-actions-vertical">
-                                <button class="btn btn-primary">Mark as Delivered</button>
+                                <button class="btn btn-primary" onclick="markOrderDelivered('#ORD-2025-045', this)">Mark as Delivered</button>
+                                <button class="btn btn-secondary" onclick="contactCustomer('#ORD-2025-045')">Contact Customer</button>
+                                <button class="btn btn-secondary" onclick="viewOrderDetails('#ORD-2025-045')">View Details</button>
                                 <button class="btn btn-secondary" onclick="viewCustomerLocationOnMap('123 Main St, City')">View Map</button>
                             </div>
                         </div>
@@ -279,8 +369,10 @@
                                 </div>
                             </div>
                             <div class="order-actions-vertical">
-                                <button class="btn btn-primary">Start Delivery</button>
-                                <button class="btn btn-secondary">Contact Customer</button>
+                                <button class="btn btn-primary" onclick="startDelivery('#ORD-2025-042', this)">Start Delivery</button>
+                                <button class="btn btn-secondary" onclick="contactCustomer('#ORD-2025-042')">Contact Customer</button>
+                                <button class="btn btn-secondary" onclick="viewOrderDetails('#ORD-2025-042')">View Details</button>
+                                <button class="btn btn-secondary" onclick="viewCustomerLocationOnMap('456 Oak Ave, Town')">View Map</button>
                             </div>
                         </div>
 
@@ -311,7 +403,9 @@
                             </div>
                             <div class="order-actions-vertical">
                                 <button class="btn-completed">Completed</button>
-                                <button class="btn btn-secondary">View Details</button>
+                                <button class="btn btn-secondary" onclick="contactCustomer('#ORD-2025-038')">Contact Customer</button>
+                                <button class="btn btn-secondary" onclick="viewOrderDetails('#ORD-2025-038')">View Details</button>
+                                <button class="btn btn-secondary" onclick="viewCustomerLocationOnMap('789 Pine Rd, Village')">View Map</button>
                             </div>
                         </div>
                     </div>
