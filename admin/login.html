@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - BookShop</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../components.css">
+    <link rel="stylesheet" href="../auth.css">
+    <link rel="stylesheet" href="../blue-theme.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Custom SweetAlert2 Theme to match BookShop */
+        .swal2-popup {
+            background-color: #1a1a2e !important;
+            color: #ffffff !important;
+            border: 1px solid #2e5a8a !important;
+            border-radius: 10px !important;
+        }
+        .swal2-title, .swal2-html-container {
+            color: #ffffff !important;
+        }
+        .swal2-input, .swal2-textarea {
+            background-color: #10235d !important;
+            color: #ffffff !important;
+            border: 1px solid #3b82f6 !important;
+        }
+        .swal2-confirm {
+            background-color: #3b82f6 !important;
+        }
+        .swal2-cancel {
+            background-color: #475569 !important;
+        }
+        .login-section {
+            min-height: calc(100vh - 140px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        .form-container {
+            max-width: 440px;
+            width: 100%;
+            background-color: #10235d;
+            border: 1px solid #1e3a8a;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        .form-container h2 {
+            margin-top: 0;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+        .form-container p.subtitle {
+            text-align: center;
+            color: #a0c0ff;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: #0c1a45;
+            border: 1px solid #1e3a8a;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus {
+            border-color: #3b82f6;
+        }
+        .btn-block {
+            width: 100%;
+            padding: 0.85rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+        .admin-badge {
+            display: inline-block;
+            background-color: #ef4444;
+            color: #ffffff;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        .hint-box {
+            margin-top: 1.25rem;
+            padding: 0.75rem 1rem;
+            background-color: rgba(59, 130, 246, 0.1);
+            border: 1px solid #1e3a8a;
+            border-radius: 6px;
+            color: #a0c0ff;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">BookShop <span class="admin-badge">Admin</span></h1>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="../customer/index.html" class="nav-link">Storefront</a>
+                </li>
+                <li class="nav-item">
+                    <a href="login.html" class="nav-link active">Admin Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Form Section -->
+    <section class="login-section">
+        <div class="form-container">
+            <h2>Admin Portal Login</h2>
+            <p class="subtitle">Enter your administrative credentials to manage BookShop</p>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminEmail" class="form-label">Admin Email / Username</label>
+                    <input type="text" id="adminEmail" name="email" class="form-input" placeholder="admin@bookshop.com" required value="admin@bookshop.com">
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword" class="form-label">Password</label>
+                    <input type="password" id="adminPassword" name="password" class="form-input" placeholder="••••••••" required value="admin123">
+                </div>
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;">
+                    <label style="display: flex; align-items: center; gap: 0.4rem; color: #a0c0ff; cursor: pointer;">
+                        <input type="checkbox" id="rememberMe" checked> Remember session
+                    </label>
+                    <a href="#" onclick="Swal.fire({ text: 'Please contact the system super-admin to reset administrative credentials.', icon: 'info' })" style="color: #60a5fa; text-decoration: none;">Forgot password?</a>
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary btn-block">Sign In to Admin Dashboard</button>
+                </div>
+                <div class="hint-box">
+                    🔒 Protected Administrative Area &bull; BookShop Management
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 BookShop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+
+            if (!email || !password) {
+                Swal.fire({
+                    text: 'Please enter both email and password.',
+                    icon: 'warning',
+                    confirmButtonColor: '#3b82f6',
+                    background: '#1a1a2e',
+                    color: '#ffffff'
+                });
+                return;
+            }
+
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.textContent = 'Verifying Credentials...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                // Set admin user in localStorage
+                localStorage.setItem('currentUser', JSON.stringify({
+                    email: email,
+                    first_name: 'Administrator',
+                    last_name: '',
+                    role: 'admin'
+                }));
+
+                Swal.fire({
+                    title: 'Welcome, Administrator!',
+                    text: 'Login successful. Redirecting to Admin Dashboard...',
+                    icon: 'success',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    background: '#1a1a2e',
+                    color: '#ffffff'
+                }).then(() => {
+                    window.location.href = 'index.html';
+                });
+            }, 800);
+        });
+    </script>
+    <script src="../session.js?v=3"></script>
+</body>
+</html>

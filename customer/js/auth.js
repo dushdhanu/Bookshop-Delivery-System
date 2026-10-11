@@ -86,7 +86,9 @@ function handleLogin() {
         showAlert('Login successful! Redirecting...', 'success');
         
         // Redirect based on role
-        if (userRole === 'bookseller') {
+        if (userRole === 'admin') {
+            window.location.href = '../admin/index.html';
+        } else if (userRole === 'bookseller') {
             window.location.href = '../bookseller/index.html';
         } else if (userRole === 'delivery') {
             window.location.href = '../delivery person/index.html';
