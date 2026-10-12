@@ -256,7 +256,7 @@
                             <h2 class="card-title">Profile Information</h2>
                         </div>
                         <div class="card-body">
-                            <form class="form-container">
+                            <form id="adminProfileForm" class="form-container" onsubmit="event.preventDefault(); saveAdminProfile(); return false;">
                                 <div class="form-group">
                                     <label class="form-label" for="fullName">Full Name</label>
                                     <input type="text" id="fullName" class="form-input" value="Admin User">
@@ -283,7 +283,7 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary" id="saveProfileBtn">Update Profile</button>
+                                    <button type="button" class="btn btn-primary" id="saveProfileBtn" onclick="saveAdminProfile()">Update Profile</button>
                                     <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
                                 </div>
                             </form>
@@ -350,7 +350,139 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        // Global Save Function for Admin Profile Information
+        function saveAdminProfile(e) {
+            if (e && e.preventDefault) e.preventDefault();
+
+            const fullNameInput = document.getElementById('fullName');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+
+            const fullName = (fullNameInput ? fullNameInput.value : '').trim();
+            const email = (emailInput ? emailInput.value : '').trim();
+            const phone = (phoneInput ? phoneInput.value : '').trim();
+            const password = passwordInput ? passwordInput.value : '';
+            const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
+
+            if (!fullName) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Full Name Required',
+                        text: 'Please enter your full name.',
+                        background: '#1a1a2e',
+                        color: '#ffffff',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                } else {
+                    alert('Please enter your full name.');
+                }
+                return;
+            }
+
+            if (!email) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Email Required',
+                        text: 'Please enter your email address.',
+                        background: '#1a1a2e',
+                        color: '#ffffff',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                } else {
+                    alert('Please enter your email address.');
+                }
+                return;
+            }
+
+            if (password && password !== confirmPassword) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Password Mismatch',
+                        text: 'New password and confirm password do not match.',
+                        background: '#1a1a2e',
+                        color: '#ffffff',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                } else {
+                    alert('New password and confirm password do not match.');
+                }
+                return;
+            }
+
+            const btn = document.getElementById('saveProfileBtn');
+            const originalText = btn ? btn.textContent : 'Update Profile';
+            if (btn) {
+                btn.textContent = 'Updating...';
+                btn.disabled = true;
+            }
+
+            let localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+            const nameParts = fullName.split(' ');
+            localUser.first_name = nameParts[0] || 'Admin';
+            localUser.last_name = nameParts.slice(1).join(' ') || 'User';
+            localUser.name = fullName;
+            localUser.email = email;
+            localUser.phone = phone;
+            if (password) {
+                localUser.password = password;
+            }
+
+            // Save to localStorage
+            localStorage.setItem('currentUser', JSON.stringify(localUser));
+            localStorage.setItem('admin_user_name', fullName);
+            localStorage.setItem('admin_user_email', email);
+            localStorage.setItem('admin_user_phone', phone);
+
+            // Update top profile header
+            const displayName = document.getElementById('display-name');
+            if (displayName) displayName.textContent = fullName;
+            const displayEmail = document.getElementById('display-email');
+            if (displayEmail) displayEmail.textContent = email;
+
+            // Update initials placeholder if image preview is hidden
+            const img = document.getElementById('profile-img-preview');
+            const placeholder = document.getElementById('profile-initials');
+            if (placeholder && (!img || img.style.display === 'none')) {
+                const initials = ((nameParts[0] ? nameParts[0][0] : 'A') + (nameParts[1] ? nameParts[1][0] : 'U')).toUpperCase();
+                placeholder.textContent = initials;
+            }
+
+            // Clear password fields
+            if (passwordInput) passwordInput.value = '';
+            if (confirmPasswordInput) confirmPasswordInput.value = '';
+
+            setTimeout(() => {
+                if (btn) {
+                    btn.textContent = 'Saved!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                    }, 2000);
+                }
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Profile Updated',
+                        text: 'Admin profile information updated successfully!',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        background: '#1a1a2e',
+                        color: '#ffffff'
+                    });
+                } else {
+                    alert('Admin profile information updated successfully!');
+                }
+            }, 300);
+        }
+
+        // Initialize Admin Profile Data and Photo
+        function initAdminProfile() {
             let localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
             let currentPhotoUrl = localStorage.getItem('admin_profile_photo') || localUser.profile_photo || '';
 
@@ -372,35 +504,34 @@
                 updateUIPhoto(currentPhotoUrl);
             }
 
-            // Populate form fields and header text if user data exists
+            // Populate form fields and header text
             const fullNameInput = document.getElementById('fullName');
             const emailInput = document.getElementById('email');
             const phoneInput = document.getElementById('phone');
             const displayName = document.getElementById('display-name');
             const displayEmail = document.getElementById('display-email');
 
-            const currentName = localUser.name || ((localUser.first_name || '') + ' ' + (localUser.last_name || '')).trim();
-            if (currentName) {
-                if (fullNameInput) fullNameInput.value = currentName;
-                if (displayName) displayName.textContent = currentName;
-                if (!currentPhotoUrl && placeholder) {
-                    const parts = currentName.split(' ');
-                    const initials = ((parts[0] ? parts[0][0] : 'A') + (parts[1] ? parts[1][0] : 'U')).toUpperCase();
-                    placeholder.textContent = initials;
-                }
-            }
-            if (localUser.email) {
-                if (emailInput) emailInput.value = localUser.email;
-                if (displayEmail) displayEmail.textContent = localUser.email;
-            }
-            if (localUser.phone && phoneInput) {
-                phoneInput.value = localUser.phone;
+            const currentName = localStorage.getItem('admin_user_name') || localUser.name || ((localUser.first_name || '') + ' ' + (localUser.last_name || '')).trim() || 'Admin User';
+            const currentEmail = localStorage.getItem('admin_user_email') || localUser.email || 'admin@bookshop.com';
+            const currentPhone = localStorage.getItem('admin_user_phone') || localUser.phone || '(123) 456-7890';
+
+            if (fullNameInput) fullNameInput.value = currentName;
+            if (displayName) displayName.textContent = currentName;
+            if (emailInput) emailInput.value = currentEmail;
+            if (displayEmail) displayEmail.textContent = currentEmail;
+            if (phoneInput) phoneInput.value = currentPhone;
+
+            if (!currentPhotoUrl && placeholder) {
+                const parts = currentName.split(' ');
+                const initials = ((parts[0] ? parts[0][0] : 'A') + (parts[1] ? parts[1][0] : 'U')).toUpperCase();
+                placeholder.textContent = initials;
             }
 
             // Handle Photo Upload
             const photoUpload = document.getElementById('photoUpload');
             if (photoUpload) {
-                photoUpload.addEventListener('change', function(e) {
+                // Ensure no duplicate listener
+                photoUpload.onchange = function(e) {
                     const file = e.target.files[0];
                     if (!file) return;
 
@@ -422,10 +553,10 @@
                         currentPhotoUrl = evt.target.result;
                         updateUIPhoto(currentPhotoUrl);
 
-                        // Save locally so it persists
-                        localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
-                        localUser.profile_photo = currentPhotoUrl;
-                        localStorage.setItem('currentUser', JSON.stringify(localUser));
+                        // Save locally
+                        let u = JSON.parse(localStorage.getItem('currentUser')) || {};
+                        u.profile_photo = currentPhotoUrl;
+                        localStorage.setItem('currentUser', JSON.stringify(u));
                         localStorage.setItem('admin_profile_photo', currentPhotoUrl);
 
                         // 2. Upload to server endpoint in background
@@ -439,9 +570,9 @@
                         .then(data => {
                             if (data && data.success && data.photoUrl) {
                                 currentPhotoUrl = data.photoUrl;
-                                localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
-                                localUser.profile_photo = currentPhotoUrl;
-                                localStorage.setItem('currentUser', JSON.stringify(localUser));
+                                let u2 = JSON.parse(localStorage.getItem('currentUser')) || {};
+                                u2.profile_photo = currentPhotoUrl;
+                                localStorage.setItem('currentUser', JSON.stringify(u2));
                                 localStorage.setItem('admin_profile_photo', currentPhotoUrl);
                             }
                         })
@@ -460,81 +591,24 @@
                         });
                     };
                     reader.readAsDataURL(file);
-                });
-            }
-
-            // Handle Profile Form Submit
-            const form = document.querySelector('.form-container');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-
-                    const fullName = (document.getElementById('fullName').value || '').trim();
-                    const email = (document.getElementById('email').value || '').trim();
-                    const phone = (document.getElementById('phone').value || '').trim();
-                    const password = document.getElementById('password').value;
-                    const confirmPassword = document.getElementById('confirmPassword').value;
-
-                    if (password && password !== confirmPassword) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Password Mismatch',
-                            text: 'Password and Confirm Password do not match.',
-                            background: '#1a1a2e',
-                            color: '#ffffff',
-                            confirmButtonColor: '#3b82f6'
-                        });
-                        return;
-                    }
-
-                    localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
-                    const nameParts = fullName.split(' ');
-                    localUser.first_name = nameParts[0] || 'Admin';
-                    localUser.last_name = nameParts.slice(1).join(' ') || 'User';
-                    localUser.name = fullName || 'Admin User';
-                    localUser.email = email || 'admin@bookshop.com';
-                    localUser.phone = phone || '(123) 456-7890';
-                    if (password) {
-                        localUser.password = password;
-                    }
-                    if (currentPhotoUrl) {
-                        localUser.profile_photo = currentPhotoUrl;
-                    }
-
-                    localStorage.setItem('currentUser', JSON.stringify(localUser));
-
-                    if (displayName) displayName.textContent = fullName || 'Admin User';
-                    if (displayEmail) displayEmail.textContent = email || 'admin@bookshop.com';
-
-                    if (!currentPhotoUrl && placeholder) {
-                        const initials = ((nameParts[0] ? nameParts[0][0] : 'A') + (nameParts[1] ? nameParts[1][0] : 'U')).toUpperCase();
-                        placeholder.textContent = initials;
-                    }
-
-                    // Reset password fields
-                    document.getElementById('password').value = '';
-                    document.getElementById('confirmPassword').value = '';
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Profile Updated',
-                        text: 'Admin profile updated successfully!',
-                        timer: 2000,
-                        showConfirmButton: false,
-                        background: '#1a1a2e',
-                        color: '#ffffff'
-                    });
-                });
+                };
             }
 
             // Cancel Button
             const cancelBtn = document.getElementById('cancelBtn');
             if (cancelBtn) {
-                cancelBtn.addEventListener('click', function() {
+                cancelBtn.onclick = function() {
                     window.location.reload();
-                });
+                };
             }
-        });
+        }
+
+        // Run immediately if document is already ready, or on DOMContentLoaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAdminProfile);
+        } else {
+            initAdminProfile();
+        }
     </script>
 </body>
 </html>
