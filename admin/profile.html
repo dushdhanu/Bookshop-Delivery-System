@@ -72,6 +72,36 @@
             font-size: 2.5rem;
             border: 3px solid #3b82f6;
         }
+
+        .profile-image {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .profile-image-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #a0c0ff;
+            border: 3px solid #3b82f6;
+            margin: 0 auto 0.75rem;
+        }
+
+        #profile-img-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #3b82f6;
+            margin: 0 auto 0.75rem;
+            object-fit: cover;
+            display: none;
+        }
         
         .profile-info h2 {
             color: #ffffff;
@@ -207,10 +237,15 @@
                 <div class="main-content">
                     <!-- Profile Header -->
                     <div class="profile-header">
-                        <div class="profile-avatar">👤</div>
+                        <div class="profile-image">
+                            <img id="profile-img-preview" src="" alt="Admin Profile Photo" style="display:none; width: 80px; height: 80px; border-radius: 50%; border: 3px solid #3b82f6; margin: 0 auto 0.75rem; object-fit: cover;">
+                            <div class="profile-image-placeholder" id="profile-initials" style="margin: 0 auto 0.75rem;">AU</div>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('photoUpload').click()">Change Photo</button>
+                            <input type="file" id="photoUpload" style="display: none;" accept="image/*">
+                        </div>
                         <div class="profile-info">
-                            <h2>Admin User</h2>
-                            <p>admin@bookshop.com</p>
+                            <h2 id="display-name">Admin User</h2>
+                            <p id="display-email">admin@bookshop.com</p>
                             <span class="profile-role">Administrator</span>
                         </div>
                     </div>
@@ -248,8 +283,8 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary">Update Profile</button>
-                                    <button type="button" class="btn btn-secondary">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" id="saveProfileBtn">Update Profile</button>
+                                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -299,5 +334,207 @@
         </div>
     </footer>
     <script src="../session.js?v=3"></script>
+    <script>
+        // Global showAlert fallback
+        function showAlert(message, type = 'success') {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    text: message,
+                    icon: type === 'danger' || type === 'error' ? 'error' : (type === 'warning' ? 'warning' : 'success'),
+                    confirmButtonColor: '#3b82f6',
+                    background: '#1a1a2e',
+                    color: '#ffffff'
+                });
+            } else {
+                alert(message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+            let currentPhotoUrl = localStorage.getItem('admin_profile_photo') || localUser.profile_photo || '';
+
+            const img = document.getElementById('profile-img-preview');
+            const placeholder = document.getElementById('profile-initials');
+
+            function updateUIPhoto(url) {
+                if (url && img && placeholder) {
+                    img.src = url;
+                    img.style.display = 'block';
+                    placeholder.style.display = 'none';
+                } else if (img && placeholder) {
+                    img.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                }
+            }
+
+            if (currentPhotoUrl) {
+                updateUIPhoto(currentPhotoUrl);
+            }
+
+            // Populate form fields and header text if user data exists
+            const fullNameInput = document.getElementById('fullName');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const displayName = document.getElementById('display-name');
+            const displayEmail = document.getElementById('display-email');
+
+            const currentName = localUser.name || ((localUser.first_name || '') + ' ' + (localUser.last_name || '')).trim();
+            if (currentName) {
+                if (fullNameInput) fullNameInput.value = currentName;
+                if (displayName) displayName.textContent = currentName;
+                if (!currentPhotoUrl && placeholder) {
+                    const parts = currentName.split(' ');
+                    const initials = ((parts[0] ? parts[0][0] : 'A') + (parts[1] ? parts[1][0] : 'U')).toUpperCase();
+                    placeholder.textContent = initials;
+                }
+            }
+            if (localUser.email) {
+                if (emailInput) emailInput.value = localUser.email;
+                if (displayEmail) displayEmail.textContent = localUser.email;
+            }
+            if (localUser.phone && phoneInput) {
+                phoneInput.value = localUser.phone;
+            }
+
+            // Handle Photo Upload
+            const photoUpload = document.getElementById('photoUpload');
+            if (photoUpload) {
+                photoUpload.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    if (!file.type.startsWith('image/')) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid File',
+                            text: 'Please select an image file.',
+                            background: '#1a1a2e',
+                            color: '#ffffff',
+                            confirmButtonColor: '#3b82f6'
+                        });
+                        return;
+                    }
+
+                    // 1. Immediate local FileReader preview
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        currentPhotoUrl = evt.target.result;
+                        updateUIPhoto(currentPhotoUrl);
+
+                        // Save locally so it persists
+                        localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+                        localUser.profile_photo = currentPhotoUrl;
+                        localStorage.setItem('currentUser', JSON.stringify(localUser));
+                        localStorage.setItem('admin_profile_photo', currentPhotoUrl);
+
+                        // 2. Upload to server endpoint in background
+                        const formData = new FormData();
+                        formData.append('photo', file);
+                        fetch('/api/profile/upload', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data && data.success && data.photoUrl) {
+                                currentPhotoUrl = data.photoUrl;
+                                localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+                                localUser.profile_photo = currentPhotoUrl;
+                                localStorage.setItem('currentUser', JSON.stringify(localUser));
+                                localStorage.setItem('admin_profile_photo', currentPhotoUrl);
+                            }
+                        })
+                        .catch(err => {
+                            console.log('Server upload fallback active:', err);
+                        });
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Photo Uploaded',
+                            text: 'Admin profile photo uploaded successfully!',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            background: '#1a1a2e',
+                            color: '#ffffff'
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // Handle Profile Form Submit
+            const form = document.querySelector('.form-container');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const fullName = (document.getElementById('fullName').value || '').trim();
+                    const email = (document.getElementById('email').value || '').trim();
+                    const phone = (document.getElementById('phone').value || '').trim();
+                    const password = document.getElementById('password').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+
+                    if (password && password !== confirmPassword) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Password Mismatch',
+                            text: 'Password and Confirm Password do not match.',
+                            background: '#1a1a2e',
+                            color: '#ffffff',
+                            confirmButtonColor: '#3b82f6'
+                        });
+                        return;
+                    }
+
+                    localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+                    const nameParts = fullName.split(' ');
+                    localUser.first_name = nameParts[0] || 'Admin';
+                    localUser.last_name = nameParts.slice(1).join(' ') || 'User';
+                    localUser.name = fullName || 'Admin User';
+                    localUser.email = email || 'admin@bookshop.com';
+                    localUser.phone = phone || '(123) 456-7890';
+                    if (password) {
+                        localUser.password = password;
+                    }
+                    if (currentPhotoUrl) {
+                        localUser.profile_photo = currentPhotoUrl;
+                    }
+
+                    localStorage.setItem('currentUser', JSON.stringify(localUser));
+
+                    if (displayName) displayName.textContent = fullName || 'Admin User';
+                    if (displayEmail) displayEmail.textContent = email || 'admin@bookshop.com';
+
+                    if (!currentPhotoUrl && placeholder) {
+                        const initials = ((nameParts[0] ? nameParts[0][0] : 'A') + (nameParts[1] ? nameParts[1][0] : 'U')).toUpperCase();
+                        placeholder.textContent = initials;
+                    }
+
+                    // Reset password fields
+                    document.getElementById('password').value = '';
+                    document.getElementById('confirmPassword').value = '';
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Profile Updated',
+                        text: 'Admin profile updated successfully!',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        background: '#1a1a2e',
+                        color: '#ffffff'
+                    });
+                });
+            }
+
+            // Cancel Button
+            const cancelBtn = document.getElementById('cancelBtn');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function() {
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
 </body>
 </html>
