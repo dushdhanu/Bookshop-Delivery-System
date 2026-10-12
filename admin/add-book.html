@@ -307,5 +307,125 @@
 
     <script src="../api.js"></script>
     <script src="../session.js?v=3"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addBookForm = document.getElementById('addBookForm');
+            const bookImageInput = document.getElementById('bookImage');
+            const imagePreview = document.querySelector('.image-preview');
+            let bookCoverDataUrl = '';
+
+            // Handle Cover Image Preview
+            if (bookImageInput && imagePreview) {
+                bookImageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            bookCoverDataUrl = evt.target.result;
+                            imagePreview.innerHTML = `<img src="${bookCoverDataUrl}" style="max-width: 120px; max-height: 160px; border-radius: 4px; border: 2px solid #3b82f6; object-fit: cover; margin-top: 0.5rem;" alt="Cover Preview">`;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            if (addBookForm) {
+                addBookForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const title = (document.getElementById('bookTitle').value || '').trim();
+                    const author = (document.getElementById('author').value || '').trim();
+                    const isbn = (document.getElementById('isbn').value || '').trim() || 'N/A';
+                    const category = document.getElementById('category').value;
+                    const bookType = document.getElementById('bookType').value;
+                    const bookSize = (document.getElementById('bookSize').value || '').trim();
+                    const mainCategory = document.getElementById('mainCategory').value;
+                    const bookFormat = (document.getElementById('bookFormat').value || '').trim();
+                    const price = parseFloat(document.getElementById('price').value || 0).toFixed(2);
+                    const stock = parseInt(document.getElementById('stock').value || 0);
+                    const description = (document.getElementById('description').value || '').trim();
+                    const featured = document.getElementById('featured') ? document.getElementById('featured').checked : false;
+                    const active = document.getElementById('active') ? document.getElementById('active').checked : true;
+
+                    if (!title || !author || !category || isNaN(price)) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Missing Fields',
+                            text: 'Please fill in all required fields.',
+                            background: '#1a1a2e',
+                            color: '#ffffff',
+                            confirmButtonColor: '#3b82f6'
+                        });
+                        return;
+                    }
+
+                    const submitBtn = addBookForm.querySelector('button[type="submit"]');
+                    const origText = submitBtn ? submitBtn.textContent : 'Add Book';
+                    if (submitBtn) {
+                        submitBtn.textContent = 'Saving Book...';
+                        submitBtn.disabled = true;
+                    }
+
+                    const newBook = {
+                        title: title,
+                        author: author,
+                        isbn: isbn,
+                        category: category,
+                        bookType: bookType,
+                        bookSize: bookSize,
+                        mainCategory: mainCategory,
+                        bookFormat: bookFormat,
+                        price: price,
+                        stock: stock,
+                        description: description,
+                        coverImage: bookCoverDataUrl,
+                        featured: featured,
+                        active: active,
+                        rating: '⭐ New',
+                        createdAt: new Date().toISOString()
+                    };
+
+                    // 1. Save to myBooks in localStorage so it appears in Book Management
+                    let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
+                    // Prepend so the newly added book is at the very top of Book Management
+                    myBooks.unshift(newBook);
+                    localStorage.setItem('myBooks', JSON.stringify(myBooks));
+
+                    // 2. Add System Notification
+                    let sysNotifs = JSON.parse(localStorage.getItem('systemNotifications')) || [];
+                    sysNotifs.unshift({
+                        title: 'New Book Added',
+                        content: 'Book "' + title + '" was successfully added to your inventory.',
+                        type: 'Inventory',
+                        time: 'Just now'
+                    });
+                    localStorage.setItem('systemNotifications', JSON.stringify(sysNotifs));
+
+                    setTimeout(function() {
+                        if (submitBtn) {
+                            submitBtn.textContent = origText;
+                            submitBtn.disabled = false;
+                        }
+
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Book "' + title + '" added successfully to Book Management!',
+                                icon: 'success',
+                                background: '#1a1a2e',
+                                color: '#ffffff',
+                                confirmButtonColor: '#3b82f6'
+                            }).then(function() {
+                                window.location.href = 'books.html';
+                            });
+                        } else {
+                            alert('Book "' + title + '" added successfully!');
+                            window.location.href = 'books.html';
+                        }
+                    }, 500);
+                });
+            }
+        });
+    </script>
 </body>
 </html>
