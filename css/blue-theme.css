@@ -1623,17 +1623,58 @@ select.form-input option {
 }
 
 /* 12. SweetAlert2 Theme Modal Override */
-.swal2-popup {
+html[data-theme="light"] .swal2-popup,
+[data-theme="light"] .swal2-popup,
+html[data-theme="light"] div.swal2-popup,
+.swal2-container .swal2-popup {
+    background: var(--bg-modal) !important;
     background-color: var(--bg-modal) !important;
     color: var(--text-primary) !important;
     border: 1px solid var(--border-color) !important;
     box-shadow: var(--card-shadow) !important;
 }
 
-.swal2-title,
-.swal2-html-container,
-.swal2-content {
+html[data-theme="light"] .swal2-title,
+[data-theme="light"] .swal2-title,
+html[data-theme="light"] .swal2-html-container,
+[data-theme="light"] .swal2-html-container,
+html[data-theme="light"] .swal2-content,
+[data-theme="light"] .swal2-content {
     color: var(--text-heading) !important;
+}
+
+html[data-theme="light"] .swal2-close,
+[data-theme="light"] .swal2-close {
+    color: var(--text-muted) !important;
+}
+
+html[data-theme="light"] .swal2-close:hover,
+[data-theme="light"] .swal2-close:hover {
+    color: var(--accent-color) !important;
+}
+
+html[data-theme="light"] .swal2-input,
+html[data-theme="light"] .swal2-textarea,
+html[data-theme="light"] .swal2-select {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-input) !important;
+}
+
+html[data-theme="dark"] .swal2-popup,
+[data-theme="dark"] .swal2-popup,
+html[data-theme="dark"] div.swal2-popup {
+    background: #0f172a !important;
+    background-color: #0f172a !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #1e3a8a !important;
+}
+
+html[data-theme="dark"] .swal2-title,
+[data-theme="dark"] .swal2-title,
+html[data-theme="dark"] .swal2-html-container,
+[data-theme="dark"] .swal2-html-container {
+    color: #f8fafc !important;
 }
 
 .swal2-popup div[style*="background: #0f172a"],
@@ -1641,7 +1682,9 @@ select.form-input option {
 .swal2-popup div[style*="background:#0f172a"],
 .swal2-popup div[style*="background:#10235d"],
 .swal2-popup div[style*="background-color: #0f172a"],
-.swal2-popup div[style*="background-color: #10235d"] {
+.swal2-popup div[style*="background-color: #10235d"],
+.swal2-popup div[style*="background: #1e3a8a"],
+.swal2-popup div[style*="background:#1e3a8a"] {
     background-color: var(--bg-sidebar-item) !important;
     border: 1px solid var(--border-color) !important;
     color: var(--text-primary) !important;
