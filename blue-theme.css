@@ -1030,3 +1030,262 @@ textarea.form-input:focus {
     background-color: var(--bg-card-header) !important;
     border: 1px solid var(--border-color) !important;
 }
+
+/* ==========================================================================
+   Comprehensive Component Light/Dark Adapters (Zero Dark Parts in Light Mode)
+   ========================================================================== */
+
+/* 1. Orders Management Components */
+.order-card-vertical,
+.order-card,
+.order-item,
+.delivery-item,
+.delivery-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-primary) !important;
+}
+
+.order-header-vertical,
+.order-header,
+.delivery-header {
+    background-color: var(--bg-card-header) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.order-id,
+.order-id-vertical {
+    color: var(--text-heading) !important;
+}
+
+.order-body-vertical,
+.order-body,
+.delivery-body {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+.order-details,
+.detail-item {
+    color: var(--text-primary) !important;
+}
+
+.detail-label {
+    color: var(--text-muted) !important;
+}
+
+.detail-value {
+    color: var(--text-heading) !important;
+}
+
+.order-books,
+.order-books h4,
+.order-books-title {
+    color: var(--text-heading) !important;
+}
+
+.book-item-vertical,
+.book-item-horizontal,
+.order-book-item {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.book-info h5,
+.book-title {
+    color: var(--text-heading) !important;
+}
+
+.book-info p,
+.book-author {
+    color: var(--text-secondary) !important;
+}
+
+.book-price {
+    color: var(--accent-color) !important;
+    font-weight: 700 !important;
+}
+
+/* 2. Customer Feedback Components */
+.feedback-card,
+.feedback-item {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-primary) !important;
+}
+
+.feedback-header {
+    background-color: var(--bg-card-header) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.feedback-id {
+    color: var(--text-heading) !important;
+}
+
+.feedback-body {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+.feedback-content {
+    color: var(--text-primary) !important;
+}
+
+.feedback-meta {
+    color: var(--text-muted) !important;
+    border-top: 1px solid var(--border-color) !important;
+}
+
+.feedback-comment {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+/* 3. Notifications Components */
+.notification-card,
+.notification-item {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-primary) !important;
+}
+
+.notification-header {
+    background-color: var(--bg-card-header) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.notification-title {
+    color: var(--text-heading) !important;
+}
+
+.notification-date {
+    color: var(--text-muted) !important;
+}
+
+.notification-content {
+    color: var(--text-primary) !important;
+}
+
+.notification-badge {
+    border: 1px solid var(--border-color) !important;
+}
+
+/* 4. Profile & Account Navigation Components */
+.profile-header,
+.profile-card,
+.profile-section,
+.account-card,
+.address-card,
+.payment-card,
+.payment-method-card,
+.wishlist-item,
+.info-card,
+.setting-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-primary) !important;
+}
+
+.profile-header-title,
+.profile-info h2 {
+    color: var(--text-heading) !important;
+}
+
+.profile-info p {
+    color: var(--text-secondary) !important;
+}
+
+.profile-image-placeholder {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.account-item-vertical {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 6px !important;
+    background-color: var(--bg-sidebar-item) !important;
+    text-decoration: none !important;
+    color: var(--text-sidebar-item) !important;
+    transition: all 0.25s ease !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.account-item-vertical:hover {
+    background-color: var(--bg-sidebar-hover) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+    transform: translateY(-2px);
+}
+
+.account-item-vertical.active {
+    background-color: var(--bg-sidebar-active) !important;
+    color: var(--sidebar-active-color) !important;
+    border-color: var(--accent-color) !important;
+    font-weight: 600 !important;
+}
+
+/* 5. Customer Home & Features Sections */
+.features-vertical,
+.features-section,
+.hero-centered {
+    background-color: transparent !important;
+}
+
+.feature-vertical-card,
+.feature-vertical-item,
+.category-vertical-item {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-primary) !important;
+}
+
+.feature-vertical-card:hover,
+.feature-vertical-item:hover,
+.category-vertical-item:hover {
+    background-color: var(--bg-sidebar-hover) !important;
+    border-color: var(--accent-color) !important;
+}
+
+.feature-vertical-content h3,
+.category-vertical-item h3 {
+    color: var(--text-heading) !important;
+}
+
+.feature-vertical-content p {
+    color: var(--text-secondary) !important;
+}
+
+.feature-vertical-icon,
+.category-icon-medium {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.featured-books {
+    background-color: transparent !important;
+}
+
+.featured-books h2 {
+    color: var(--text-heading) !important;
+}
+
+/* 6. General Elements & Empty States */
+.empty-state,
+.no-data,
+.empty-message {
+    background-color: var(--bg-card) !important;
+    border: 1px dashed var(--border-color) !important;
+    color: var(--text-muted) !important;
+}
