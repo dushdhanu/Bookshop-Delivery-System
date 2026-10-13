@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - BookShop Admin</title>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../components.css">
+    <link rel="stylesheet" href="../orders.css">
+    <link rel="stylesheet" href="../blue-theme.css">
+    <style>
+        /* Vertical sidebar panel with medium logos */
+        .sidebar-panel-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .sidebar-item-vertical {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            border-radius: 5px;
+            background-color: #10235d;
+            text-decoration: none;
+            color: #a0c0ff;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .sidebar-item-vertical:hover {
+            background-color: #1a3a8a;
+            transform: translateY(-5px);
+        }
+        
+        .sidebar-item-vertical.active {
+            background-color: #10235d;
+            color: #3b82f6;
+            border-color: #334155;
+        }
+        
+        .sidebar-icon-medium {
+            font-size: 1.2rem;
+            margin-right: 0.75rem;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Integrated search icon styling */
+        .search-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 420px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border-radius: 4px;
+            border: 1px solid #334155;
+            background-color: #0f172a;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        
+        .search-icon-btn {
+            position: absolute;
+            right: -50px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .search-icon-btn:hover {
+            color: #3b82f6;
+        }
+        
+        /* Stats cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background-color: #10235d;
+            border: 1px solid #1e3a8a;
+            border-radius: 6px;
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background-color: #0f172a;
+            border: 2px solid #3b82f6;
+        }
+        
+        .stat-info h4 {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-info p {
+            margin: 0.25rem 0 0 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        
+        /* Filter tabs */
+        .role-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+        
+        .role-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background-color: #10235d;
+            border: 1px solid #1e3a8a;
+            color: #a0c0ff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        
+        .role-tab:hover {
+            background-color: #1a3a8a;
+            color: #ffffff;
+        }
+        
+        .role-tab.active {
+            background-color: #3b82f6;
+            color: #ffffff;
+            border-color: #3b82f6;
+            font-weight: 600;
+        }
+        
+        /* Enhanced table */
+        .data-table-enhanced {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #1a1a2e;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .data-table-enhanced th {
+            background-color: #0f172a;
+            color: #ffffff;
+            text-align: left;
+            padding: 1.1rem 1rem;
+            font-weight: 600;
+            border-bottom: 2px solid #3b82f6;
+        }
+        
+        .data-table-enhanced td {
+            padding: 1rem;
+            border-bottom: 1px solid #334155;
+            color: #ffffff;
+            vertical-align: middle;
+        }
+        
+        .data-table-enhanced tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .data-table-enhanced tr:hover {
+            background-color: #10235d;
+        }
+        
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1e3a8a;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            border: 2px solid #3b82f6;
+            overflow: hidden;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        
+        .role-customer {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+        
+        .role-bookseller {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+        
+        .role-delivery {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid #f59e0b;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .status-verified {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .security-note {
+            background-color: rgba(59, 130, 246, 0.1);
+            border: 1px solid #1e3a8a;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #a0c0ff;
+            font-size: 0.9rem;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Custom SweetAlert2 Theme to match BookShop */
+        .swal2-popup {
+            background-color: #1a1a2e !important;
+            color: #ffffff !important;
+            border: 1px solid #2e5a8a !important;
+            border-radius: 10px !important;
+        }
+        .swal2-title, .swal2-html-container {
+            color: #ffffff !important;
+        }
+        .swal2-input, .swal2-textarea {
+            background-color: #10235d !important;
+            color: #ffffff !important;
+            border: 1px solid #3b82f6 !important;
+        }
+        .swal2-confirm {
+            background-color: #3b82f6 !important;
+        }
+        .swal2-cancel {
+            background-color: #475569 !important;
+        }
+    </style>
+    <script>
+        // Global alert override
+        window.alert = function(msg) {
+            Swal.fire({
+                text: msg,
+                confirmButtonColor: '#3b82f6',
+                background: '#1a1a2e',
+                color: '#ffffff'
+            });
+        };
+    </script>
+</head>
+<body>
+    
+    <!-- Navbar Component -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="nav-logo">BookShop Admin</h1>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="books.html" class="nav-link">Books</a>
+                </li>
+                <li class="nav-item">
+                    <a href="add-book.html" class="nav-link">Add Book</a>
+                </li>
+                <li class="nav-item">
+                    <a href="orders.html" class="nav-link">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a href="users.html" class="nav-link active">Users</a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link">Profile</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- User Management Content -->
+    <section class="order-management">
+        <div class="container">
+            <div class="page-header">
+                <h1>User Management</h1>
+                <p>View registered customers, booksellers, and delivery personnel</p>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Sidebar Panel -->
+                <div class="sidebar-wrapper">
+                    <div class="sidebar">
+                        <h3 class="sidebar-title">Admin Panel</h3>
+                        <div class="sidebar-panel-vertical">
+                            <a href="index.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">📊</div>
+                                <span>Dashboard</span>
+                            </a>
+                            <a href="books.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">📚</div>
+                                <span>Book Management</span>
+                            </a>
+                            <a href="add-book.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">➕</div>
+                                <span>Add New Book</span>
+                            </a>
+                            <a href="orders.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">📦</div>
+                                <span>Order Management</span>
+                            </a>
+                            <a href="feedback.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">💬</div>
+                                <span>Customer Feedback</span>
+                            </a>
+                            <a href="users.html" class="sidebar-item-vertical active">
+                                <div class="sidebar-icon-medium">👥</div>
+                                <span>User Management</span>
+                            </a>
+                            <a href="profile.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">👤</div>
+                                <span>Admin Profile</span>
+                            </a>
+                            <a href="notifications.html" class="sidebar-item-vertical">
+                                <div class="sidebar-icon-medium">🔔</div>
+                                <span>Notifications & Updates</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Privacy Guarantee Notice -->
+                    <div class="security-note">
+                        <span style="font-size: 1.3rem;">🛡️</span>
+                        <div>
+                            <strong>Public Profile View:</strong> Displays public user information only (Name, Role, Email, Phone, Registration Date). Passwords and sensitive authentication data are strictly hidden.
+                        </div>
+                    </div>
+
+                    <!-- User Role Summary Statistics -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-info">
+                                <h4>Total Users</h4>
+                                <p id="totalUsersCount">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="border-color: #10b981;">🛒</div>
+                            <div class="stat-info">
+                                <h4>Customers</h4>
+                                <p id="customersCount">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="border-color: #3b82f6;">📚</div>
+                            <div class="stat-info">
+                                <h4>Booksellers</h4>
+                                <p id="booksellersCount">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="border-color: #f59e0b;">🚚</div>
+                            <div class="stat-info">
+                                <h4>Delivery Staff</h4>
+                                <p id="deliveryCount">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Bar and Role Tabs -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div class="role-filters">
+                            <button class="role-tab active" data-role="all">All Users</button>
+                            <button class="role-tab" data-role="customer">Customers</button>
+                            <button class="role-tab" data-role="bookseller">Booksellers</button>
+                            <button class="role-tab" data-role="delivery">Delivery Personnel</button>
+                        </div>
+                        <div class="search-container">
+                            <input type="text" id="userSearchInput" class="search-input" placeholder="Search by name, email, or role...">
+                            <button class="search-icon-btn">🔍</button>
+                        </div>
+                    </div>
+
+                    <!-- Registered Users Table -->
+                    <div class="card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                            <h2 class="card-title">Registered Users</h2>
+                            <span id="showingCount" style="color: #94a3b8; font-size: 0.9rem;">Showing 0 users</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="data-table-enhanced">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Role</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Registered Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersTableBody">
+                                        <!-- Dynamically Populated -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Component -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BookShop Admin</h3>
+                    <p>Administration panel for BookShop online bookstore</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Dashboard</a></li>
+                        <li><a href="books.html">Books</a></li>
+                        <li><a href="orders.html">Orders</a></li>
+                        <li><a href="users.html">Users</a></li>
+                        <li><a href="profile.html">Profile</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">System Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 BookShop. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Seed users for all roles (Customers, Booksellers, Delivery Personnel)
+        const initialUsers = [
+            // Customers
+            {
+                name: 'John Smith',
+                email: 'john.smith@example.com',
+                role: 'customer',
+                phone: '(123) 456-7890',
+                city: 'New York, USA',
+                registeredAt: 'Jun 10, 2025',
+                status: 'Active',
+                activityInfo: '15 Books Purchased'
+            },
+            {
+                name: 'Sarah Johnson',
+                email: 'sarah.j@example.com',
+                role: 'customer',
+                phone: '(234) 567-8901',
+                city: 'Chicago, USA',
+                registeredAt: 'May 15, 2025',
+                status: 'Active',
+                activityInfo: '8 Books Purchased'
+            },
+            {
+                name: 'Michael Brown',
+                email: 'michael.b@example.com',
+                role: 'customer',
+                phone: '(345) 678-9012',
+                city: 'Los Angeles, USA',
+                registeredAt: 'May 02, 2025',
+                status: 'Active',
+                activityInfo: '4 Books Purchased'
+            },
+            {
+                name: 'Emily Davis',
+                email: 'emily.d@example.com',
+                role: 'customer',
+                phone: '(456) 789-0123',
+                city: 'Boston, USA',
+                registeredAt: 'Apr 18, 2025',
+                status: 'Active',
+                activityInfo: '12 Books Purchased'
+            },
+            {
+                name: 'Chaminda Dissanayake',
+                email: 'chamind3@example.com',
+                role: 'customer',
+                phone: '(123) 456-7890',
+                city: 'Colombo, Sri Lanka',
+                registeredAt: 'Jan 01, 2025',
+                status: 'Active',
+                activityInfo: '20 Books Purchased'
+            },
+            // Booksellers
+            {
+                name: 'Classic Books Ltd',
+                email: 'contact@classicbooks.com',
+                role: 'bookseller',
+                phone: '(567) 890-1234',
+                city: 'London, UK',
+                registeredAt: 'Mar 12, 2025',
+                status: 'Verified',
+                activityInfo: '142 Titles Listed'
+            },
+            {
+                name: 'Novelty Book Hub',
+                email: 'info@noveltybooks.com',
+                role: 'bookseller',
+                phone: '(678) 901-2345',
+                city: 'Seattle, USA',
+                registeredAt: 'Feb 20, 2025',
+                status: 'Verified',
+                activityInfo: '89 Titles Listed'
+            },
+            {
+                name: 'Heritage Bookstore',
+                email: 'sales@heritagebooks.com',
+                role: 'bookseller',
+                phone: '(789) 012-3456',
+                city: 'Edinburgh, UK',
+                registeredAt: 'Jan 15, 2025',
+                status: 'Verified',
+                activityInfo: '210 Titles Listed'
+            },
+            // Delivery Personnel
+            {
+                name: 'Kamal Perera',
+                email: 'kamal.delivery@example.com',
+                role: 'delivery',
+                phone: '(890) 123-4567',
+                city: 'Colombo, Sri Lanka',
+                registeredAt: 'Apr 05, 2025',
+                status: 'Active',
+                activityInfo: '128 Orders Delivered'
+            },
+            {
+                name: 'Sunil Shantha',
+                email: 'sunil.dispatch@example.com',
+                role: 'delivery',
+                phone: '(901) 234-5678',
+                city: 'Kandy, Sri Lanka',
+                registeredAt: 'Mar 28, 2025',
+                status: 'Active',
+                activityInfo: '94 Orders Delivered'
+            },
+            {
+                name: 'Nuwan Bandara',
+                email: 'nuwan.rider@example.com',
+                role: 'delivery',
+                phone: '(012) 345-6789',
+                city: 'Galle, Sri Lanka',
+                registeredAt: 'Feb 14, 2025',
+                status: 'Active',
+                activityInfo: '76 Orders Delivered'
+            }
+        ];
+
+        let allUsers = [];
+        let currentFilter = 'all';
+        let searchQuery = '';
+
+        async function loadUsers() {
+            // 1. Start with initial users
+            let userMap = new Map();
+            initialUsers.forEach(u => userMap.set(u.email.toLowerCase(), u));
+
+            // 2. Load from localStorage.registeredUsers (added via registration)
+            const localRegistered = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            localRegistered.forEach(u => {
+                const emailKey = u.email ? u.email.toLowerCase() : '';
+                if (emailKey && !userMap.has(emailKey)) {
+                    userMap.set(emailKey, {
+                        name: u.name || `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.email.split('@')[0],
+                        email: u.email,
+                        role: u.role || 'customer',
+                        phone: u.phone || 'N/A',
+                        city: u.city || 'N/A',
+                        registeredAt: u.registeredAt || 'Recently',
+                        status: u.status || 'Active',
+                        activityInfo: 'Registered User'
+                    });
+                }
+            });
+
+            // 3. Try to fetch from server API if online
+            try {
+                const res = await fetch('/api/users');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.success && Array.isArray(data.users)) {
+                        data.users.forEach(u => {
+                            const emailKey = u.email ? u.email.toLowerCase() : '';
+                            if (emailKey && !userMap.has(emailKey)) {
+                                userMap.set(emailKey, {
+                                    name: `${u.first_name || ''} ${u.last_name || ''}`.trim() || u.email.split('@')[0],
+                                    email: u.email,
+                                    role: u.role || 'customer',
+                                    phone: u.phone || 'N/A',
+                                    city: u.city || 'N/A',
+                                    registeredAt: 'Registered User',
+                                    status: 'Active',
+                                    activityInfo: 'Database User'
+                                });
+                            }
+                        });
+                    }
+                }
+            } catch (err) {
+                // Offline or server not responding, localStorage and defaults will serve
+            }
+
+            allUsers = Array.from(userMap.values());
+            updateStats();
+            renderUsers();
+        }
+
+        function updateStats() {
+            document.getElementById('totalUsersCount').textContent = allUsers.length;
+            document.getElementById('customersCount').textContent = allUsers.filter(u => u.role === 'customer').length;
+            document.getElementById('booksellersCount').textContent = allUsers.filter(u => u.role === 'bookseller').length;
+            document.getElementById('deliveryCount').textContent = allUsers.filter(u => u.role === 'delivery').length;
+        }
+
+        function renderUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            if (!tbody) return;
+
+            let filtered = allUsers;
+
+            // Apply role filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(u => u.role === currentFilter);
+            }
+
+            // Apply search query
+            if (searchQuery.trim() !== '') {
+                const q = searchQuery.toLowerCase().trim();
+                filtered = filtered.filter(u => 
+                    (u.name && u.name.toLowerCase().includes(q)) ||
+                    (u.email && u.email.toLowerCase().includes(q)) ||
+                    (u.role && u.role.toLowerCase().includes(q)) ||
+                    (u.phone && u.phone.toLowerCase().includes(q))
+                );
+            }
+
+            document.getElementById('showingCount').textContent = `Showing ${filtered.length} of ${allUsers.length} users`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 2.5rem; color: #94a3b8;">
+                            No users found matching the selected filter.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            filtered.forEach(u => {
+                const tr = document.createElement('tr');
+                
+                // Get initials for avatar
+                const initials = (u.name || 'U').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+                
+                // Role badge class & label
+                let roleClass = 'role-customer';
+                let roleLabel = 'Customer';
+                if (u.role === 'bookseller') {
+                    roleClass = 'role-bookseller';
+                    roleLabel = 'Bookseller';
+                } else if (u.role === 'delivery') {
+                    roleClass = 'role-delivery';
+                    roleLabel = 'Delivery Person';
+                }
+
+                tr.innerHTML = `
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-avatar">${initials}</div>
+                            <div>
+                                <strong style="color: #ffffff; display: block;">${u.name}</strong>
+                                <small style="color: #94a3b8;">${u.city || 'Verified User'}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="role-badge ${roleClass}">${roleLabel}</span>
+                    </td>
+                    <td>${u.email}</td>
+                    <td>${u.phone || 'N/A'}</td>
+                    <td>${u.registeredAt}</td>
+                    <td>
+                        <span class="status-badge status-active">${u.status || 'Active'}</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary btn-view-user" data-email="${u.email}">View Profile</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // View Public Profile Modal (Strictly Non-Sensitive Details Only)
+        function viewUserProfile(email) {
+            const user = allUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+            if (!user) return;
+
+            const initials = (user.name || 'U').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+            
+            let roleTitle = 'Customer';
+            let roleBadgeClass = 'role-customer';
+            if (user.role === 'bookseller') {
+                roleTitle = 'Bookseller';
+                roleBadgeClass = 'role-bookseller';
+            } else if (user.role === 'delivery') {
+                roleTitle = 'Delivery Personnel';
+                roleBadgeClass = 'role-delivery';
+            }
+
+            Swal.fire({
+                title: user.name,
+                html: `
+                    <div style="text-align: center; margin-bottom: 1.25rem;">
+                        <div style="width: 70px; height: 70px; border-radius: 50%; background: #1e3a8a; color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 1.75rem; font-weight: bold; border: 3px solid #3b82f6; margin-bottom: 0.5rem;">
+                            ${initials}
+                        </div>
+                        <div>
+                            <span class="role-badge ${roleBadgeClass}">${roleTitle}</span>
+                        </div>
+                    </div>
+                    <div style="text-align: left; background: #0f172a; padding: 1.25rem; border-radius: 8px; border: 1px solid #1e3a8a; line-height: 1.8;">
+                        <p style="margin: 0.25rem 0;"><strong>📧 Email:</strong> ${user.email}</p>
+                        <p style="margin: 0.25rem 0;"><strong>📞 Phone:</strong> ${user.phone || 'Not provided'}</p>
+                        <p style="margin: 0.25rem 0;"><strong>📍 Location:</strong> ${user.city || 'Standard Area'}</p>
+                        <p style="margin: 0.25rem 0;"><strong>📅 Member Since:</strong> ${user.registeredAt}</p>
+                        <p style="margin: 0.25rem 0;"><strong>✅ Account Status:</strong> <span style="color: #10b981; font-weight: bold;">${user.status || 'Active'}</span></p>
+                        <p style="margin: 0.25rem 0;"><strong>📊 Platform Activity:</strong> ${user.activityInfo || 'Active Platform Participant'}</p>
+                    </div>
+                    <div style="margin-top: 1rem; font-size: 0.8rem; color: #94a3b8; text-align: center;">
+                        🔒 <em>Privacy Protected: Passwords and sensitive authentication data are encrypted and hidden.</em>
+                    </div>
+                `,
+                showCloseButton: true,
+                confirmButtonColor: '#3b82f6',
+                confirmButtonText: 'Done',
+                background: '#1a1a2e',
+                color: '#ffffff'
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUsers();
+
+            // Filter tab clicks
+            const tabs = document.querySelectorAll('.role-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentFilter = tab.getAttribute('data-role');
+                    renderUsers();
+                });
+            });
+
+            // Search input
+            const searchInput = document.getElementById('userSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchQuery = e.target.value;
+                    renderUsers();
+                });
+            }
+
+            // Delegated click for View Profile
+            const tbody = document.getElementById('usersTableBody');
+            if (tbody) {
+                tbody.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.btn-view-user');
+                    if (btn) {
+                        const email = btn.getAttribute('data-email');
+                        if (email) viewUserProfile(email);
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="../session.js?v=3"></script>
+</body>
+</html>

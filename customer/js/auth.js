@@ -152,6 +152,41 @@ function handleRegister() {
             role: userRole
         }));
 
+        // Save to registeredUsers list for Admin User Management
+        let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+        if (!registeredUsers.some(u => u.email === email)) {
+            registeredUsers.push({
+                name: name,
+                first_name: nameParts[0] || '',
+                last_name: nameParts.slice(1).join(' ') || '',
+                email: email,
+                role: userRole,
+                phone: '',
+                registeredAt: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+                status: 'Active'
+            });
+            localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+        }
+
+        // Also sync with server backend if available
+        try {
+            fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, role: userRole })
+            }).catch(() => {});
+        } catch (e) {}
+
+        // Add a notification for Admin
+        let sysNotifs = JSON.parse(localStorage.getItem('systemNotifications')) || [];
+        sysNotifs.unshift({
+            title: 'New User Registration',
+            content: `A new ${userRole} "${name}" has registered on the platform.`,
+            type: 'Users',
+            time: 'Just now'
+        });
+        localStorage.setItem('systemNotifications', JSON.stringify(sysNotifs));
+
         // Reset button
         submitButton.textContent = originalText;
         submitButton.disabled = false;

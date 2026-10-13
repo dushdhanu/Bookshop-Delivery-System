@@ -111,6 +111,36 @@ app.get('/api/profile', (req, res) => {
     });
 });
 
+// Get public users list (strictly non-sensitive fields: no passwords)
+app.get('/api/users', (req, res) => {
+    db.all("SELECT id, first_name, last_name, email, role, phone, birth_date, profile_photo FROM users", (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, users: rows || [] });
+    });
+});
+
+// Register user endpoint
+app.post('/api/register', (req, res) => {
+    const { name, email, password, role, phone } = req.body;
+    if (!email) {
+        return res.status(400).json({ success: false, message: 'Email is required' });
+    }
+    const nameParts = (name || '').trim().split(' ');
+    const firstName = nameParts[0] || '';
+    const lastName = nameParts.slice(1).join(' ') || '';
+    const userRole = role || 'customer';
+    const userPhone = phone || '';
+
+    db.run(
+        `INSERT OR IGNORE INTO users (first_name, last_name, email, password, role, phone) VALUES (?, ?, ?, ?, ?, ?)`,
+        [firstName, lastName, email, password || 'password', userRole, userPhone],
+        function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ success: true, message: 'User registered successfully', userId: this.lastID });
+        }
+    );
+});
+
 // Mock login/logout
 app.post('/api/logout', (req, res) => {
     currentLoggedInUserId = null;
