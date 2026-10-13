@@ -821,7 +821,7 @@
                             <span class="role-badge ${roleBadgeClass}">${roleTitle}</span>
                         </div>
                     </div>
-                    <div style="text-align: left; background: #0f172a; padding: 1.25rem; border-radius: 8px; border: 1px solid #1e3a8a; line-height: 1.8;">
+                    <div class="user-modal-details" style="text-align: left; background: var(--bg-sidebar-item); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--border-color); line-height: 1.8;">
                         <p style="margin: 0.25rem 0;"><strong>📧 Email:</strong> ${user.email}</p>
                         <p style="margin: 0.25rem 0;"><strong>📞 Phone:</strong> ${user.phone || 'Not provided'}</p>
                         <p style="margin: 0.25rem 0;"><strong>📍 Location:</strong> ${user.city || 'Standard Area'}</p>
@@ -829,15 +829,13 @@
                         <p style="margin: 0.25rem 0;"><strong>✅ Account Status:</strong> <span style="color: #10b981; font-weight: bold;">${user.status || 'Active'}</span></p>
                         <p style="margin: 0.25rem 0;"><strong>📊 Platform Activity:</strong> ${user.activityInfo || 'Active Platform Participant'}</p>
                     </div>
-                    <div style="margin-top: 1rem; font-size: 0.8rem; color: #94a3b8; text-align: center;">
+                    <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
                         🔒 <em>Privacy Protected: Passwords and sensitive authentication data are encrypted and hidden.</em>
                     </div>
                 `,
                 showCloseButton: true,
                 confirmButtonColor: '#3b82f6',
-                confirmButtonText: 'Done',
-                background: '#1a1a2e',
-                color: '#ffffff'
+                confirmButtonText: 'Done'
             });
         }
 
