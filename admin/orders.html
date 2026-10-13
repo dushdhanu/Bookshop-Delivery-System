@@ -456,6 +456,19 @@
     <script>
         document.addEventListener('click', function(e) {
             let target = e.target;
+
+            // Handle "View Feedback" button
+            if (target.tagName === 'BUTTON' && target.textContent.trim() === 'View Feedback') {
+                const tr = target.closest('tr');
+                let orderId = '';
+                if (tr) {
+                    const idEl = tr.querySelector('td:first-child');
+                    if (idEl) orderId = idEl.textContent.trim().replace('#', '');
+                }
+                window.location.href = orderId ? `feedback.html?order=${encodeURIComponent(orderId)}` : 'feedback.html';
+                return;
+            }
+
             if (target.tagName === 'BUTTON' && target.closest('.table-actions')) {
                 const action = target.textContent.trim();
                 const tr = target.closest('tr');

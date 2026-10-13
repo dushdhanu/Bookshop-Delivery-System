@@ -468,6 +468,25 @@
                 }
             }
         });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const orderParam = params.get('order');
+            if (orderParam) {
+                const cards = document.querySelectorAll('.feedback-card');
+                cards.forEach(card => {
+                    const idEl = card.querySelector('.feedback-id');
+                    if (idEl && idEl.textContent.toLowerCase().includes(orderParam.toLowerCase())) {
+                        setTimeout(() => {
+                            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            card.style.transition = 'all 0.5s ease';
+                            card.style.borderColor = '#3b82f6';
+                            card.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.7)';
+                        }, 200);
+                    }
+                });
+            }
+        });
     </script>
 <script src="../session.js?v=3"></script>
 </body>
