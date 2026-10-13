@@ -62,6 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update navigation based on login status
     updateNavigation();
     
+    // Setup Theme Toggle in Navigation Bar
+    setupThemeToggle();
+    
     // Profile page functionality
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
@@ -216,12 +219,12 @@ async function updateNavigation() {
         if (!welcomeBanner) {
             welcomeBanner = document.createElement('div');
             welcomeBanner.id = 'welcome-banner';
-            welcomeBanner.style.backgroundColor = '#10235d';
-            welcomeBanner.style.color = '#a0c0ff';
+            welcomeBanner.style.backgroundColor = 'var(--bg-card-header)';
+            welcomeBanner.style.color = 'var(--accent-color)';
             welcomeBanner.style.padding = '0.75rem 2rem';
             welcomeBanner.style.textAlign = 'right';
-            welcomeBanner.style.fontWeight = '500';
-            welcomeBanner.style.borderBottom = '1px solid #1e3a8a';
+            welcomeBanner.style.fontWeight = '600';
+            welcomeBanner.style.borderBottom = '1px solid var(--border-color)';
             welcomeBanner.style.fontSize = '1.05rem';
             
             const nav = document.querySelector('nav.navbar');
@@ -397,3 +400,65 @@ function deleteAccount() {
         }
     })
 }
+
+// Setup Theme Toggle in Navigation Bar across entire system
+function setupThemeToggle() {
+    const navMenu = document.querySelector('.nav-menu');
+    const navContainer = document.querySelector('.nav-container');
+    if (!navMenu && !navContainer) return;
+    if (document.getElementById('themeToggleBtn')) return; // Already exists
+
+    const currentTheme = document.documentElement.getAttribute('data-theme') || localStorage.getItem('bookshop-theme') || 'dark';
+    const isDark = currentTheme === 'dark';
+
+    const toggleItem = document.createElement('li');
+    toggleItem.className = 'nav-item theme-toggle-nav-item';
+    toggleItem.innerHTML = `
+        <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Toggle Light and Dark Mode" title="Toggle Theme (Dark / Light)">
+            <span class="theme-icon">${isDark ? '🌙' : '☀️'}</span>
+            <span class="theme-label">${isDark ? 'Dark' : 'Light'}</span>
+        </button>
+    `;
+
+    if (navMenu) {
+        navMenu.appendChild(toggleItem);
+    } else if (navContainer) {
+        navContainer.appendChild(toggleItem);
+    }
+
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.toggleBookshopTheme();
+        });
+    }
+}
+
+// Global Theme Toggle Function with Smooth Transition and Persistent Storage
+window.toggleBookshopTheme = function() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    
+    document.body.classList.add('theme-transitioning');
+    document.documentElement.setAttribute('data-theme', next);
+    try {
+        localStorage.setItem('bookshop-theme', next);
+    } catch (e) {}
+
+    const btn = document.getElementById('themeToggleBtn');
+    if (btn) {
+        const icon = btn.querySelector('.theme-icon');
+        const label = btn.querySelector('.theme-label');
+        if (icon) icon.textContent = next === 'dark' ? '🌙' : '☀️';
+        if (label) label.textContent = next === 'dark' ? 'Dark' : 'Light';
+    }
+
+    // Dispatch themechange event
+    window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: next } }));
+
+    setTimeout(() => {
+        document.body.classList.remove('theme-transitioning');
+    }, 300);
+};
