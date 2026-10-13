@@ -971,3 +971,62 @@ textarea.form-input:focus {
 .features-vertical p {
     color: var(--text-secondary) !important;
 }
+
+/* Featured Books & Home Sections */
+.featured-books {
+    background-color: transparent !important;
+}
+
+.feature-vertical-card,
+.feature-vertical-item,
+.category-vertical-item {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-primary) !important;
+}
+
+.feature-vertical-card:hover,
+.feature-vertical-item:hover,
+.category-vertical-item:hover {
+    background-color: var(--bg-sidebar-hover) !important;
+    border-color: var(--accent-color) !important;
+}
+
+.feature-vertical-content h3,
+.category-vertical-item h3 {
+    color: var(--text-heading) !important;
+}
+
+.feature-vertical-content p {
+    color: var(--text-secondary) !important;
+}
+
+.feature-vertical-icon {
+    color: var(--accent-color) !important;
+}
+
+.book-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.book-card h3 {
+    color: var(--text-heading) !important;
+}
+
+.book-card .author {
+    color: var(--text-secondary) !important;
+}
+
+.book-card .price {
+    color: var(--accent-color) !important;
+}
+
+.book-card .book-image-container,
+.book-card .book-image-placeholder,
+.book-card .book-cover {
+    background-color: var(--bg-card-header) !important;
+    border: 1px solid var(--border-color) !important;
+}
