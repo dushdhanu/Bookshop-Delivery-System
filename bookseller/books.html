@@ -563,10 +563,23 @@
                 });
             }
             
-            // 5. Pagination logic
+            // 5. Search and Pagination logic
             let currentPage = 1;
             const itemsPerPage = 5;
-            let totalPages = Math.ceil(allBooks.length / itemsPerPage) || 1;
+            let searchQuery = '';
+
+            const getFilteredBooks = () => {
+                if (!searchQuery.trim()) return allBooks;
+                const q = searchQuery.toLowerCase().trim();
+                return allBooks.filter(b => 
+                    (b.title && b.title.toLowerCase().includes(q)) ||
+                    (b.author && b.author.toLowerCase().includes(q)) ||
+                    (b.isbn && b.isbn.toLowerCase().includes(q)) ||
+                    (b.rating && b.rating.toLowerCase().includes(q))
+                );
+            };
+
+            let totalPages = Math.ceil(getFilteredBooks().length / itemsPerPage) || 1;
             
             // Setup pagination UI
             const paginationContainer = document.querySelector('.pagination');
@@ -580,6 +593,9 @@
                 const pageNumbers = paginationContainer.querySelector('.page-numbers');
                 
                 const renderPagination = () => {
+                    const filtered = getFilteredBooks();
+                    totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+
                     pageNumbers.innerHTML = '';
                     for (let i = 1; i <= totalPages; i++) {
                         const btn = document.createElement('button');
@@ -593,7 +609,7 @@
                     }
                     
                     paginationContainer.querySelector('.btn-prev').disabled = currentPage === 1;
-                    paginationContainer.querySelector('.btn-next').disabled = currentPage === totalPages;
+                    paginationContainer.querySelector('.btn-next').disabled = currentPage === totalPages || totalPages === 0;
                 };
                 
                 paginationContainer.querySelector('.btn-prev').onclick = () => {
@@ -611,11 +627,28 @@
                 };
                 
                 const renderPage = () => {
+                    const filtered = getFilteredBooks();
+                    totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+                    if (currentPage > totalPages) {
+                        currentPage = totalPages > 0 ? totalPages : 1;
+                    }
+
                     renderPagination();
                     tbody.innerHTML = '';
                     
                     const startIndex = (currentPage - 1) * itemsPerPage;
-                    const pageBooks = allBooks.slice(startIndex, startIndex + itemsPerPage);
+                    const pageBooks = filtered.slice(startIndex, startIndex + itemsPerPage);
+                    
+                    if (pageBooks.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 2.5rem; color: #94a3b8;">
+                                    ${searchQuery.trim() ? `No books found matching "${searchQuery.trim()}".` : 'No books available in inventory.'}
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
                     
                     pageBooks.forEach(book => {
                         const tr = document.createElement('tr');
@@ -631,7 +664,7 @@
                             <td>${book.title}</td>
                             <td>${book.author}</td>
                             <td>${book.isbn || 'N/A'}</td>
-                            <td>${book.price}</td>
+                            <td>${book.price.toString().startsWith('$') ? book.price : '$' + book.price}</td>
                             <td>
                                 <span class="status-badge ${stockClass}">${book.stock}</span>
                             </td>
@@ -646,6 +679,37 @@
                         tbody.appendChild(tr);
                     });
                 };
+
+                // Setup search listeners
+                const searchInput = document.querySelector('.search-input');
+                const searchBtn = document.querySelector('.search-icon-btn');
+
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        searchQuery = e.target.value;
+                        currentPage = 1;
+                        renderPage();
+                    });
+                    searchInput.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            searchQuery = searchInput.value;
+                            currentPage = 1;
+                            renderPage();
+                        }
+                    });
+                }
+
+                if (searchBtn) {
+                    searchBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (searchInput) {
+                            searchQuery = searchInput.value;
+                            currentPage = 1;
+                            renderPage();
+                        }
+                    });
+                }
                 
                 renderPage();
             }
