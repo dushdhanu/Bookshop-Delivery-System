@@ -1289,3 +1289,365 @@ textarea.form-input:focus {
     border: 1px dashed var(--border-color) !important;
     color: var(--text-muted) !important;
 }
+
+/* ==========================================================================
+   Complete Adaptation: Tables, Filters, Profiles, Delivery, Timelines & Modals
+   ========================================================================== */
+
+/* 7. Enhanced Data Tables & Table Elements */
+.data-table-enhanced,
+.data-table {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.data-table-enhanced th,
+.data-table th {
+    background-color: var(--bg-card-header) !important;
+    color: var(--text-heading) !important;
+    border-bottom: 2px solid var(--accent-color) !important;
+}
+
+.data-table-enhanced td,
+.data-table td {
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.data-table-enhanced tr:hover td,
+.data-table-enhanced tr:hover,
+.data-table tr:hover td,
+.data-table tr:hover {
+    background-color: var(--bg-table-row-hover) !important;
+}
+
+.cover-preview {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+}
+
+.user-cell strong {
+    color: var(--text-heading) !important;
+}
+
+.user-avatar {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 2px solid var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+
+/* 8. Search Bars, Category Dropdowns & Selects */
+.search-container .search-input,
+.search-input,
+.order-search-input {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-input) !important;
+}
+
+.search-container .search-input:focus,
+.search-input:focus,
+.order-search-input:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 2px var(--accent-glow) !important;
+}
+
+.search-icon-btn {
+    color: var(--text-muted) !important;
+}
+
+.search-icon-btn:hover {
+    color: var(--accent-color) !important;
+}
+
+.category-filter-label {
+    color: var(--text-heading) !important;
+}
+
+.custom-select .select-selected {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-input) !important;
+}
+
+.custom-select .select-items {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--dropdown-shadow) !important;
+}
+
+.custom-select .select-items div {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.custom-select .select-items div:hover {
+    background-color: var(--bg-sidebar-hover) !important;
+    color: var(--accent-color) !important;
+}
+
+.same-as-selected {
+    background-color: var(--bg-sidebar-active) !important;
+    color: var(--accent-color) !important;
+}
+
+#role.form-input,
+select.form-input {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-input) !important;
+}
+
+#role.form-input option,
+select.form-input option {
+    background-color: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+.orders-toolbar {
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.filter-tab,
+.role-tab {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-sidebar-item) !important;
+}
+
+.filter-tab:hover,
+.role-tab:hover {
+    background-color: var(--bg-sidebar-hover) !important;
+    color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+}
+
+.filter-tab.active,
+.role-tab.active {
+    background-color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+    color: #ffffff !important;
+}
+
+.preset-pill {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.preset-pill:hover {
+    background-color: var(--accent-color) !important;
+    color: #ffffff !important;
+}
+
+/* 9. Account Sidebar, Profile Sections & Danger Zones */
+.account-sidebar-vertical {
+    background-color: var(--bg-sidebar) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.account-sidebar-vertical h3 {
+    color: var(--text-heading) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.profile-header {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.profile-details h3,
+.profile-details h2 {
+    color: var(--text-heading) !important;
+}
+
+.profile-email,
+.profile-member-since {
+    color: var(--text-muted) !important;
+}
+
+.danger-zone {
+    background-color: var(--bg-card) !important;
+    border: 1px solid #ef4444 !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.danger-zone p,
+.danger-zone h3,
+.danger-zone h4 {
+    color: var(--text-heading) !important;
+}
+
+.security-note {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+}
+
+/* 10. Delivery Portal & Stats Cards */
+.pending-deliveries-blue {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.pending-deliveries-blue h2 {
+    color: var(--text-heading) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.stat-card-vertical,
+.stat-card {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.stat-card-vertical:hover,
+.stat-card:hover {
+    background-color: var(--bg-sidebar-hover) !important;
+    border-color: var(--accent-color) !important;
+}
+
+.stat-icon-medium,
+.stat-icon {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 2px solid var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.stat-content h3,
+.stat-info h4 {
+    color: var(--text-muted) !important;
+}
+
+.stat-content p,
+.stat-info p {
+    color: var(--text-heading) !important;
+}
+
+.delivery-item {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.delivery-info h4 {
+    color: var(--text-heading) !important;
+}
+
+.delivery-info p {
+    color: var(--text-secondary) !important;
+}
+
+.detail-row-vertical {
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.detail-label-vertical {
+    color: var(--text-muted) !important;
+}
+
+.detail-value-vertical {
+    color: var(--text-heading) !important;
+}
+
+.order-date-vertical {
+    color: var(--text-secondary) !important;
+}
+
+.order-actions-vertical {
+    margin-top: 1rem;
+}
+
+/* 11. Quick Actions, Activity Timelines & Placeholders */
+.action-item-vertical {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-primary) !important;
+}
+
+.action-item-vertical:hover {
+    background-color: var(--bg-sidebar-hover) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.action-icon-medium {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 2px solid var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.action-content-vertical h4 {
+    color: var(--text-heading) !important;
+}
+
+.action-content-vertical p {
+    color: var(--text-secondary) !important;
+}
+
+.activity-item-vertical {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.activity-icon-medium {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 2px solid var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.activity-content-vertical h4 {
+    color: var(--text-heading) !important;
+}
+
+.activity-content-vertical p {
+    color: var(--text-secondary) !important;
+}
+
+.activity-time {
+    color: var(--text-muted) !important;
+}
+
+.book-image-placeholder-small {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* 12. SweetAlert2 Theme Modal Override */
+.swal2-popup {
+    background-color: var(--bg-modal) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.swal2-title,
+.swal2-html-container,
+.swal2-content {
+    color: var(--text-heading) !important;
+}
+
+.swal2-popup div[style*="background: #0f172a"],
+.swal2-popup div[style*="background: #10235d"],
+.swal2-popup div[style*="background:#0f172a"],
+.swal2-popup div[style*="background:#10235d"],
+.swal2-popup div[style*="background-color: #0f172a"],
+.swal2-popup div[style*="background-color: #10235d"] {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.swal2-popup div[style*="background: #0f172a"] p,
+.swal2-popup div[style*="background: #10235d"] p {
+    color: var(--text-primary) !important;
+}
