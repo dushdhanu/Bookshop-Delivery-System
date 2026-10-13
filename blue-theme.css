@@ -895,3 +895,37 @@ textarea.form-input:focus {
         text-align: center;
     }
 }
+/* Additional Component Theme Enforcements */
+.sidebar {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    border-radius: 8px !important;
+}
+
+.cover-preview {
+    background-color: var(--bg-card-header) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.page-header h1 {
+    color: var(--text-heading) !important;
+}
+
+.page-header p {
+    color: var(--text-secondary) !important;
+}
+
+.security-note {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    border-left: 4px solid var(--accent-color) !important;
+    color: var(--text-secondary) !important;
+}
+
+.user-avatar {
+    background-color: var(--bg-sidebar-item) !important;
+    color: var(--accent-color) !important;
+    border: 1px solid var(--border-color) !important;
+}
