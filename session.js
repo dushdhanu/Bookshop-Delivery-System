@@ -1,5 +1,13 @@
 // Session and Navigation JavaScript
 
+// Immediate Theme Initialization (prevents flash of wrong theme)
+(function initBookshopTheme() {
+    try {
+        const savedTheme = localStorage.getItem('bookshop-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    } catch (e) {}
+})();
+
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile navigation toggle
     const navToggle = document.querySelector('.nav-toggle');
