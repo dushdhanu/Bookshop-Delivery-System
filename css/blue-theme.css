@@ -929,3 +929,45 @@ textarea.form-input:focus {
     color: var(--accent-color) !important;
     border: 1px solid var(--border-color) !important;
 }
+
+/* Customer and Delivery Component Enforcements */
+.category-vertical-item,
+.feature-vertical-item {
+    background-color: var(--bg-card) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: var(--card-shadow) !important;
+    color: var(--text-primary) !important;
+}
+
+.category-vertical-item:hover,
+.feature-vertical-item:hover {
+    background-color: var(--bg-sidebar-hover) !important;
+    border-color: var(--accent-color) !important;
+}
+
+.category-vertical-item h3,
+.feature-vertical-item h3 {
+    color: var(--text-heading) !important;
+}
+
+.category-icon-medium,
+.feature-icon-medium {
+    background-color: var(--bg-sidebar-item) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.features-vertical {
+    background-color: var(--bg-nav) !important;
+    border-top: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.features-vertical h2,
+.features-vertical h3 {
+    color: var(--text-heading) !important;
+}
+
+.features-vertical p {
+    color: var(--text-secondary) !important;
+}

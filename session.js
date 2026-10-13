@@ -43,7 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Close mobile menu when clicking outside
     document.addEventListener('click', function(event) {
-        const isClickInsideNav = navToggle.contains(event.target) || navMenu.contains(event.target);
+        if (!navToggle || !navMenu) return;
+        const isClickInsideNav = (navToggle && navToggle.contains(event.target)) || (navMenu && navMenu.contains(event.target));
         
         if (!isClickInsideNav && navMenu && navMenu.classList.contains('active')) {
             navMenu.classList.remove('active');
