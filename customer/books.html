@@ -467,68 +467,122 @@
 
             const itemsPerPage = 8;
             let currentPage = 1;
-            const totalPages = 5;
+            let searchQuery = '';
 
             const grid = document.querySelector('.books-grid');
-            const pageButtons = document.querySelectorAll('.page-numbers button');
+            const pageNumbersContainer = document.querySelector('.page-numbers');
             const prevButton = document.querySelector('.pagination > button:first-child');
             const nextButton = document.querySelector('.pagination > button:last-child');
 
+            const getFilteredBooks = () => {
+                if (!searchQuery.trim()) return allBooks;
+                const q = searchQuery.toLowerCase().trim();
+                return allBooks.filter(book => 
+                    (book.title && book.title.toLowerCase().includes(q)) ||
+                    (book.author && book.author.toLowerCase().includes(q))
+                );
+            };
+
+            function updatePagination(totalPages) {
+                if (!pageNumbersContainer) return;
+                pageNumbersContainer.innerHTML = '';
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = (i === currentPage) ? 'btn btn-primary' : 'btn btn-secondary';
+                    btn.textContent = i;
+                    btn.addEventListener('click', () => {
+                        renderPage(i);
+                        window.scrollTo({ top: 300, behavior: 'smooth' });
+                    });
+                    pageNumbersContainer.appendChild(btn);
+                }
+                if (prevButton) prevButton.disabled = currentPage === 1;
+                if (nextButton) nextButton.disabled = currentPage === totalPages || totalPages === 0;
+            }
+
             function renderPage(page) {
+                const filtered = getFilteredBooks();
+                const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+                if (page > totalPages) page = totalPages;
+                if (page < 1) page = 1;
+                currentPage = page;
+
                 grid.innerHTML = '';
                 const start = (page - 1) * itemsPerPage;
                 const end = start + itemsPerPage;
-                const pageBooks = allBooks.slice(start, end);
+                const pageBooks = filtered.slice(start, end);
 
-                pageBooks.forEach(book => {
-                    const card = document.createElement('div');
-                    card.className = 'book-card';
-                    card.innerHTML = `
-                        <img src="${book.img}" alt="${book.title}" class="book-image">
-                        <h3>${book.title}</h3>
-                        <p class="author">${book.author}</p>
-                        <p class="price">${book.price}</p>
-                        <button class="btn btn-secondary">Add to Cart</button>
+                if (pageBooks.length === 0) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 3.5rem 1rem; color: #94a3b8; font-size: 1.15rem;">
+                            ${searchQuery.trim() ? `No books found matching "${searchQuery.trim()}".` : 'No books available.'}
+                        </div>
                     `;
-                    grid.appendChild(card);
-                });
+                } else {
+                    pageBooks.forEach(book => {
+                        const card = document.createElement('div');
+                        card.className = 'book-card';
+                        card.innerHTML = `
+                            <img src="${book.img}" alt="${book.title}" class="book-image">
+                            <h3>${book.title}</h3>
+                            <p class="author">${book.author}</p>
+                            <p class="price">${book.price}</p>
+                            <button class="btn btn-secondary">Add to Cart</button>
+                        `;
+                        grid.appendChild(card);
+                    });
+                }
 
-                // Update active state
-                pageButtons.forEach(btn => {
-                    if (parseInt(btn.textContent) === page) {
-                        btn.className = 'btn btn-primary';
-                    } else {
-                        btn.className = 'btn btn-secondary';
-                    }
-                });
-
-                currentPage = page;
-                
-                prevButton.disabled = currentPage === 1;
-                nextButton.disabled = currentPage === totalPages;
+                updatePagination(totalPages);
             }
 
-            pageButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    renderPage(parseInt(btn.textContent));
-                    window.scrollTo({ top: 300, behavior: 'smooth' });
+            if (prevButton) {
+                prevButton.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        renderPage(currentPage - 1);
+                        window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }
                 });
-            });
+            }
 
-            prevButton.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    renderPage(currentPage - 1);
-                    window.scrollTo({ top: 300, behavior: 'smooth' });
-                }
-            });
+            if (nextButton) {
+                nextButton.addEventListener('click', () => {
+                    const filtered = getFilteredBooks();
+                    const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+                    if (currentPage < totalPages) {
+                        renderPage(currentPage + 1);
+                        window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }
+                });
+            }
 
-            nextButton.addEventListener('click', () => {
-                if (currentPage < totalPages) {
-                    renderPage(currentPage + 1);
-                    window.scrollTo({ top: 300, behavior: 'smooth' });
-                }
-            });
-            
+            const searchInput = document.querySelector('.search-input');
+            const searchBtn = document.querySelector('.search-icon-btn');
+
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchQuery = e.target.value;
+                    renderPage(1);
+                });
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        searchQuery = searchInput.value;
+                        renderPage(1);
+                    }
+                });
+            }
+
+            if (searchBtn) {
+                searchBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (searchInput) {
+                        searchQuery = searchInput.value;
+                        renderPage(1);
+                    }
+                });
+            }
+
             // Initial render
             renderPage(1);
         });

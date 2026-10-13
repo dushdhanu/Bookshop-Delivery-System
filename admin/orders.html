@@ -538,6 +538,57 @@
                 }
             }
         });
+
+        // Search Orders Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('.search-input');
+            const searchBtn = document.querySelector('.search-icon-btn');
+            const tbody = document.querySelector('.data-table-enhanced tbody');
+            if (!tbody || !searchInput) return;
+
+            const originalRows = Array.from(tbody.querySelectorAll('tr'));
+
+            function filterOrders() {
+                const query = searchInput.value.toLowerCase().trim();
+                let matchCount = 0;
+
+                // Remove previous no-match row if any
+                const existingNoMatch = tbody.querySelector('.no-orders-match-row');
+                if (existingNoMatch) existingNoMatch.remove();
+
+                originalRows.forEach(row => {
+                    const text = row.innerText.toLowerCase();
+                    if (!query || text.includes(query)) {
+                        row.style.display = '';
+                        matchCount++;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                if (matchCount === 0 && query) {
+                    const noMatchRow = document.createElement('tr');
+                    noMatchRow.className = 'no-orders-match-row';
+                    noMatchRow.innerHTML = `<td colspan="8" style="text-align: center; padding: 2.5rem; color: #94a3b8;">No orders found matching "${searchInput.value.trim()}".</td>`;
+                    tbody.appendChild(noMatchRow);
+                }
+            }
+
+            searchInput.addEventListener('input', filterOrders);
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    filterOrders();
+                }
+            });
+
+            if (searchBtn) {
+                searchBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    filterOrders();
+                });
+            }
+        });
     </script>
     <script src="../session.js?v=3"></script>
 </body>

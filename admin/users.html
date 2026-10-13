@@ -853,12 +853,31 @@
                 });
             });
 
-            // Search input
+            // Search input & button
             const searchInput = document.getElementById('userSearchInput');
+            const searchBtn = document.querySelector('.search-icon-btn');
+
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
                     searchQuery = e.target.value;
                     renderUsers();
+                });
+                searchInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        searchQuery = searchInput.value;
+                        renderUsers();
+                    }
+                });
+            }
+
+            if (searchBtn) {
+                searchBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (searchInput) {
+                        searchQuery = searchInput.value;
+                        renderUsers();
+                    }
                 });
             }
 

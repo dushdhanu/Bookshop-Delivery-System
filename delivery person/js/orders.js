@@ -657,6 +657,13 @@ function setupFiltersAndSearch() {
             currentSearch = e.target.value.toLowerCase().trim();
             applyFilters();
         });
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                currentSearch = e.target.value.toLowerCase().trim();
+                applyFilters();
+            }
+        });
     }
 
     filterTabs.forEach(tab => {
