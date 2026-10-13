@@ -67,6 +67,7 @@ html[data-theme="dark"] {
     --swal-bg: #111827;
     --swal-text: #f8fafc;
     --swal-border: #223249;
+    --bg-modal: #111827;
     
     /* Toggle */
     --toggle-bg: #162238;
@@ -139,6 +140,7 @@ html[data-theme="light"] {
     --swal-bg: #ffffff;
     --swal-text: #1c1917;
     --swal-border: #e5dad0;
+    --bg-modal: #ffffff;
     
     /* Toggle */
     --toggle-bg: #f5efe6;
@@ -819,11 +821,22 @@ textarea.form-input:focus {
 }
 
 .swal2-input,
-.swal2-textarea {
+.swal2-textarea,
+.swal2-select {
     background-color: var(--bg-input) !important;
     color: var(--text-primary) !important;
     border: 1px solid var(--border-color) !important;
     border-radius: 6px !important;
+}
+
+.swal2-select {
+    color-scheme: dark;
+}
+
+.swal2-select option,
+select option {
+    background-color: var(--bg-card, #111827) !important;
+    color: var(--text-primary, #f8fafc) !important;
 }
 
 .swal2-input:focus,
@@ -1627,8 +1640,8 @@ html[data-theme="light"] .swal2-popup,
 [data-theme="light"] .swal2-popup,
 html[data-theme="light"] div.swal2-popup,
 .swal2-container .swal2-popup {
-    background: var(--bg-modal) !important;
-    background-color: var(--bg-modal) !important;
+    background: var(--bg-modal, #ffffff) !important;
+    background-color: var(--bg-modal, #ffffff) !important;
     color: var(--text-primary) !important;
     border: 1px solid var(--border-color) !important;
     box-shadow: var(--card-shadow) !important;
@@ -1661,6 +1674,17 @@ html[data-theme="light"] .swal2-select {
     border: 1px solid var(--border-input) !important;
 }
 
+html[data-theme="light"] .swal2-select,
+[data-theme="light"] .swal2-select {
+    color-scheme: light !important;
+}
+
+html[data-theme="light"] .swal2-select option,
+[data-theme="light"] .swal2-select option {
+    background-color: #ffffff !important;
+    color: #1c1917 !important;
+}
+
 html[data-theme="dark"] .swal2-popup,
 [data-theme="dark"] .swal2-popup,
 html[data-theme="dark"] div.swal2-popup {
@@ -1668,6 +1692,28 @@ html[data-theme="dark"] div.swal2-popup {
     background-color: #0f172a !important;
     color: #e2e8f0 !important;
     border: 1px solid #1e3a8a !important;
+}
+
+html[data-theme="dark"] .swal2-input,
+html[data-theme="dark"] .swal2-textarea,
+html[data-theme="dark"] .swal2-select,
+[data-theme="dark"] .swal2-input,
+[data-theme="dark"] .swal2-textarea,
+[data-theme="dark"] .swal2-select {
+    background-color: #0a101d !important;
+    color: #f8fafc !important;
+    border: 1px solid #1e3a8a !important;
+}
+
+html[data-theme="dark"] .swal2-select,
+[data-theme="dark"] .swal2-select {
+    color-scheme: dark !important;
+}
+
+html[data-theme="dark"] .swal2-select option,
+[data-theme="dark"] .swal2-select option {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
 }
 
 html[data-theme="dark"] .swal2-title,
