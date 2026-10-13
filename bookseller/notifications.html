@@ -428,17 +428,46 @@
                     if (titleEl) title = titleEl.textContent.trim();
                 }
 
-                if (typeof Swal !== 'undefined') {
-                    if (action.includes('View') || action.includes('Manage')) {
+                let redirectUrl = null;
+                const lowerAction = action.toLowerCase();
+                const lowerTitle = title.toLowerCase();
+
+                if (lowerAction.includes('profile') || lowerAction.includes('user')) {
+                    redirectUrl = 'profile.html';
+                } else if (lowerAction.includes('book') || lowerTitle.includes('stock') || lowerTitle.includes('inventory')) {
+                    redirectUrl = 'books.html';
+                } else if (lowerAction.includes('report') || lowerAction.includes('order') || lowerTitle.includes('sales')) {
+                    redirectUrl = 'orders.html';
+                } else if (lowerAction.includes('application') || lowerAction.includes('feedback')) {
+                    redirectUrl = 'feedback.html';
+                } else if (lowerAction.includes('detail') || lowerAction.includes('dashboard') || lowerTitle.includes('system') || lowerTitle.includes('maintenance')) {
+                    redirectUrl = 'index.html';
+                } else if (lowerAction.includes('view') || lowerAction.includes('manage')) {
+                    redirectUrl = 'index.html';
+                }
+
+                if (redirectUrl) {
+                    if (typeof Swal !== 'undefined') {
                         Swal.fire({
                             title: action,
-                            text: `Redirecting to ${action.toLowerCase()} for: ${title}`,
+                            text: `Redirecting to ${action.toLowerCase()} for: ${title}...`,
                             icon: 'info',
                             confirmButtonColor: '#3b82f6',
                             background: '#1a1a2e',
-                            color: '#ffffff'
+                            color: '#ffffff',
+                            timer: 1200,
+                            showConfirmButton: true
+                        }).then(() => {
+                            window.location.href = redirectUrl;
                         });
-                    } else if (action === 'Process Order') {
+                    } else {
+                        window.location.href = redirectUrl;
+                    }
+                    return;
+                }
+
+                if (typeof Swal !== 'undefined') {
+                    if (action === 'Process Order') {
                         Swal.fire({
                             title: 'Process Order',
                             text: 'Are you sure you want to process this order now?',
