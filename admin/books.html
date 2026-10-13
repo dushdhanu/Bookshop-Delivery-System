@@ -450,35 +450,6 @@
         document.addEventListener('click', function(e) {
             let target = e.target;
             
-            // Intercept Remove button
-            if (target.tagName === 'BUTTON' && target.textContent.trim() === 'Remove' || target.classList.contains('btn-remove-book') && target.classList.contains('btn-danger')) {
-                const tr = target.closest('tr');
-                if (tr) {
-                    const tds = tr.querySelectorAll('td');
-                    if (tds.length >= 6) {
-                        const title = tds[1].innerText.trim();
-                        const author = tds[2].innerText.trim();
-                        
-                        let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
-                        myBooks = myBooks.filter(b => !(b.title?.trim().toLowerCase() === title.toLowerCase() && b.author?.trim().toLowerCase() === author.toLowerCase()));
-                        localStorage.setItem('myBooks', JSON.stringify(myBooks));
-                        
-                        let deletedBooks = JSON.parse(localStorage.getItem('deletedBooks')) || [];
-                        deletedBooks.push({title, author});
-                        localStorage.setItem('deletedBooks', JSON.stringify(deletedBooks));
-                        let sysNotifs = JSON.parse(localStorage.getItem('systemNotifications')) || [];
-                        sysNotifs.unshift({
-                            title: 'Book Removed',
-                            content: 'Book "' + title + '" was removed from your inventory.',
-                            type: 'Inventory',
-                            time: 'Just now'
-                        });
-                        localStorage.setItem('systemNotifications', JSON.stringify(sysNotifs));
-
-                    }
-                }
-            }
-            
             if (target.tagName !== 'A' && target.closest('a')) {
                 target = target.closest('a');
             }
@@ -572,16 +543,11 @@
             
             // Setup pagination UI
             const paginationContainer = document.querySelector('.pagination');
-            if (paginationContainer) {
-                paginationContainer.innerHTML = `
-                    <button class="btn btn-secondary btn-prev">Previous</button>
-                    <span class="page-numbers"></span>
-                    <button class="btn btn-secondary btn-next">Next</button>
-                `;
-                
+            
+            const renderPagination = () => {
+                if (!paginationContainer) return;
                 const pageNumbers = paginationContainer.querySelector('.page-numbers');
-                
-                const renderPagination = () => {
+                if (pageNumbers) {
                     pageNumbers.innerHTML = '';
                     for (let i = 1; i <= totalPages; i++) {
                         const btn = document.createElement('button');
@@ -593,10 +559,20 @@
                         };
                         pageNumbers.appendChild(btn);
                     }
-                    
-                    paginationContainer.querySelector('.btn-prev').disabled = currentPage === 1;
-                    paginationContainer.querySelector('.btn-next').disabled = currentPage === totalPages;
-                };
+                }
+                
+                const prevBtn = paginationContainer.querySelector('.btn-prev');
+                const nextBtn = paginationContainer.querySelector('.btn-next');
+                if (prevBtn) prevBtn.disabled = currentPage === 1;
+                if (nextBtn) nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+            };
+            
+            if (paginationContainer) {
+                paginationContainer.innerHTML = `
+                    <button class="btn btn-secondary btn-prev">Previous</button>
+                    <span class="page-numbers"></span>
+                    <button class="btn btn-secondary btn-next">Next</button>
+                `;
                 
                 paginationContainer.querySelector('.btn-prev').onclick = () => {
                     if (currentPage > 1) {
@@ -611,46 +587,144 @@
                         renderPage();
                     }
                 };
-                
-                const renderPage = () => {
-                    renderPagination();
-                    tbody.innerHTML = '';
-                    
-                    const startIndex = (currentPage - 1) * itemsPerPage;
-                    const pageBooks = allBooks.slice(startIndex, startIndex + itemsPerPage);
-                    
-                    pageBooks.forEach(book => {
-                        const tr = document.createElement('tr');
-                        
-                        let stockClass = 'status-in-stock';
-                        if (book.stock <= 0) stockClass = 'status-out-stock';
-                        else if (book.stock < 10) stockClass = 'status-low-stock';
-                        
-                        tr.innerHTML = `
-                            <td>
-                                <div class="cover-preview">📚</div>
-                            </td>
-                            <td>${book.title}</td>
-                            <td>${book.author}</td>
-                            <td>${book.isbn || 'N/A'}</td>
-                            <td>${book.price.toString().startsWith('$') ? book.price : '$' + book.price}</td>
-                            <td>
-                                <span class="status-badge ${stockClass}">${book.stock}</span>
-                            </td>
-                            <td>${book.rating || '⭐ New'}</td>
-                            <td>
-                                <div class="table-actions">
-                                    <a href="edit-book.html" class="btn btn-sm btn-secondary">Edit</a>
-                                    <button class="btn btn-sm btn-danger btn-remove-book">Remove</button>
-                                </div>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                };
-                
-                renderPage();
             }
+            
+            const renderPage = () => {
+                renderPagination();
+                tbody.innerHTML = '';
+                
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const pageBooks = allBooks.slice(startIndex, startIndex + itemsPerPage);
+                
+                if (pageBooks.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 2rem; color: #94a3b8;">
+                                No books available in inventory.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                pageBooks.forEach(book => {
+                    const tr = document.createElement('tr');
+                    
+                    let stockClass = 'status-in-stock';
+                    if (book.stock <= 0) stockClass = 'status-out-stock';
+                    else if (book.stock < 10) stockClass = 'status-low-stock';
+                    
+                    tr.innerHTML = `
+                        <td>
+                            <div class="cover-preview">📚</div>
+                        </td>
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>${book.isbn || 'N/A'}</td>
+                        <td>${book.price.toString().startsWith('$') ? book.price : '$' + book.price}</td>
+                        <td>
+                            <span class="status-badge ${stockClass}">${book.stock}</span>
+                        </td>
+                        <td>${book.rating || '⭐ New'}</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="edit-book.html" class="btn btn-sm btn-secondary">Edit</a>
+                                <button class="btn btn-sm btn-danger btn-remove-book">Remove</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            };
+
+            // Remove book handler with confirmation, persistence, and instant UI update
+            tbody.addEventListener('click', (e) => {
+                const removeBtn = e.target.closest('.btn-remove-book') || (e.target.tagName === 'BUTTON' && e.target.textContent.trim() === 'Remove' ? e.target : null);
+                if (!removeBtn) return;
+
+                const tr = removeBtn.closest('tr');
+                if (!tr) return;
+
+                const tds = tr.querySelectorAll('td');
+                if (tds.length < 6) return;
+
+                const title = tds[1].innerText.trim();
+                const author = tds[2].innerText.trim();
+
+                const executeRemoval = () => {
+                    // 1. Remove from myBooks in localStorage
+                    let myBooks = JSON.parse(localStorage.getItem('myBooks')) || [];
+                    myBooks = myBooks.filter(b => !(b.title?.trim().toLowerCase() === title.toLowerCase() && b.author?.trim().toLowerCase() === author.toLowerCase()));
+                    localStorage.setItem('myBooks', JSON.stringify(myBooks));
+
+                    // 2. Add to deletedBooks in localStorage so it stays deleted across reloads
+                    let deletedBooks = JSON.parse(localStorage.getItem('deletedBooks')) || [];
+                    if (!deletedBooks.some(db => db.title?.trim().toLowerCase() === title.toLowerCase() && db.author?.trim().toLowerCase() === author.toLowerCase())) {
+                        deletedBooks.push({ title, author });
+                        localStorage.setItem('deletedBooks', JSON.stringify(deletedBooks));
+                    }
+
+                    // 3. Record system notification
+                    let sysNotifs = JSON.parse(localStorage.getItem('systemNotifications')) || [];
+                    sysNotifs.unshift({
+                        title: 'Book Removed',
+                        content: 'Book "' + title + '" was removed from your inventory.',
+                        type: 'Inventory',
+                        time: 'Just now'
+                    });
+                    localStorage.setItem('systemNotifications', JSON.stringify(sysNotifs));
+
+                    // 4. Remove from active in-memory list
+                    allBooks = allBooks.filter(b => !(b.title?.trim().toLowerCase() === title.toLowerCase() && b.author?.trim().toLowerCase() === author.toLowerCase()));
+
+                    // 5. Update pagination
+                    totalPages = Math.ceil(allBooks.length / itemsPerPage) || 1;
+                    if (currentPage > totalPages) {
+                        currentPage = totalPages;
+                    }
+
+                    // 6. Instantly re-render table & pagination
+                    renderPage();
+
+                    // 7. Show success alert
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            title: 'Removed!',
+                            text: `"${title}" has been removed from inventory.`,
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false,
+                            background: '#1a1a2e',
+                            color: '#ffffff'
+                        });
+                    }
+                };
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Confirmation',
+                        text: `Are you sure you want to remove "${title}"?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3b82f6',
+                        cancelButtonColor: '#ef4444',
+                        confirmButtonText: 'Yes, Remove',
+                        cancelButtonText: 'Cancel',
+                        background: '#1a1a2e',
+                        color: '#ffffff'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            executeRemoval();
+                        }
+                    });
+                } else {
+                    if (confirm(`Are you sure you want to remove "${title}"?`)) {
+                        executeRemoval();
+                    }
+                }
+            });
+            
+            renderPage();
         });
 
     </script>
