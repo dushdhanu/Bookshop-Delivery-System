@@ -348,7 +348,7 @@
                 });
 
             // 2. Handle Photo Selection (Upload immediately)
-            photoUpload.addEventListener('change', (e) => {
+            if (photoUpload) photoUpload.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
 
@@ -372,7 +372,7 @@
             });
 
             // 3. Handle Form Submit (Update Text Data)
-            profileForm.addEventListener('submit', (e) => {
+            if (profileForm) profileForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const btn = profileForm.querySelector('button[type="submit"]');
                 const originalText = btn.textContent;

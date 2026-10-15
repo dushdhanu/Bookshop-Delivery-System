@@ -464,123 +464,244 @@
             const profileForm = document.getElementById('profileForm');
             const photoUpload = document.getElementById('photoUpload');
             
-                        let currentPhotoUrl = '';
+            let localUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+            let currentPhotoUrl = localUser.profile_photo || localStorage.getItem('customer_profile_photo') || '';
 
             // 1. Fetch initial data on load
-            const localUser = JSON.parse(localStorage.getItem('currentUser'));
-            if (localUser) {
-                document.getElementById('firstName').value = localUser.first_name || '';
-                document.getElementById('lastName').value = localUser.last_name || '';
-                document.getElementById('email').value = localUser.email || '';
-                document.getElementById('phone').value = localUser.phone || '';
-                document.getElementById('birthDate').value = localUser.birth_date || '';
-                if (localUser.profile_photo) {
-                    currentPhotoUrl = localUser.profile_photo;
-                    updateUIPhoto(localUser.profile_photo);
-                }
+            if (localUser.first_name || localUser.email) {
+                if (document.getElementById('firstName')) document.getElementById('firstName').value = localUser.first_name || '';
+                if (document.getElementById('lastName')) document.getElementById('lastName').value = localUser.last_name || '';
+                if (document.getElementById('email')) document.getElementById('email').value = localUser.email || '';
+                if (document.getElementById('phone')) document.getElementById('phone').value = localUser.phone || '';
+                if (document.getElementById('birthDate')) document.getElementById('birthDate').value = localUser.birth_date || '';
                 updateUIText(localUser.first_name, localUser.last_name, localUser.email);
             }
+            if (currentPhotoUrl) {
+                updateUIPhoto(currentPhotoUrl);
+            }
 
-            fetch('/api/profile')
+            const emailQuery = encodeURIComponent(localUser.email || '');
+            fetch(`/api/profile?email=${emailQuery}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.success && data.data && !localUser) {
+                    if (data && data.success && data.data) {
                         const user = data.data;
-                        document.getElementById('firstName').value = user.first_name || '';
-                        document.getElementById('lastName').value = user.last_name || '';
-                        document.getElementById('email').value = user.email || '';
-                        document.getElementById('phone').value = user.phone || '';
-                        document.getElementById('birthDate').value = user.birth_date || '';
-                        if (user.profile_photo) {
+                        if (!document.getElementById('firstName').value && user.first_name) document.getElementById('firstName').value = user.first_name;
+                        if (!document.getElementById('lastName').value && user.last_name) document.getElementById('lastName').value = user.last_name;
+                        if (!document.getElementById('email').value && user.email) document.getElementById('email').value = user.email;
+                        if (!document.getElementById('phone').value && user.phone) document.getElementById('phone').value = user.phone;
+                        if (!document.getElementById('birthDate').value && user.birth_date) document.getElementById('birthDate').value = user.birth_date;
+                        if (user.profile_photo && !currentPhotoUrl) {
                             currentPhotoUrl = user.profile_photo;
-                            updateUIPhoto(user.profile_photo);
+                            updateUIPhoto(currentPhotoUrl);
+                            let u = JSON.parse(localStorage.getItem('currentUser')) || {};
+                            u.profile_photo = currentPhotoUrl;
+                            localStorage.setItem('currentUser', JSON.stringify(u));
+                            localStorage.setItem('customer_profile_photo', currentPhotoUrl);
                         }
-                        updateUIText(user.first_name, user.last_name, user.email);
+                        updateUIText(
+                            document.getElementById('firstName').value,
+                            document.getElementById('lastName').value,
+                            document.getElementById('email').value
+                        );
                     }
                 })
                 .catch(err => console.log('API not available, using local storage.'));
 
-            // 2. Handle Photo Selection (Upload immediately)
-            photoUpload.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
+            // 2. Handle Photo Selection (Immediate preview & instant persistence)
+            if (photoUpload) {
+                photoUpload.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
 
-                const formData = new FormData();
-                formData.append('photo', file);
-
-                fetch('/api/profile/upload', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        currentPhotoUrl = data.photoUrl;
-                        updateUIPhoto(currentPhotoUrl);
-                    } else {
-                        alert('Error uploading photo');
+                    if (!file.type.startsWith('image/')) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Invalid File',
+                            text: 'Please select an image file.',
+                            background: '#1a1a2e',
+                            color: '#ffffff',
+                            confirmButtonColor: '#3b82f6'
+                        });
+                        return;
                     }
-                })
-                .catch(err => console.error(err));
-            });
+
+                    // Immediate local preview via FileReader
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        currentPhotoUrl = evt.target.result;
+                        updateUIPhoto(currentPhotoUrl);
+
+                        // Save locally immediately so it persists across refreshes
+                        let u = JSON.parse(localStorage.getItem('currentUser')) || {};
+                        u.profile_photo = currentPhotoUrl;
+                        localStorage.setItem('currentUser', JSON.stringify(u));
+                        localStorage.setItem('customer_profile_photo', currentPhotoUrl);
+
+                        // Update registeredUsers list for admin sync
+                        let regUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                        let idx = regUsers.findIndex(item => item.email && item.email.toLowerCase() === (u.email || '').toLowerCase());
+                        if (idx !== -1) {
+                            regUsers[idx].profile_photo = currentPhotoUrl;
+                            localStorage.setItem('registeredUsers', JSON.stringify(regUsers));
+                        }
+
+                        // Background server upload
+                        const formData = new FormData();
+                        formData.append('photo', file);
+                        if (u.email) formData.append('email', u.email);
+
+                        fetch('/api/profile/upload', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data && data.success && data.photoUrl) {
+                                currentPhotoUrl = data.photoUrl;
+                                let u2 = JSON.parse(localStorage.getItem('currentUser')) || {};
+                                u2.profile_photo = currentPhotoUrl;
+                                localStorage.setItem('currentUser', JSON.stringify(u2));
+                                localStorage.setItem('customer_profile_photo', currentPhotoUrl);
+
+                                // Background database sync
+                                fetch('/api/profile', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        firstName: document.getElementById('firstName').value || u2.first_name,
+                                        lastName: document.getElementById('lastName').value || u2.last_name,
+                                        email: document.getElementById('email').value || u2.email,
+                                        phone: document.getElementById('phone').value || u2.phone,
+                                        birthDate: document.getElementById('birthDate').value || u2.birth_date,
+                                        profilePhoto: currentPhotoUrl
+                                    })
+                                }).catch(() => {});
+                            }
+                        })
+                        .catch(err => console.log('Server upload fallback active:', err));
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Photo Uploaded',
+                            text: 'Profile photo updated successfully!',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            background: '#1a1a2e',
+                            color: '#ffffff'
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                };
+            }
 
             // 3. Handle Form Submit (Update Text Data)
-            profileForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const btn = profileForm.querySelector('button[type="submit"]');
-                const originalText = btn.textContent;
-                btn.textContent = 'Saving...';
-                
-                const data = {
-                    firstName: document.getElementById('firstName').value,
-                    lastName: document.getElementById('lastName').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value,
-                    birthDate: document.getElementById('birthDate').value,
-                    profilePhoto: currentPhotoUrl
-                };
+            if (profileForm) {
+                profileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const btn = profileForm.querySelector('button[type="submit"]');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Saving...';
+                    
+                    const data = {
+                        firstName: document.getElementById('firstName').value,
+                        lastName: document.getElementById('lastName').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value,
+                        birthDate: document.getElementById('birthDate').value,
+                        profilePhoto: currentPhotoUrl
+                    };
 
-                // Save to localStorage
-                localStorage.setItem('currentUser', JSON.stringify({
-                    email: data.email,
-                    first_name: data.firstName,
-                    last_name: data.lastName,
-                    phone: data.phone,
-                    birth_date: data.birthDate,
-                    profile_photo: data.profilePhoto
-                }));
-
-                fetch('/api/profile', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                })
-                .then(res => res.json())
-                .then(resData => {
-                    btn.textContent = 'Saved!';
-                    setTimeout(() => btn.textContent = originalText, 2000);
-                    if (resData.success) {
-                        updateUIText(data.firstName, data.lastName, data.email);
+                    // Save to localStorage preserving existing user properties
+                    let u = JSON.parse(localStorage.getItem('currentUser')) || {};
+                    u.first_name = data.firstName;
+                    u.last_name = data.lastName;
+                    u.email = data.email;
+                    u.phone = data.phone;
+                    u.birth_date = data.birthDate;
+                    if (currentPhotoUrl) {
+                        u.profile_photo = currentPhotoUrl;
+                        localStorage.setItem('customer_profile_photo', currentPhotoUrl);
                     }
-                })
-                .catch(err => console.error(err));
-            });
+                    localStorage.setItem('currentUser', JSON.stringify(u));
+
+                    // Also update registeredUsers
+                    let regUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                    let idx = regUsers.findIndex(item => item.email && item.email.toLowerCase() === (u.email || '').toLowerCase());
+                    if (idx !== -1) {
+                        regUsers[idx].first_name = data.firstName;
+                        regUsers[idx].last_name = data.lastName;
+                        regUsers[idx].name = (data.firstName + ' ' + data.lastName).trim();
+                        regUsers[idx].phone = data.phone;
+                        if (currentPhotoUrl) regUsers[idx].profile_photo = currentPhotoUrl;
+                        localStorage.setItem('registeredUsers', JSON.stringify(regUsers));
+                    }
+
+                    fetch('/api/profile', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(resData => {
+                        btn.textContent = 'Saved!';
+                        setTimeout(() => btn.textContent = originalText, 2000);
+                        updateUIText(data.firstName, data.lastName, data.email);
+                        if (currentPhotoUrl) updateUIPhoto(currentPhotoUrl);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Profile Saved',
+                            text: 'Your profile details have been saved successfully!',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            background: '#1a1a2e',
+                            color: '#ffffff'
+                        });
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        btn.textContent = 'Saved!';
+                        setTimeout(() => btn.textContent = originalText, 2000);
+                        updateUIText(data.firstName, data.lastName, data.email);
+                        if (currentPhotoUrl) updateUIPhoto(currentPhotoUrl);
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Profile Saved',
+                            text: 'Your profile details have been saved successfully!',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            background: '#1a1a2e',
+                            color: '#ffffff'
+                        });
+                    });
+                });
+            }
 
             function updateUIText(firstName, lastName, email) {
-                document.getElementById('display-name').textContent = (firstName || '') + ' ' + (lastName || '');
-                document.getElementById('display-email').textContent = email || '';
-                if (!currentPhotoUrl) {
-                    const initials = (firstName ? firstName[0] : '') + (lastName ? lastName[0] : '');
-                    document.getElementById('profile-initials').textContent = initials.toUpperCase() || 'U';
+                const displayName = document.getElementById('display-name');
+                const displayEmail = document.getElementById('display-email');
+                const placeholder = document.getElementById('profile-initials');
+                if (displayName) displayName.textContent = ((firstName || '') + ' ' + (lastName || '')).trim() || 'User';
+                if (displayEmail) displayEmail.textContent = email || '';
+                if (!currentPhotoUrl && placeholder) {
+                    const firstChar = (firstName ? firstName[0] : (email ? email[0] : 'U')).toUpperCase();
+                    placeholder.textContent = firstChar;
                 }
             }
 
             function updateUIPhoto(url) {
                 const img = document.getElementById('profile-img-preview');
                 const placeholder = document.getElementById('profile-initials');
-                img.src = url;
-                img.style.display = 'block';
-                placeholder.style.display = 'none';
+                if (url && img) {
+                    img.src = url;
+                    img.style.display = 'block';
+                    if (placeholder) placeholder.style.display = 'none';
+                } else if (img && placeholder) {
+                    img.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                }
             }
 
             const passwordForm = document.getElementById('passwordForm');
