@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Profile page functionality
     const profileForm = document.getElementById('profileForm');
-    if (profileForm) {
+    if (profileForm && !window.location.pathname.includes('/customer/profile.html')) {
         profileForm.addEventListener('submit', function(e) {
             e.preventDefault();
             updateProfile();
@@ -463,3 +463,20 @@ window.toggleBookshopTheme = function() {
         document.body.classList.remove('theme-transitioning');
     }, 300);
 };
+
+// Safe global alert function for session actions
+if (typeof window.showAlert !== 'function') {
+    window.showAlert = function(message, type = 'success') {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                text: message,
+                icon: type === 'danger' || type === 'error' ? 'error' : 'success',
+                background: '#1a1a2e',
+                color: '#ffffff',
+                confirmButtonColor: '#3b82f6'
+            });
+        } else {
+            alert(message);
+        }
+    };
+}

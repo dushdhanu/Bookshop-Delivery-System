@@ -68,26 +68,25 @@ const db = new sqlite3.Database('./bookshop.db', (err) => {
 
 // Mock user for testing (since we don't have login logic yet)
 // We will just use user ID 1 for now
+// Profile endpoints with email lookup & persistence support
 app.post('/api/profile', (req, res) => {
     const { firstName, lastName, email, phone, birthDate, profilePhoto } = req.body;
     
-    // In a real app, we get user ID from session/token. Here we assume ID = 1.
-    const userId = 1;
-
-    // Check if user exists, if not create a dummy one, otherwise update
-    db.get("SELECT id FROM users WHERE id = ?", [userId], (err, row) => {
+    // Check if user exists by email or id
+    db.get("SELECT id, profile_photo FROM users WHERE email = ? OR id = ?", [email || '', currentLoggedInUserId || 1], (err, row) => {
+        const photoToSave = profilePhoto !== undefined ? profilePhoto : (row ? row.profile_photo : null);
         if (!row) {
-            db.run(`INSERT INTO users (id, first_name, last_name, email, password, role, phone, birth_date, profile_photo) 
-                    VALUES (?, ?, ?, ?, 'password', 'customer', ?, ?, ?)`, 
-                [userId, firstName, lastName, email, phone, birthDate, profilePhoto], 
-                (err) => {
+            db.run(`INSERT INTO users (first_name, last_name, email, password, role, phone, birth_date, profile_photo) 
+                    VALUES (?, ?, ?, 'password', 'customer', ?, ?, ?)`, 
+                [firstName, lastName, email, phone, birthDate, photoToSave], 
+                function(err) {
                     if(err) return res.status(500).json({error: err.message});
                     res.json({ success: true, message: "Profile created" });
                 }
             );
         } else {
-            db.run(`UPDATE users SET first_name = ?, last_name = ?, email = ?, phone = ?, birth_date = ?, profile_photo = ? WHERE id = ?`,
-                [firstName, lastName, email, phone, birthDate, profilePhoto, userId],
+            db.run(`UPDATE users SET first_name = ?, last_name = ?, email = COALESCE(?, email), phone = ?, birth_date = ?, profile_photo = COALESCE(?, profile_photo) WHERE id = ?`,
+                [firstName, lastName, email, phone, birthDate, photoToSave, row.id],
                 (err) => {
                     if(err) return res.status(500).json({error: err.message});
                     res.json({ success: true, message: "Profile updated" });
@@ -100,8 +99,20 @@ app.post('/api/profile', (req, res) => {
 // Mock session state
 let currentLoggedInUserId = 1; // Start logged in as user 1 for demo
 
-// Get profile
+// Get profile (supports email query parameter or session id)
 app.get('/api/profile', (req, res) => {
+    const email = req.query.email;
+    if (email) {
+        db.get("SELECT * FROM users WHERE email = ?", [email], (err, row) => {
+            if (err) return res.status(500).json({ error: err.message });
+            if (row) return res.json({ success: true, data: row });
+            db.get("SELECT * FROM users WHERE id = ?", [currentLoggedInUserId || 1], (err2, row2) => {
+                if (err2) return res.status(500).json({ error: err2.message });
+                res.json({ success: true, data: row2 || null });
+            });
+        });
+        return;
+    }
     if (!currentLoggedInUserId) {
         return res.json({ success: true, data: null });
     }
@@ -159,6 +170,12 @@ app.post('/api/profile/upload', upload.single('photo'), (req, res) => {
     }
     // Return the URL where the image can be accessed
     const fileUrl = `/uploads/${req.file.filename}`;
+    const email = req.body && req.body.email;
+    if (email) {
+        db.run("UPDATE users SET profile_photo = ? WHERE email = ?", [fileUrl, email], (err) => {
+            if (err) console.error("Error updating user photo in db:", err.message);
+        });
+    }
     res.json({ success: true, photoUrl: fileUrl });
 });
 
